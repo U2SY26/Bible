@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback, useRef } from "react";
+import ForceGraph2D from "react-force-graph-2d";
 
 const fallbackData = {
   people: [
@@ -139,6 +140,9 @@ function App() {
   const [language, setLanguage] = useState("ko");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedPerson, setSelectedPerson] = useState(null);
+  const [graphDimensions, setGraphDimensions] = useState({ width: 600, height: 400 });
+  const graphContainerRef = useRef(null);
+  const fgRef = useRef();
 
   useEffect(() => {
     fetch(`/api/graph${testament === "all" ? "" : `?testament=${testament}`}`)
@@ -146,6 +150,18 @@ function App() {
       .then((data) => setGraph(data))
       .catch(() => setGraph(fallbackData));
   }, [testament]);
+
+  useEffect(() => {
+    const updateDimensions = () => {
+      if (graphContainerRef.current) {
+        const { width, height } = graphContainerRef.current.getBoundingClientRect();
+        setGraphDimensions({ width, height: Math.max(400, height) });
+      }
+    };
+    updateDimensions();
+    window.addEventListener("resize", updateDimensions);
+    return () => window.removeEventListener("resize", updateDimensions);
+  }, []);
 
   const filteredPeople = useMemo(() => {
     const term = searchTerm.toLowerCase();
@@ -159,16 +175,127 @@ function App() {
     });
   }, [graph.people, searchTerm, testament]);
 
-  const relationships = useMemo(() => {
-    const visiblePeopleIds = new Set(filteredPeople.map((p) => p.id));
-    const visibleEvents = new Set(graph.events.filter((e) => testament === "all" || e.testament.toLowerCase() === testament).map((e) => e.id));
-    return graph.relationships.filter((rel) => visiblePeopleIds.has(rel.source) && visibleEvents.has(rel.target));
-  }, [filteredPeople, graph.events, graph.relationships, testament]);
-
   const events = useMemo(
     () => graph.events.filter((event) => testament === "all" || event.testament.toLowerCase() === testament),
     [graph.events, testament]
   );
+
+  const graphData = useMemo(() => {
+    const nodes = [
+      ...filteredPeople.map((p) => ({
+        id: p.id,
+        name: language === "ko" ? p.language_name : p.name,
+        type: "person",
+        highlight: p.highlight,
+        testament: p.testament,
+        data: p,
+      })),
+      ...events.map((e) => ({
+        id: e.id,
+        name: e.name,
+        type: "event",
+        highlight: e.highlight,
+        testament: e.testament,
+        data: e,
+      })),
+    ];
+
+    const nodeIds = new Set(nodes.map((n) => n.id));
+    const links = graph.relationships
+      .filter((rel) => nodeIds.has(rel.source) && nodeIds.has(rel.target))
+      .map((rel) => ({
+        source: rel.source,
+        target: rel.target,
+        label: rel.label,
+        importance: rel.importance,
+      }));
+
+    return { nodes, links };
+  }, [filteredPeople, events, graph.relationships, language]);
+
+  const handleNodeClick = useCallback((node) => {
+    if (node.type === "person") {
+      setSelectedPerson(node.data);
+    }
+    if (fgRef.current) {
+      fgRef.current.centerAt(node.x, node.y, 500);
+      fgRef.current.zoom(2, 500);
+    }
+  }, []);
+
+  const nodeCanvasObject = useCallback((node, ctx, globalScale) => {
+    if (node.x === undefined || node.y === undefined || !Number.isFinite(node.x) || !Number.isFinite(node.y)) {
+      return;
+    }
+
+    const label = node.name;
+    const fontSize = 14 / globalScale;
+    ctx.font = `${fontSize}px Sans-Serif`;
+
+    const nodeRadius = node.type === "person" ? 8 : 6;
+
+    // Node glow for highlighted nodes
+    if (node.highlight) {
+      ctx.beginPath();
+      ctx.arc(node.x, node.y, nodeRadius + 4, 0, 2 * Math.PI);
+      const gradient = ctx.createRadialGradient(node.x, node.y, nodeRadius, node.x, node.y, nodeRadius + 8);
+      if (node.type === "person") {
+        gradient.addColorStop(0, "rgba(0, 245, 255, 0.6)");
+        gradient.addColorStop(1, "rgba(0, 245, 255, 0)");
+      } else {
+        gradient.addColorStop(0, "rgba(255, 105, 180, 0.6)");
+        gradient.addColorStop(1, "rgba(255, 105, 180, 0)");
+      }
+      ctx.fillStyle = gradient;
+      ctx.fill();
+    }
+
+    // Node circle
+    ctx.beginPath();
+    ctx.arc(node.x, node.y, nodeRadius, 0, 2 * Math.PI);
+    if (node.type === "person") {
+      ctx.fillStyle = node.testament === "OT" ? "#47bfff" : "#6a62ff";
+    } else {
+      ctx.fillStyle = node.testament === "OT" ? "#ff9f47" : "#ff6b9d";
+    }
+    ctx.fill();
+
+    // Border
+    ctx.strokeStyle = "#fff";
+    ctx.lineWidth = 1.5 / globalScale;
+    ctx.stroke();
+
+    // Label
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = "#f4f6fb";
+    ctx.fillText(label, node.x, node.y + nodeRadius + fontSize);
+  }, []);
+
+  const linkCanvasObject = useCallback((link, ctx, globalScale) => {
+    const start = link.source;
+    const end = link.target;
+
+    if (typeof start !== "object" || typeof end !== "object") return;
+
+    // Draw line
+    ctx.beginPath();
+    ctx.moveTo(start.x, start.y);
+    ctx.lineTo(end.x, end.y);
+    ctx.strokeStyle = link.importance === "primary" ? "rgba(0, 245, 255, 0.5)" : "rgba(255, 255, 255, 0.2)";
+    ctx.lineWidth = link.importance === "primary" ? 2 / globalScale : 1 / globalScale;
+    ctx.stroke();
+
+    // Draw label
+    const midX = (start.x + end.x) / 2;
+    const midY = (start.y + end.y) / 2;
+    const fontSize = 10 / globalScale;
+    ctx.font = `${fontSize}px Sans-Serif`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = "rgba(200, 220, 255, 0.8)";
+    ctx.fillText(link.label, midX, midY);
+  }, []);
 
   const handleReset = () => {
     setTestament("all");
@@ -180,15 +307,19 @@ function App() {
 
   const activePerson = selectedPerson || filteredPeople[0];
 
+  const relationships = useMemo(() => {
+    const visiblePeopleIds = new Set(filteredPeople.map((p) => p.id));
+    const visibleEvents = new Set(events.map((e) => e.id));
+    return graph.relationships.filter((rel) => visiblePeopleIds.has(rel.source) && visibleEvents.has(rel.target));
+  }, [filteredPeople, events, graph.relationships]);
+
   return (
     <div className="app-shell">
       <header className="hero">
         <div className="hero-content">
-          <div className="badge">네온 그래프 · Neo4j / Obsidian 스타일</div>
-          <h1 className="title">개역개정 인물·사건 네온 그래프</h1>
+          <h1 className="title">개역개정 인물·사건 그래프</h1>
           <p className="subtitle">
-            구약/신약 주요 인물과 사건을 노드로 연결하고, 한/영 본문과 음성 낭독을 제공합니다.
-            검색·드롭다운·라벨·리셋과 네온 하이라이트로 빠르게 통찰을 얻으세요.
+            구약/신약 주요 인물과 사건을 노드로 연결합니다. 노드를 클릭하여 상세 정보를 확인하세요.
           </p>
           <div className="controls">
             <div className="control-card">
@@ -210,16 +341,16 @@ function App() {
               </select>
             </div>
             <div className="control-card">
-              <label htmlFor="search">검색 / 라벨 필터</label>
+              <label htmlFor="search">검색</label>
               <input
                 id="search"
-                placeholder="예: 예수, Moses, 메시아"
+                placeholder="예: 예수, Moses"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
             <div className="control-card">
-              <label>바로가기 라벨</label>
+              <label>바로가기</label>
               <div className="label-row">
                 {famousLabels.map((label) => (
                   <button key={label.id} className="label" onClick={() => setSelectedPerson(graph.people.find((p) => p.id === label.id))}>
@@ -237,49 +368,43 @@ function App() {
       </header>
 
       <main className="layout">
-        <section className="panel">
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <h2>그래프 노드</h2>
-            <div className="event-badge">중요 인물 / 사건 네온 강조</div>
+        <section className="panel graph-panel" ref={graphContainerRef}>
+          <h2>관계 그래프</h2>
+          <div className="graph-legend">
+            <span className="legend-item"><span className="dot person-ot"></span> 인물 (구약)</span>
+            <span className="legend-item"><span className="dot person-nt"></span> 인물 (신약)</span>
+            <span className="legend-item"><span className="dot event-ot"></span> 사건 (구약)</span>
+            <span className="legend-item"><span className="dot event-nt"></span> 사건 (신약)</span>
           </div>
-          <div className="graph-grid">
-            {filteredPeople.map((person) => (
-              <article
-                key={person.id}
-                className={`node-card ${person.highlight ? "highlight" : ""}`}
-                onClick={() => setSelectedPerson(person)}
-                style={{ cursor: "pointer" }}
-              >
-                <div className="node-title">
-                  <strong>{language === "ko" ? person.language_name : person.name}</strong>
-                  <span className="small-text">{person.testament === "OT" ? "구약" : "신약"}</span>
-                </div>
-                <p className="small-text">{person.summary}</p>
-                <div className="label-row">
-                  {person.labels.map((label) => (
-                    <span key={label} className="label">
-                      {label}
-                    </span>
-                  ))}
-                </div>
-              </article>
-            ))}
-          </div>
-
-          <div className="relationships">
-            <h3>관계도</h3>
-            {relationships.map((rel) => (
-              <div key={`${rel.source}-${rel.target}`} className="relationship-item">
-                <span>{rel.source}</span>
-                <span style={{ textAlign: "center" }}>{rel.label}</span>
-                <span style={{ textAlign: "right" }}>{rel.target}</span>
-              </div>
-            ))}
+          <div className="graph-container">
+            <ForceGraph2D
+              ref={fgRef}
+              graphData={graphData}
+              width={graphDimensions.width - 40}
+              height={350}
+              backgroundColor="rgba(13, 15, 26, 0)"
+              nodeCanvasObject={nodeCanvasObject}
+              linkCanvasObject={linkCanvasObject}
+              onNodeClick={handleNodeClick}
+              nodePointerAreaPaint={(node, color, ctx) => {
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, 12, 0, 2 * Math.PI);
+                ctx.fillStyle = color;
+                ctx.fill();
+              }}
+              cooldownTicks={50}
+              d3AlphaDecay={0.02}
+              d3VelocityDecay={0.3}
+              linkDirectionalParticles={2}
+              linkDirectionalParticleWidth={2}
+              linkDirectionalParticleSpeed={0.005}
+              linkDirectionalParticleColor={() => "rgba(0, 245, 255, 0.8)"}
+            />
           </div>
         </section>
 
         <section className="panel">
-          <h2>사건 · 본문 · 낭독</h2>
+          <h2>상세 정보</h2>
           {activePerson ? (
             <div className="scripture-card">
               <div className="node-title">
@@ -288,7 +413,7 @@ function App() {
                   <div className="small-text">{activePerson.summary}</div>
                 </div>
                 <button className="primary" onClick={() => speak(activePerson.summary, language)}>
-                  🔊 요약 읽기
+                  🔊 읽기
                 </button>
               </div>
 
@@ -318,7 +443,7 @@ function App() {
               </div>
 
               <div style={{ marginTop: "1rem" }}>
-                <h4>관련 본문 (한/영)</h4>
+                <h4>관련 본문</h4>
                 {activePerson.scriptures && activePerson.scriptures.length > 0 ? (
                   activePerson.scriptures
                     .filter((s) => (language === "ko" ? s.language === "ko" : s.language === "en"))
@@ -328,7 +453,7 @@ function App() {
                           <span>
                             {scripture.book} {scripture.chapter}:{scripture.verses}
                           </span>
-                          <button onClick={() => speak(scripture.text, language)}>🔊 본문 읽기</button>
+                          <button onClick={() => speak(scripture.text, language)}>🔊</button>
                         </div>
                         <p style={{ margin: 0 }}>{scripture.text}</p>
                       </div>
@@ -339,11 +464,11 @@ function App() {
               </div>
             </div>
           ) : (
-            <p className="small-text">인물을 선택하여 본문과 사건을 확인하세요.</p>
+            <p className="small-text">노드를 클릭하여 상세 정보를 확인하세요.</p>
           )}
 
           <div style={{ marginTop: "1rem" }}>
-            <h3>사건 리스트</h3>
+            <h3>사건 목록</h3>
             {events.map((event) => (
               <div key={event.id} className={`node-card ${event.highlight ? "highlight" : ""}`} style={{ marginBottom: "0.5rem" }}>
                 <div className="node-title">
@@ -354,13 +479,11 @@ function App() {
               </div>
             ))}
           </div>
-
-          <div className="adsense">adsense 배너 자리 (하단 슬림 영역)</div>
         </section>
       </main>
 
       <footer className="footer">
-        데이터는 FastAPI/Neo4j/Obsidian 스타일로 확장 가능하며, 앱 배포는 Flutter WebView·앱으로 연결할 수 있습니다.
+        성경 인물 관계 그래프 | 데이터는 지속적으로 확장됩니다
       </footer>
     </div>
   );

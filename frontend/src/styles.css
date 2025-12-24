@@ -258,3 +258,52 @@ button.primary:hover {
 .reset-row button {
   flex: 1;
 }
+
+.graph-panel {
+  min-height: 450px;
+}
+
+.graph-container {
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.graph-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.85rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #9eb4ff;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+}
+
+.dot.person-ot {
+  background: #47bfff;
+}
+
+.dot.person-nt {
+  background: #6a62ff;
+}
+
+.dot.event-ot {
+  background: #ff9f47;
+}
+
+.dot.event-nt {
+  background: #ff6b9d;
+}
