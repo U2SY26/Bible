@@ -846,126 +846,97 @@ export default function App() {
     }
   }, [isMobile]);
 
-  // 물리 시뮬레이션 (지속적 - 부드러운 떠다니는 느낌)
+  // 물리 시뮬레이션 (드래그 시에만 활성화)
   const physicsFrameRef = useRef(0);
   const lastPhysicsTime = useRef(Date.now());
-  const startTime = useRef(Date.now());
 
   useEffect(() => {
     if (Object.keys(positions).length === 0 || !physicsEnabled) return;
+    // 드래그 중일 때만 물리 시뮬레이션 실행
+    if (!dragTarget) return;
 
     let animationId;
     const simulate = () => {
       const now = Date.now();
       const deltaTime = Math.min((now - lastPhysicsTime.current) / 16, 2);
-      const elapsed = (now - startTime.current) / 1000; // 경과 시간 (초)
       lastPhysicsTime.current = now;
       physicsFrameRef.current++;
 
       setPositions(prev => {
         const newPos = { ...prev };
         const charIds = Object.keys(newPos);
+        let hasMovement = false;
 
-        // 처음 3초는 충돌 해소, 이후는 부드러운 움직임만
-        const isSettling = elapsed < 3;
-        const settleForce = isSettling ? Math.max(0.1, 1 - elapsed / 3) : 0;
+        // 1. 부드러운 충돌 방지 (모든 노드에 적용, 아주 약하게)
+        const gridSize = 100;
+        const grid = {};
 
-        // 1. 충돌 방지 (초기 정착기에만 강하게)
-        if (isSettling) {
-          const gridSize = 100;
-          const grid = {};
-
-          charIds.forEach(id => {
-            if (!newPos[id]) return;
-            const gx = Math.floor(newPos[id].x / gridSize);
-            const gy = Math.floor(newPos[id].y / gridSize);
-            const key = `${gx},${gy}`;
-            if (!grid[key]) grid[key] = [];
-            grid[key].push(id);
-          });
-
-          charIds.forEach(id1 => {
-            if (!newPos[id1]) return;
-            const gx = Math.floor(newPos[id1].x / gridSize);
-            const gy = Math.floor(newPos[id1].y / gridSize);
-
-            for (let dx = -1; dx <= 1; dx++) {
-              for (let dy = -1; dy <= 1; dy++) {
-                const key = `${gx + dx},${gy + dy}`;
-                const cell = grid[key];
-                if (!cell) continue;
-
-                cell.forEach(id2 => {
-                  if (id1 >= id2 || !newPos[id2]) return;
-                  const diffX = newPos[id1].x - newPos[id2].x;
-                  const diffY = newPos[id1].y - newPos[id2].y;
-                  const dist = Math.sqrt(diffX * diffX + diffY * diffY) || 0.1;
-                  const minDist = 55;
-
-                  if (dist < minDist) {
-                    const overlap = minDist - dist;
-                    const force = overlap * 0.12 * deltaTime * settleForce;
-                    const nx = diffX / dist;
-                    const ny = diffY / dist;
-                    newPos[id1].vx += nx * force;
-                    newPos[id1].vy += ny * force;
-                    newPos[id2].vx -= nx * force;
-                    newPos[id2].vy -= ny * force;
-                  }
-                });
-              }
-            }
-          });
-        }
-
-        // 2. 부드러운 파동 효과 (항상 적용)
-        const waveTime = elapsed * 0.5;
-        charIds.forEach((id, index) => {
-          if (dragTarget === id || !newPos[id]) return;
-
-          // 각 노드마다 다른 위상의 파동
-          const phase = index * 0.1;
-          const waveX = Math.sin(waveTime + phase) * 0.08;
-          const waveY = Math.cos(waveTime * 0.7 + phase * 1.3) * 0.06;
-
-          newPos[id].vx += waveX * deltaTime;
-          newPos[id].vy += waveY * deltaTime;
-        });
-
-        // 3. 선택된 노드 주변 파동 효과
-        if (selectedCharacter && newPos[selectedCharacter]) {
-          const centerX = newPos[selectedCharacter].x;
-          const centerY = newPos[selectedCharacter].y;
-          const pulseRadius = 200 + Math.sin(elapsed * 3) * 50;
-
-          charIds.forEach(id => {
-            if (id === selectedCharacter || id === dragTarget || !newPos[id]) return;
-            const dx = newPos[id].x - centerX;
-            const dy = newPos[id].y - centerY;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-
-            if (dist < pulseRadius && dist > 30) {
-              const pushForce = (1 - dist / pulseRadius) * 0.15 * Math.sin(elapsed * 4);
-              newPos[id].vx += (dx / dist) * pushForce * deltaTime;
-              newPos[id].vy += (dy / dist) * pushForce * deltaTime;
-            }
-          });
-        }
-
-        // 4. 위치 업데이트 & 감쇠
         charIds.forEach(id => {
-          if (dragTarget === id || !newPos[id]) return;
-
-          newPos[id].x += newPos[id].vx * deltaTime;
-          newPos[id].y += newPos[id].vy * deltaTime;
-
-          // 부드러운 감쇠 (떠다니는 느낌 유지)
-          const damping = isSettling ? 0.88 : 0.95;
-          newPos[id].vx *= damping;
-          newPos[id].vy *= damping;
+          if (!newPos[id]) return;
+          const gx = Math.floor(newPos[id].x / gridSize);
+          const gy = Math.floor(newPos[id].y / gridSize);
+          const key = `${gx},${gy}`;
+          if (!grid[key]) grid[key] = [];
+          grid[key].push(id);
         });
 
-        return newPos;
+        charIds.forEach(id1 => {
+          if (!newPos[id1] || id1 === dragTarget) return;
+          const gx = Math.floor(newPos[id1].x / gridSize);
+          const gy = Math.floor(newPos[id1].y / gridSize);
+
+          for (let dx = -1; dx <= 1; dx++) {
+            for (let dy = -1; dy <= 1; dy++) {
+              const key = `${gx + dx},${gy + dy}`;
+              const cell = grid[key];
+              if (!cell) continue;
+
+              cell.forEach(id2 => {
+                if (id1 >= id2 || !newPos[id2] || id2 === dragTarget) return;
+                const diffX = newPos[id1].x - newPos[id2].x;
+                const diffY = newPos[id1].y - newPos[id2].y;
+                const dist = Math.sqrt(diffX * diffX + diffY * diffY) || 0.1;
+                const minDist = 50;
+
+                if (dist < minDist) {
+                  // 아주 부드럽게 밀어내기 (느리게)
+                  const overlap = minDist - dist;
+                  const force = overlap * 0.015 * deltaTime; // 매우 약한 힘
+                  const nx = diffX / dist;
+                  const ny = diffY / dist;
+                  newPos[id1].vx = (newPos[id1].vx || 0) + nx * force;
+                  newPos[id1].vy = (newPos[id1].vy || 0) + ny * force;
+                  newPos[id2].vx = (newPos[id2].vx || 0) - nx * force;
+                  newPos[id2].vy = (newPos[id2].vy || 0) - ny * force;
+                }
+              });
+            }
+          }
+        });
+
+        // 2. 위치 업데이트 & 감쇠 (움직이는 노드만)
+        charIds.forEach(id => {
+          if (id === dragTarget || !newPos[id]) return;
+
+          const vx = newPos[id].vx || 0;
+          const vy = newPos[id].vy || 0;
+
+          if (Math.abs(vx) > 0.01 || Math.abs(vy) > 0.01) {
+            hasMovement = true;
+            newPos[id].x += vx * deltaTime;
+            newPos[id].y += vy * deltaTime;
+
+            // 강한 감쇠 (빨리 멈춤)
+            newPos[id].vx = vx * 0.92;
+            newPos[id].vy = vy * 0.92;
+          } else {
+            // 완전히 멈춤
+            newPos[id].vx = 0;
+            newPos[id].vy = 0;
+          }
+        });
+
+        return hasMovement ? newPos : prev;
       });
 
       animationId = requestAnimationFrame(simulate);
@@ -976,36 +947,91 @@ export default function App() {
     return () => {
       if (animationId) cancelAnimationFrame(animationId);
     };
-  }, [physicsEnabled, dragTarget, selectedCharacter]);
+  }, [physicsEnabled, dragTarget]);
 
   // 드래그 중 연결된 노드 따라오기 애니메이션 (탄성 물리)
   const dragAnimationRef = useRef(null);
   const dragStartTimeRef = useRef(null);
+  const afterDragAnimating = useRef(false);
 
   useEffect(() => {
-    if (!dragTarget) {
-      if (dragAnimationRef.current) {
-        cancelAnimationFrame(dragAnimationRef.current);
-        dragAnimationRef.current = null;
-      }
-      dragStartTimeRef.current = null;
+    // 드래그가 끝나면 관성 애니메이션 시작
+    if (!dragTarget && dragAnimationRef.current) {
+      afterDragAnimating.current = true;
+      // 애니메이션은 계속 진행 (관성으로 멈출 때까지)
       return;
     }
 
-    if (!dragStartTimeRef.current) {
-      dragStartTimeRef.current = Date.now();
+    if (!dragTarget && !afterDragAnimating.current) {
+      return;
+    }
+
+    if (dragTarget) {
+      afterDragAnimating.current = false;
+      if (!dragStartTimeRef.current) {
+        dragStartTimeRef.current = Date.now();
+      }
     }
 
     const animateDrag = () => {
-      const elapsed = (Date.now() - dragStartTimeRef.current) * 0.001;
+      const elapsed = dragStartTimeRef.current
+        ? (Date.now() - dragStartTimeRef.current) * 0.001
+        : 0;
 
       setPositions(prev => {
         const newPos = { ...prev };
         let hasMovement = false;
-        const draggedNode = prev[dragTarget];
-        if (!draggedNode) return prev;
+        const charIds = Object.keys(newPos);
 
-        Object.keys(newPos).forEach((id, idx) => {
+        // 충돌 방지 (겹치면 살짝 밀어내기)
+        const gridSize = 100;
+        const grid = {};
+
+        charIds.forEach(id => {
+          if (!newPos[id]) return;
+          const gx = Math.floor(newPos[id].x / gridSize);
+          const gy = Math.floor(newPos[id].y / gridSize);
+          const key = `${gx},${gy}`;
+          if (!grid[key]) grid[key] = [];
+          grid[key].push(id);
+        });
+
+        charIds.forEach(id1 => {
+          if (!newPos[id1] || id1 === dragTarget) return;
+          const gx = Math.floor(newPos[id1].x / gridSize);
+          const gy = Math.floor(newPos[id1].y / gridSize);
+
+          for (let dx = -1; dx <= 1; dx++) {
+            for (let dy = -1; dy <= 1; dy++) {
+              const key = `${gx + dx},${gy + dy}`;
+              const cell = grid[key];
+              if (!cell) continue;
+
+              cell.forEach(id2 => {
+                if (id1 >= id2 || !newPos[id2] || id2 === dragTarget) return;
+                const diffX = newPos[id1].x - newPos[id2].x;
+                const diffY = newPos[id1].y - newPos[id2].y;
+                const dist = Math.sqrt(diffX * diffX + diffY * diffY) || 0.1;
+                const minDist = 50;
+
+                if (dist < minDist) {
+                  // 아주 부드럽게 밀어내기
+                  const overlap = minDist - dist;
+                  const force = overlap * 0.02;
+                  const nx = diffX / dist;
+                  const ny = diffY / dist;
+                  newPos[id1].vx = (newPos[id1].vx || 0) + nx * force;
+                  newPos[id1].vy = (newPos[id1].vy || 0) + ny * force;
+                  newPos[id2].vx = (newPos[id2].vx || 0) - nx * force;
+                  newPos[id2].vy = (newPos[id2].vy || 0) - ny * force;
+                }
+              });
+            }
+          }
+        });
+
+        // 노드 이동
+        charIds.forEach((id, idx) => {
           if (id === dragTarget) return;
           const node = newPos[id];
           if (!node) return;
@@ -1015,15 +1041,19 @@ export default function App() {
 
           // 스프링 진동 효과 (속도에 따라 흔들림)
           const speed = Math.sqrt(vx * vx + vy * vy);
-          const oscillation = Math.sin(elapsed * 12 + idx * 0.5) * speed * 0.15;
-          const perpX = -vy / (speed + 0.01) * oscillation;
-          const perpY = vx / (speed + 0.01) * oscillation;
+          let perpX = 0, perpY = 0;
 
-          if (Math.abs(vx) > 0.005 || Math.abs(vy) > 0.005) {
+          if (speed > 0.5) {
+            const oscillation = Math.sin(elapsed * 10 + idx * 0.5) * speed * 0.1;
+            perpX = -vy / (speed + 0.01) * oscillation;
+            perpY = vx / (speed + 0.01) * oscillation;
+          }
+
+          if (Math.abs(vx) > 0.01 || Math.abs(vy) > 0.01) {
             hasMovement = true;
 
-            // 탄성 감쇠 (바운스 효과)
-            const damping = 0.88 + Math.sin(elapsed * 6) * 0.03;
+            // 감쇠
+            const damping = 0.9;
 
             newPos[id] = {
               ...node,
@@ -1032,19 +1062,36 @@ export default function App() {
               vx: vx * damping,
               vy: vy * damping
             };
+          } else {
+            // 완전히 멈춤
+            newPos[id] = { ...node, vx: 0, vy: 0 };
           }
         });
+
+        // 움직임이 없으면 애니메이션 종료
+        if (!hasMovement && !dragTarget) {
+          afterDragAnimating.current = false;
+          dragStartTimeRef.current = null;
+          if (dragAnimationRef.current) {
+            cancelAnimationFrame(dragAnimationRef.current);
+            dragAnimationRef.current = null;
+          }
+        }
 
         return hasMovement ? newPos : prev;
       });
 
-      dragAnimationRef.current = requestAnimationFrame(animateDrag);
+      if (dragTarget || afterDragAnimating.current) {
+        dragAnimationRef.current = requestAnimationFrame(animateDrag);
+      }
     };
 
     dragAnimationRef.current = requestAnimationFrame(animateDrag);
     return () => {
-      if (dragAnimationRef.current) {
+      if (dragAnimationRef.current && !afterDragAnimating.current) {
         cancelAnimationFrame(dragAnimationRef.current);
+        dragAnimationRef.current = null;
+        dragStartTimeRef.current = null;
       }
     };
   }, [dragTarget]);
