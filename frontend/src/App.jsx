@@ -408,7 +408,23 @@ const styles = {
   }
 };
 
-// ==================== 노드 색상 (레인보우 그라데이션 추가) ====================
+// ==================== 시대별 노드 색상 ====================
+const eraColors = {
+  eternal: { fill: '#ffd700', stroke: '#ffed4a', glow: 'rgba(255, 215, 0, 0.6)' },
+  creation: { fill: '#4a5568', stroke: '#718096', glow: 'rgba(74, 85, 104, 0.5)' },
+  flood: { fill: '#2b6cb0', stroke: '#4299e1', glow: 'rgba(43, 108, 176, 0.5)' },
+  patriarchs: { fill: '#9f7aea', stroke: '#b794f4', glow: 'rgba(159, 122, 234, 0.5)' },
+  exodus: { fill: '#dd6b20', stroke: '#ed8936', glow: 'rgba(221, 107, 32, 0.5)' },
+  conquest: { fill: '#38a169', stroke: '#48bb78', glow: 'rgba(56, 161, 105, 0.5)' },
+  judges: { fill: '#e53e3e', stroke: '#fc8181', glow: 'rgba(229, 62, 62, 0.5)' },
+  united_kingdom: { fill: '#d69e2e', stroke: '#ecc94b', glow: 'rgba(214, 158, 46, 0.5)' },
+  divided_kingdom: { fill: '#805ad5', stroke: '#9f7aea', glow: 'rgba(128, 90, 213, 0.5)' },
+  exile: { fill: '#4a5568', stroke: '#718096', glow: 'rgba(74, 85, 104, 0.5)' },
+  return: { fill: '#319795', stroke: '#4fd1c5', glow: 'rgba(49, 151, 149, 0.5)' },
+  intertestamental: { fill: '#718096', stroke: '#a0aec0', glow: 'rgba(113, 128, 150, 0.5)' },
+  new_testament: { fill: '#e056fd', stroke: '#e878fc', glow: 'rgba(224, 86, 253, 0.5)' }
+};
+
 const getNodeColor = (character, isHighlighted, isSelected) => {
   if (!isHighlighted && !isSelected) {
     return { fill: '#1a1a2e', stroke: '#2a2a4e', opacity: 0.2, glow: 'transparent', isRainbow: false };
@@ -417,23 +433,21 @@ const getNodeColor = (character, isHighlighted, isSelected) => {
   // 주요 인물 (importance >= 8)은 레인보우 그라데이션
   const isImportant = character.importance >= 8;
 
-  const colors = {
+  // 삼위일체 특별 색상
+  const specialColors = {
     god: { fill: '#ffd700', stroke: '#ffed4a', glow: 'rgba(255, 215, 0, 0.6)', isRainbow: true },
     jesus: { fill: '#ff6b6b', stroke: '#ff8787', glow: 'rgba(255, 107, 107, 0.6)', isRainbow: true },
     holy_spirit: { fill: '#74b9ff', stroke: '#a3d5ff', glow: 'rgba(116, 185, 255, 0.6)', isRainbow: true }
   };
 
-  if (colors[character.id]) {
-    return { ...colors[character.id], opacity: 1 };
+  if (specialColors[character.id]) {
+    return { ...specialColors[character.id], opacity: 1 };
   }
 
-  const testamentColors = {
-    old: { fill: '#4a90d9', stroke: '#6ba3e0', glow: 'rgba(74, 144, 217, 0.5)' },
-    new: { fill: '#e056fd', stroke: '#e878fc', glow: 'rgba(224, 86, 253, 0.5)' },
-    both: { fill: '#a29bfe', stroke: '#b8b3ff', glow: 'rgba(162, 155, 254, 0.5)' }
-  };
+  // 시대별 색상
+  const era = character.era || (character.testament === 'new' ? 'new_testament' : 'patriarchs');
+  const base = eraColors[era] || eraColors.patriarchs;
 
-  const base = testamentColors[character.testament] || testamentColors.old;
   return { ...base, opacity: 1, isRainbow: isImportant };
 };
 
@@ -830,98 +844,150 @@ export default function App() {
     }
   }, [isMobile]);
 
-  // 물리 시뮬레이션 (안정화된 버전 - 초기 정렬 후 정지)
+  // 물리 시뮬레이션 (지속적 - 노드 겹침 방지 & 자연스러운 움직임)
   const physicsFrameRef = useRef(0);
-  const maxPhysicsFrames = 120; // 약 2초간만 물리 실행
+  const lastPhysicsTime = useRef(Date.now());
 
   useEffect(() => {
     if (Object.keys(positions).length === 0 || !physicsEnabled) return;
-    if (physicsFrameRef.current >= maxPhysicsFrames) return;
 
+    let animationId;
     const simulate = () => {
+      const now = Date.now();
+      const deltaTime = Math.min((now - lastPhysicsTime.current) / 16, 3); // 60fps 기준 정규화
+      lastPhysicsTime.current = now;
       physicsFrameRef.current++;
-
-      // 최대 프레임 도달 시 정지
-      if (physicsFrameRef.current >= maxPhysicsFrames) {
-        setPhysicsEnabled(false);
-        return;
-      }
 
       setPositions(prev => {
         const newPos = { ...prev };
         const charIds = Object.keys(newPos);
-        let totalMovement = 0;
 
-        // 반발력 계산 (가까운 노드만)
-        charIds.forEach(id1 => {
-          if (!newPos[id1]) return;
+        // 1. 반발력 (충돌 방지) - 공간 분할로 최적화
+        const gridSize = 150;
+        const grid = {};
 
-          charIds.forEach(id2 => {
-            if (id1 >= id2 || !newPos[id2]) return;
-
-            const dx = newPos[id1].x - newPos[id2].x;
-            const dy = newPos[id1].y - newPos[id2].y;
-            const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-            const minDist = 80;
-
-            if (dist < minDist) {
-              const force = (minDist - dist) / dist * 0.15;
-              newPos[id1].vx += dx * force;
-              newPos[id1].vy += dy * force;
-              newPos[id2].vx -= dx * force;
-              newPos[id2].vy -= dy * force;
-            }
-          });
+        // 그리드에 노드 배치
+        charIds.forEach(id => {
+          if (!newPos[id]) return;
+          const gx = Math.floor(newPos[id].x / gridSize);
+          const gy = Math.floor(newPos[id].y / gridSize);
+          const key = `${gx},${gy}`;
+          if (!grid[key]) grid[key] = [];
+          grid[key].push(id);
         });
 
-        // 연결된 노드 끌어당김 (약하게)
-        relationships.slice(0, 150).forEach(rel => {
+        // 인접 그리드만 검사
+        charIds.forEach(id1 => {
+          if (!newPos[id1]) return;
+          const gx = Math.floor(newPos[id1].x / gridSize);
+          const gy = Math.floor(newPos[id1].y / gridSize);
+
+          for (let dx = -1; dx <= 1; dx++) {
+            for (let dy = -1; dy <= 1; dy++) {
+              const key = `${gx + dx},${gy + dy}`;
+              const cell = grid[key];
+              if (!cell) continue;
+
+              cell.forEach(id2 => {
+                if (id1 >= id2 || !newPos[id2]) return;
+
+                const diffX = newPos[id1].x - newPos[id2].x;
+                const diffY = newPos[id1].y - newPos[id2].y;
+                const dist = Math.sqrt(diffX * diffX + diffY * diffY) || 0.1;
+                const minDist = 70; // 최소 거리
+
+                if (dist < minDist) {
+                  // 강한 반발력 - 겹침 방지
+                  const overlap = minDist - dist;
+                  const force = overlap * 0.2 * deltaTime;
+                  const nx = diffX / dist;
+                  const ny = diffY / dist;
+
+                  newPos[id1].vx += nx * force;
+                  newPos[id1].vy += ny * force;
+                  newPos[id2].vx -= nx * force;
+                  newPos[id2].vy -= ny * force;
+                }
+              });
+            }
+          }
+        });
+
+        // 2. 연결된 노드 끌어당김 (스프링 효과)
+        relationships.slice(0, 200).forEach(rel => {
           if (!newPos[rel.source] || !newPos[rel.target]) return;
 
           const dx = newPos[rel.target].x - newPos[rel.source].x;
           const dy = newPos[rel.target].y - newPos[rel.source].y;
           const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-          const idealDist = 120;
+          const idealDist = 100;
 
-          if (dist > idealDist) {
-            const force = (dist - idealDist) / dist * 0.003;
-            newPos[rel.source].vx += dx * force;
-            newPos[rel.source].vy += dy * force;
-            newPos[rel.target].vx -= dx * force;
-            newPos[rel.target].vy -= dy * force;
+          if (dist !== idealDist) {
+            const force = (dist - idealDist) * 0.002 * deltaTime;
+            const nx = dx / dist;
+            const ny = dy / dist;
+
+            newPos[rel.source].vx += nx * force;
+            newPos[rel.source].vy += ny * force;
+            newPos[rel.target].vx -= nx * force;
+            newPos[rel.target].vy -= ny * force;
           }
         });
 
-        // 위치 업데이트 (강한 감쇠)
-        charIds.forEach(id => {
-          if (dragTarget === id) return;
+        // 3. 미세한 랜덤 움직임 (생동감)
+        if (physicsFrameRef.current % 30 === 0) {
+          charIds.forEach(id => {
+            if (dragTarget === id) return;
+            newPos[id].vx += (Math.random() - 0.5) * 0.3;
+            newPos[id].vy += (Math.random() - 0.5) * 0.3;
+          });
+        }
 
-          newPos[id].x += newPos[id].vx;
-          newPos[id].y += newPos[id].vy;
-          totalMovement += Math.abs(newPos[id].vx) + Math.abs(newPos[id].vy);
-          newPos[id].vx *= 0.7;
-          newPos[id].vy *= 0.7;
+        // 4. 중심으로 약하게 끌어당기기 (화면 밖으로 안나가게)
+        const centerX = viewportSize.width / 2 || 600;
+        const centerY = viewportSize.height / 2 || 400;
+        charIds.forEach(id => {
+          if (!newPos[id] || dragTarget === id) return;
+          const dx = centerX - newPos[id].x;
+          const dy = centerY - newPos[id].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist > 400) {
+            newPos[id].vx += dx * 0.0005 * deltaTime;
+            newPos[id].vy += dy * 0.0005 * deltaTime;
+          }
         });
 
-        // 움직임이 거의 없으면 조기 종료
-        if (totalMovement < 1) {
-          physicsFrameRef.current = maxPhysicsFrames;
-        }
+        // 5. 위치 업데이트 & 속도 감쇠
+        charIds.forEach(id => {
+          if (dragTarget === id || !newPos[id]) return;
+
+          // 속도 적용
+          newPos[id].x += newPos[id].vx * deltaTime;
+          newPos[id].y += newPos[id].vy * deltaTime;
+
+          // 속도 감쇠 (부드러운 정지)
+          newPos[id].vx *= 0.92;
+          newPos[id].vy *= 0.92;
+
+          // 최소 속도 이하면 정지
+          if (Math.abs(newPos[id].vx) < 0.01) newPos[id].vx = 0;
+          if (Math.abs(newPos[id].vy) < 0.01) newPos[id].vy = 0;
+        });
 
         return newPos;
       });
 
-      animationRef.current = requestAnimationFrame(simulate);
+      animationId = requestAnimationFrame(simulate);
     };
 
-    animationRef.current = requestAnimationFrame(simulate);
+    animationId = requestAnimationFrame(simulate);
 
     return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
+      if (animationId) {
+        cancelAnimationFrame(animationId);
       }
     };
-  }, [physicsEnabled, dragTarget]);
+  }, [physicsEnabled, dragTarget, viewportSize]);
 
   // 드래그 중 연결된 노드 따라오기 애니메이션
   const dragAnimationRef = useRef(null);
@@ -2729,6 +2795,84 @@ function BibleViewer({ bibleViewer, setBibleViewer, bibleData, isMobile }) {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  // TTS 상태
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [currentVerse, setCurrentVerse] = useState(null);
+  const speechRef = useRef(null);
+
+  // TTS 읽기
+  const handleSpeak = useCallback(() => {
+    if (!chapterData) return;
+
+    if (isSpeaking) {
+      // 중지
+      window.speechSynthesis.cancel();
+      setIsSpeaking(false);
+      setCurrentVerse(null);
+      return;
+    }
+
+    // 읽기 시작
+    setIsSpeaking(true);
+    const verses = chapterData.verses;
+    let verseIndex = highlightVerse ? highlightVerse - 1 : 0;
+
+    const speakVerse = () => {
+      if (verseIndex >= verses.length) {
+        setIsSpeaking(false);
+        setCurrentVerse(null);
+        return;
+      }
+
+      const verse = verses[verseIndex];
+      setCurrentVerse(verse.verse);
+
+      // 해당 구절로 스크롤
+      if (verseRefs.current[verse.verse]) {
+        verseRefs.current[verse.verse].scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        });
+      }
+
+      const utterance = new SpeechSynthesisUtterance(`${verse.verse}절. ${verse.text}`);
+      utterance.lang = 'ko-KR';
+      utterance.rate = 0.9;
+      utterance.pitch = 1.0;
+
+      utterance.onend = () => {
+        verseIndex++;
+        if (isSpeaking) {
+          setTimeout(speakVerse, 300);
+        }
+      };
+
+      utterance.onerror = () => {
+        setIsSpeaking(false);
+        setCurrentVerse(null);
+      };
+
+      speechRef.current = utterance;
+      window.speechSynthesis.speak(utterance);
+    };
+
+    speakVerse();
+  }, [chapterData, isSpeaking, highlightVerse]);
+
+  // 컴포넌트 언마운트 시 TTS 중지
+  useEffect(() => {
+    return () => {
+      window.speechSynthesis.cancel();
+    };
+  }, []);
+
+  // 장 변경 시 TTS 중지
+  useEffect(() => {
+    window.speechSynthesis.cancel();
+    setIsSpeaking(false);
+    setCurrentVerse(null);
+  }, [chapter]);
+
   const handleChapterChange = (newChapter) => {
     setBibleViewer(prev => ({
       ...prev,
@@ -2939,6 +3083,18 @@ function BibleViewer({ bibleViewer, setBibleViewer, bibleData, isMobile }) {
           >
             다음 ▶
           </button>
+          <button
+            style={{
+              ...viewerStyles.navButton,
+              background: isSpeaking
+                ? 'linear-gradient(135deg, rgba(255,107,107,0.4), rgba(238,90,90,0.4))'
+                : 'linear-gradient(135deg, rgba(72,187,120,0.3), rgba(56,161,105,0.3))',
+              border: isSpeaking ? '1px solid rgba(255,107,107,0.6)' : '1px solid rgba(72,187,120,0.6)'
+            }}
+            onClick={handleSpeak}
+          >
+            {isSpeaking ? '⏹ 중지' : '🔊 듣기'}
+          </button>
           <button style={viewerStyles.closeButton} onClick={handleClose}>
             ✕ 닫기
           </button>
@@ -2958,10 +3114,18 @@ function BibleViewer({ bibleViewer, setBibleViewer, bibleData, isMobile }) {
               ref={el => verseRefs.current[v.verse] = el}
               style={{
                 ...viewerStyles.verse,
-                ...(v.verse === highlightVerse ? viewerStyles.highlightedVerse : {})
+                ...(v.verse === highlightVerse ? viewerStyles.highlightedVerse : {}),
+                ...(v.verse === currentVerse ? {
+                  background: 'linear-gradient(135deg, rgba(72,187,120,0.25), rgba(56,161,105,0.2))',
+                  border: '1px solid rgba(72,187,120,0.5)',
+                  boxShadow: '0 0 15px rgba(72,187,120,0.3)'
+                } : {})
               }}
             >
-              <span style={viewerStyles.verseNumber}>{v.verse}</span>
+              <span style={{
+                ...viewerStyles.verseNumber,
+                ...(v.verse === currentVerse ? { color: '#48bb78' } : {})
+              }}>{v.verse}</span>
               {v.text}
             </p>
           ))}
