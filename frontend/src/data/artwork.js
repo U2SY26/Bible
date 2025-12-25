@@ -1277,5 +1277,320 @@ export const eventArtwork = {
     title: 'Conversion of Paul',
     artist: 'Caravaggio',
     year: '1601'
+  },
+
+  // ==================== 추가 사건 아트워크 ====================
+
+  // 노아 언약
+  rainbow_covenant: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Joseph_Anton_Koch_006.jpg/400px-Joseph_Anton_Koch_006.jpg',
+    title: 'Noah\'s Sacrifice',
+    artist: 'Joseph Anton Koch',
+    year: '1803'
+  },
+
+  // 바벨탑 (ID 맞춤)
+  babel_tower: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Pieter_Bruegel_the_Elder_-_The_Tower_of_Babel_%28Vienna%29_-_Google_Art_Project.jpg/400px-Pieter_Bruegel_the_Elder_-_The_Tower_of_Babel_%28Vienna%29_-_Google_Art_Project.jpg',
+    title: 'Tower of Babel',
+    artist: 'Pieter Bruegel',
+    year: '1563'
+  },
+
+  // 야곱과 에서 장자권
+  jacob_esau_birthright: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Gioacchino_Assereto_-_Esau_Selling_His_Birthright.jpg/400px-Gioacchino_Assereto_-_Esau_Selling_His_Birthright.jpg',
+    title: 'Esau Selling His Birthright',
+    artist: 'Gioacchino Assereto',
+    year: '1645'
+  },
+
+  // 야곱의 씨름
+  jacob_wrestling: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Rembrandt_-_Jacob_Wrestling_with_the_Angel_-_Google_Art_Project.jpg/400px-Rembrandt_-_Jacob_Wrestling_with_the_Angel_-_Google_Art_Project.jpg',
+    title: 'Jacob Wrestling with the Angel',
+    artist: 'Rembrandt',
+    year: '1659'
+  },
+
+  // 요셉과 바로
+  joseph_pharaoh: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Adrien_Guignet_-_Joseph_Explaining_Pharaoh%27s_Dream.jpg/400px-Adrien_Guignet_-_Joseph_Explaining_Pharaoh%27s_Dream.jpg',
+    title: 'Joseph Explaining Pharaoh\'s Dream',
+    artist: 'Adrien Guignet',
+    year: '1845'
+  },
+
+  // 모세의 출생
+  moses_birth: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Bourdon%2C_S%C3%A9bastien_-_Moses_Saved_from_the_Water_-_1650-1660.jpg/400px-Bourdon%2C_S%C3%A9bastien_-_Moses_Saved_from_the_Water_-_1650-1660.jpg',
+    title: 'Moses Saved from the Water',
+    artist: 'Sébastien Bourdon',
+    year: '1655'
+  },
+
+  // 유월절
+  passover: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/He_brethren_Levi_-_Passover_Haggadah.jpg/400px-He_brethren_Levi_-_Passover_Haggadah.jpg',
+    title: 'Passover',
+    artist: 'Unknown',
+    year: '1500s'
+  },
+
+  // 출애굽
+  exodus_event: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/David_Roberts_-_Departure_of_the_Israelites.jpg/400px-David_Roberts_-_Departure_of_the_Israelites.jpg',
+    title: 'Departure of the Israelites',
+    artist: 'David Roberts',
+    year: '1829'
+  },
+
+  // 12정탐꾼
+  twelve_spies: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Caleb-Carrying-Grapes.jpg/400px-Caleb-Carrying-Grapes.jpg',
+    title: 'The Spies with Grapes of Canaan',
+    artist: 'James Tissot',
+    year: '1902'
+  },
+
+  // 여리고 (ID 맞춤)
+  jericho: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Gustave_Dor%C3%A9_-_The_Walls_of_Jericho_Fall_Down.jpg/400px-Gustave_Dor%C3%A9_-_The_Walls_of_Jericho_Fall_Down.jpg',
+    title: 'Fall of Jericho',
+    artist: 'Gustave Doré',
+    year: '1866'
+  },
+
+  // 기드온 승리
+  gideon_victory: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Maarten_van_Heemskerck_-_Gideon_and_his_men.jpg/400px-Maarten_van_Heemskerck_-_Gideon_and_his_men.jpg',
+    title: 'Gideon and His Three Hundred',
+    artist: 'Maarten van Heemskerck',
+    year: '1550'
+  },
+
+  // 삼손과 들릴라
+  samson_delilah: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Samson_and_Delilah_by_Rubens.jpg/400px-Samson_and_Delilah_by_Rubens.jpg',
+    title: 'Samson and Delilah',
+    artist: 'Peter Paul Rubens',
+    year: '1610'
+  },
+
+  // 사무엘의 소명
+  samuel_call: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/John_Singleton_Copley_-_Samuel_and_Eli.jpg/400px-John_Singleton_Copley_-_Samuel_and_Eli.jpg',
+    title: 'Samuel Called by the Lord',
+    artist: 'John Singleton Copley',
+    year: '1780'
+  },
+
+  // 다윗 기름부음
+  david_anointed: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Veronese_-_The_Anointing_of_David.jpg/400px-Veronese_-_The_Anointing_of_David.jpg',
+    title: 'The Anointing of David',
+    artist: 'Paolo Veronese',
+    year: '1555'
+  },
+
+  // 성전 건축
+  temple_built: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ee/King_solomon%27s_temple.jpg/400px-King_solomon%27s_temple.jpg',
+    title: 'Solomon\'s Temple',
+    artist: 'Unknown',
+    year: '1883'
+  },
+
+  // 왕국 분열
+  kingdom_divided: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Hans_Holbein_d._J._-_Rehoboam%27s_Insolence.jpg/400px-Hans_Holbein_d._J._-_Rehoboam%27s_Insolence.jpg',
+    title: 'Rehoboam\'s Insolence',
+    artist: 'Hans Holbein',
+    year: '1530'
+  },
+
+  // 갈멜산 대결
+  carmel: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Elijah_Carmel.jpg/400px-Elijah_Carmel.jpg',
+    title: 'Elijah on Mount Carmel',
+    artist: 'Domenico Fetti',
+    year: '1622'
+  },
+
+  // 엘리야 승천
+  elijah_taken: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Giuseppe_Angeli_-_The_Prophet_Elijah_Ascending_to_Heaven_on_a_Chariot_of_Fire.jpg/400px-Giuseppe_Angeli_-_The_Prophet_Elijah_Ascending_to_Heaven_on_a_Chariot_of_Fire.jpg',
+    title: 'Elijah Ascending to Heaven',
+    artist: 'Giuseppe Angeli',
+    year: '1740'
+  },
+
+  // 예루살렘 함락
+  fall_of_jerusalem: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Destruction_of_the_Temple_of_Jerusalem.jpg/400px-Destruction_of_the_Temple_of_Jerusalem.jpg',
+    title: 'Destruction of the Temple',
+    artist: 'Francesco Hayez',
+    year: '1867'
+  },
+
+  // 사자굴 (ID 맞춤)
+  lions_den: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Peter_Paul_Rubens_-_Daniel_in_the_Lion%27s_Den_-_Google_Art_Project.jpg/400px-Peter_Paul_Rubens_-_Daniel_in_the_Lion%27s_Den_-_Google_Art_Project.jpg',
+    title: 'Daniel in the Lion\'s Den',
+    artist: 'Peter Paul Rubens',
+    year: '1615'
+  },
+
+  // 불 가운데 세 친구
+  fiery_furnace: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Joseph_Martin_Kronheim_-_Shadrach%2C_Meshach%2C_and_Abednego.jpg/400px-Joseph_Martin_Kronheim_-_Shadrach%2C_Meshach%2C_and_Abednego.jpg',
+    title: 'Three Young Men in Fiery Furnace',
+    artist: 'Joseph Martin Kronheim',
+    year: '1880'
+  },
+
+  // 에스더의 구원
+  esther_saves: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Artemisia_Gentileschi_-_Esther_before_Ahasuerus.JPG/400px-Artemisia_Gentileschi_-_Esther_before_Ahasuerus.JPG',
+    title: 'Esther before Ahasuerus',
+    artist: 'Artemisia Gentileschi',
+    year: '1628'
+  },
+
+  // 성전 재건
+  temple_rebuilt: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Construction_of_the_Second_Temple.jpg/400px-Construction_of_the_Second_Temple.jpg',
+    title: 'Second Temple Construction',
+    artist: 'James Tissot',
+    year: '1902'
+  },
+
+  // 성벽 재건
+  walls_rebuilt: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Nehemiah_views_the_ruins_of_Jerusalem%27s_walls.jpg/400px-Nehemiah_views_the_ruins_of_Jerusalem%27s_walls.jpg',
+    title: 'Nehemiah Rebuilds the Walls',
+    artist: 'Gustave Doré',
+    year: '1866'
+  },
+
+  // 풍랑을 잠잠케 하심
+  peace_storm: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Rembrandt_-_The_Storm_on_the_Sea_of_Galilee.jpg/400px-Rembrandt_-_The_Storm_on_the_Sea_of_Galilee.jpg',
+    title: 'Christ in the Storm on the Sea of Galilee',
+    artist: 'Rembrandt',
+    year: '1633'
+  },
+
+  // 오병이어
+  feeding_5000: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Bernardo_Strozzi_-_Feeding_the_Five_Thousand.jpg/400px-Bernardo_Strozzi_-_Feeding_the_Five_Thousand.jpg',
+    title: 'Feeding the Five Thousand',
+    artist: 'Bernardo Strozzi',
+    year: '1630'
+  },
+
+  // 나사로 살리심
+  lazarus_raised: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Duccio_-_The_Raising_of_Lazarus_-_Google_Art_Project.jpg/400px-Duccio_-_The_Raising_of_Lazarus_-_Google_Art_Project.jpg',
+    title: 'Raising of Lazarus',
+    artist: 'Duccio',
+    year: '1311'
+  },
+
+  // 예루살렘 입성
+  triumphal_entry: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Pietro_Lorenzetti_-_Entry_of_Christ_into_Jerusalem_-_WGA13538.jpg/400px-Pietro_Lorenzetti_-_Entry_of_Christ_into_Jerusalem_-_WGA13538.jpg',
+    title: 'Entry into Jerusalem',
+    artist: 'Pietro Lorenzetti',
+    year: '1320'
+  },
+
+  // 스데반 순교
+  stephen_martyrdom: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Rembrandt_-_The_Stoning_of_Saint_Stephen_-_Google_Art_Project.jpg/400px-Rembrandt_-_The_Stoning_of_Saint_Stephen_-_Google_Art_Project.jpg',
+    title: 'Stoning of Saint Stephen',
+    artist: 'Rembrandt',
+    year: '1625'
+  },
+
+  // 바울 난파
+  paul_shipwreck: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Gustave_Dore_-_Paul%27s_Shipwreck.jpg/400px-Gustave_Dore_-_Paul%27s_Shipwreck.jpg',
+    title: 'Paul\'s Shipwreck',
+    artist: 'Gustave Doré',
+    year: '1866'
+  },
+
+  // 새 예루살렘
+  new_jerusalem: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Holy_City.jpg/400px-Holy_City.jpg',
+    title: 'The New Jerusalem',
+    artist: 'Unknown',
+    year: '1800s'
+  },
+
+  // ==================== 유적지/역사적 장소 사진 ====================
+
+  // 시나이산 (역사적 장소)
+  mount_sinai: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Mount_Sinai_Egypt.jpg/400px-Mount_Sinai_Egypt.jpg',
+    title: 'Mount Sinai',
+    artist: 'Photograph',
+    year: 'Modern',
+    type: 'location'
+  },
+
+  // 감람산/올리브산
+  mount_olives: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Jerusalem_Mount_of_Olives_1.jpg/400px-Jerusalem_Mount_of_Olives_1.jpg',
+    title: 'Mount of Olives, Jerusalem',
+    artist: 'Photograph',
+    year: 'Modern',
+    type: 'location'
+  },
+
+  // 갈릴리 호수
+  sea_galilee: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Sea_of_Galilee_-_Pair_of_Tiberias.jpg/400px-Sea_of_Galilee_-_Pair_of_Tiberias.jpg',
+    title: 'Sea of Galilee',
+    artist: 'Photograph',
+    year: 'Modern',
+    type: 'location'
+  },
+
+  // 베들레헴 성탄교회
+  bethlehem_church: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Church_of_Nativity_2008.jpg/400px-Church_of_Nativity_2008.jpg',
+    title: 'Church of the Nativity, Bethlehem',
+    artist: 'Photograph',
+    year: 'Modern',
+    type: 'location'
+  },
+
+  // 골고다/해골바위
+  golgotha: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Jerusalem_Holy_Sepulchre_BW_19.JPG/400px-Jerusalem_Holy_Sepulchre_BW_19.JPG',
+    title: 'Church of the Holy Sepulchre',
+    artist: 'Photograph',
+    year: 'Modern',
+    type: 'location'
+  },
+
+  // 여리고 유적
+  jericho_ruins: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Jericho_-_Tell_es-Sultan.jpg/400px-Jericho_-_Tell_es-Sultan.jpg',
+    title: 'Tell es-Sultan (Ancient Jericho)',
+    artist: 'Photograph',
+    year: 'Modern',
+    type: 'location'
+  },
+
+  // 바빌론 유적
+  babylon_ruins: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Babylon_Ruins.jpg/400px-Babylon_Ruins.jpg',
+    title: 'Ruins of Babylon',
+    artist: 'Photograph',
+    year: 'Modern',
+    type: 'location'
   }
 };

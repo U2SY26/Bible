@@ -614,7 +614,7 @@ export default function App() {
     setBibleVersePopup({ show: true, reference: verseRef, text: '', loading: true });
 
     // 구절 파싱 (예: "창세기 1:1")
-    const parts = verseRef.match(/(\S+)\s(\d+):(\d+)/);
+    const parts = verseRef.match(/(\S+)\s(\d+):(\d+)(?:-\d+)?/);
     if (!parts) {
       setBibleVersePopup({ show: true, reference: verseRef, text: '잘못된 구절 형식입니다.', loading: false });
       return;
@@ -1017,8 +1017,26 @@ export default function App() {
 
       // 클릭으로 판정 (이동량 적고 시간 짧음)
       if (totalMove < 15 && duration < 400) {
-        setSelectedCharacter(dragTarget);
-        // 모바일에서는 하단 패널이 자동으로 표시됨
+        // 토글: 같은 인물 클릭시 선택 해제
+        if (selectedCharacter === dragTarget) {
+          setSelectedCharacter(null);
+        } else {
+          setSelectedCharacter(dragTarget);
+        }
+      }
+    } else if (isDragging && dragStartPos.current) {
+      // 빈 공간 클릭시 선택 해제
+      const clientX = e.changedTouches ? e.changedTouches[0]?.clientX : e.clientX;
+      const clientY = e.changedTouches ? e.changedTouches[0]?.clientY : e.clientY;
+      if (clientX !== undefined && clientY !== undefined && lastMouse) {
+        const totalMove = Math.abs(clientX - lastMouse.x) + Math.abs(clientY - lastMouse.y);
+        if (totalMove < 10) {
+          // 팝업이 없고 드래그가 아닌 클릭이면 선택 해제
+          if (!showPopup) {
+            setSelectedCharacter(null);
+            setSelectedEvent(null);
+          }
+        }
       }
     }
 
@@ -1026,7 +1044,7 @@ export default function App() {
     setIsDragging(false);
     dragStartPos.current = null;
     dragStartTime.current = null;
-  }, [dragTarget]);
+  }, [dragTarget, isDragging, selectedCharacter, lastMouse, showPopup]);
 
   const handleWheel = useCallback((e) => {
     e.preventDefault();
@@ -1035,14 +1053,36 @@ export default function App() {
   }, []);
 
   const handleCharacterClick = useCallback((characterId) => {
-    setSelectedCharacter(characterId);
+    // 토글: 같은 인물 클릭시 선택 해제
+    if (selectedCharacter === characterId) {
+      setSelectedCharacter(null);
+    } else {
+      setSelectedCharacter(characterId);
+    }
     // 모바일에서는 하단 패널이 자동으로 표시됨
-  }, []);
+  }, [selectedCharacter]);
 
   const handleEventClick = useCallback((eventId) => {
     setSelectedEvent(eventId);
     setShowPopup('event');
   }, []);
+
+  // ESC 키로 선택 해제 (PC)
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        if (showPopup) {
+          setShowPopup(null);
+        } else if (selectedCharacter) {
+          setSelectedCharacter(null);
+        } else if (selectedEvent) {
+          setSelectedEvent(null);
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [showPopup, selectedCharacter, selectedEvent]);
 
   // MBTI 퀴즈 처리
   const handleMBTIQuizAnswer = (answer) => {
@@ -1973,11 +2013,11 @@ export default function App() {
       {/* 이벤트 팝업 - Portal로 분리 */}
       {showPopup === 'event' && selectedEventData && createPortal(
         <>
-          <div style={styles.overlay} onClick={() => { setShowPopup(null); setSelectedEvent(null); }} />
+          <div style={styles.overlay} onClick={() => setShowPopup(null)} />
           <div style={styles.popup}>
             <button
               style={{ position: 'absolute', top: 14, right: 14, ...styles.button, padding: '8px 12px' }}
-              onClick={() => { setShowPopup(null); setSelectedEvent(null); }}
+              onClick={() => setShowPopup(null)}
             >✕</button>
             <EventDetail
               event={selectedEventData}
