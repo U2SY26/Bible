@@ -470,6 +470,16 @@ const calculateMBTISimilarity = (mbti1, mbti2) => {
   return score;
 };
 
+// ==================== 성능 최적화 설정 ====================
+const PERFORMANCE_CONFIG = {
+  MAX_VISIBLE_NODES: 150,           // 최대 표시 노드 수
+  PHYSICS_SAMPLE_SIZE: 80,          // 물리 계산 샘플 크기
+  ANIMATION_THROTTLE_MS: 50,        // 애니메이션 간격 (모바일)
+  MOBILE_MAX_NODES: 100,            // 모바일 최대 노드
+  MIN_IMPORTANCE_FOR_LABEL: 3,      // 라벨 표시 최소 중요도
+  PHYSICS_STABILIZE_AFTER: 3000,    // 물리 안정화 시간 (ms)
+};
+
 // ==================== 메인 App 컴포넌트 ====================
 export default function App() {
   const isMobile = useIsMobile();
@@ -495,6 +505,8 @@ export default function App() {
   const [userMBTI, setUserMBTI] = useState('');
   const [mbtiQuizStep, setMbtiQuizStep] = useState(0);
   const [mbtiAnswers, setMbtiAnswers] = useState(['', '', '', '']);
+  const [physicsEnabled, setPhysicsEnabled] = useState(true);
+  const [viewportSize, setViewportSize] = useState({ width: 0, height: 0 });
 
   const svgRef = useRef(null);
   const containerRef = useRef(null);
@@ -503,15 +515,42 @@ export default function App() {
   const dragStartPos = useRef(null);
   const dragStartTime = useRef(null);
 
-  // 펄스 애니메이션
+  // 펄스 애니메이션 (throttled for mobile)
   useEffect(() => {
-    const animate = () => {
-      setAnimationTime(t => (t + 0.02) % (Math.PI * 200));
+    let lastTime = 0;
+    const throttleMs = isMobile ? PERFORMANCE_CONFIG.ANIMATION_THROTTLE_MS : 16;
+
+    const animate = (currentTime) => {
+      if (currentTime - lastTime >= throttleMs) {
+        setAnimationTime(t => (t + 0.02) % (Math.PI * 200));
+        lastTime = currentTime;
+      }
       pulseRef.current = requestAnimationFrame(animate);
     };
     pulseRef.current = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(pulseRef.current);
+  }, [isMobile]);
+
+  // 뷰포트 크기 추적
+  useEffect(() => {
+    if (containerRef.current) {
+      const updateSize = () => {
+        const { width, height } = containerRef.current.getBoundingClientRect();
+        setViewportSize({ width, height });
+      };
+      updateSize();
+      window.addEventListener('resize', updateSize);
+      return () => window.removeEventListener('resize', updateSize);
+    }
   }, []);
+
+  // 물리 시뮬레이션 자동 중지 (3초 후 안정화)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setPhysicsEnabled(false);
+    }, PERFORMANCE_CONFIG.PHYSICS_STABILIZE_AFTER);
+    return () => clearTimeout(timer);
+  }, [positions]);
 
   const filteredCharacters = useMemo(() => {
     let chars = allCharacters;
@@ -552,6 +591,52 @@ export default function App() {
     );
   }, [highlightedIds]);
 
+  // 뷰포트 기반 노드 필터링 (성능 최적화)
+  const visibleNodes = useMemo(() => {
+    const maxNodes = isMobile ? PERFORMANCE_CONFIG.MOBILE_MAX_NODES : PERFORMANCE_CONFIG.MAX_VISIBLE_NODES;
+
+    // 선택된 인물과 연결된 노드 우선
+    const priorityNodes = new Set();
+    if (selectedCharacter) {
+      priorityNodes.add(selectedCharacter);
+      getConnectedCharacters(selectedCharacter).forEach(id => priorityNodes.add(id));
+    }
+
+    // 중요도 순으로 정렬
+    const sortedChars = [...filteredCharacters].sort((a, b) => {
+      const aPriority = priorityNodes.has(a.id) ? 1000 : 0;
+      const bPriority = priorityNodes.has(b.id) ? 1000 : 0;
+      return (bPriority + b.importance) - (aPriority + a.importance);
+    });
+
+    // 뷰포트 내 노드 필터링
+    const inViewport = sortedChars.filter(char => {
+      if (!positions[char.id] || !viewportSize.width) return true;
+      const pos = positions[char.id];
+      const screenX = pos.x * zoom + pan.x;
+      const screenY = pos.y * zoom + pan.y;
+      const margin = 200;
+      return screenX > -margin && screenX < viewportSize.width + margin &&
+             screenY > -margin && screenY < viewportSize.height + margin;
+    });
+
+    // 우선순위 노드는 항상 포함
+    const priorityList = inViewport.filter(c => priorityNodes.has(c.id));
+    const otherList = inViewport.filter(c => !priorityNodes.has(c.id));
+
+    return [...priorityList, ...otherList].slice(0, maxNodes);
+  }, [filteredCharacters, selectedCharacter, positions, zoom, pan, viewportSize, isMobile]);
+
+  // 보이는 노드 ID Set
+  const visibleNodeIds = useMemo(() => new Set(visibleNodes.map(c => c.id)), [visibleNodes]);
+
+  // 보이는 관계만 필터링
+  const visibleRelationshipsFiltered = useMemo(() => {
+    return visibleRelationships.filter(rel =>
+      visibleNodeIds.has(rel.source) && visibleNodeIds.has(rel.target)
+    );
+  }, [visibleRelationships, visibleNodeIds]);
+
   // MBTI 매칭 결과
   const mbtiMatches = useMemo(() => {
     if (!userMBTI || userMBTI.length !== 4) return [];
@@ -575,43 +660,62 @@ export default function App() {
     }
   }, []);
 
-  // 물리 시뮬레이션
+  // 최적화된 물리 시뮬레이션 (샘플링 + 조기 중지)
   useEffect(() => {
-    if (Object.keys(positions).length === 0) return;
+    if (Object.keys(positions).length === 0 || !physicsEnabled) return;
+
+    const sampleSize = PERFORMANCE_CONFIG.PHYSICS_SAMPLE_SIZE;
+    let frameCount = 0;
 
     const simulate = () => {
+      frameCount++;
+
+      // 모바일에서는 2프레임마다 실행
+      if (isMobile && frameCount % 2 !== 0) {
+        animationRef.current = requestAnimationFrame(simulate);
+        return;
+      }
+
       setPositions(prev => {
         const newPos = { ...prev };
+        const charIds = Object.keys(newPos);
 
-        allCharacters.forEach(char1 => {
-          if (!newPos[char1.id]) return;
+        // 샘플링: 모든 노드 대신 일부만 계산
+        const sampleIds = charIds.length > sampleSize
+          ? charIds.sort(() => Math.random() - 0.5).slice(0, sampleSize)
+          : charIds;
 
-          allCharacters.forEach(char2 => {
-            if (char1.id === char2.id || !newPos[char2.id]) return;
+        // 반발력 계산 (샘플링된 노드만)
+        sampleIds.forEach(id1 => {
+          if (!newPos[id1]) return;
 
-            const dx = newPos[char1.id].x - newPos[char2.id].x;
-            const dy = newPos[char1.id].y - newPos[char2.id].y;
+          sampleIds.forEach(id2 => {
+            if (id1 === id2 || !newPos[id2]) return;
+
+            const dx = newPos[id1].x - newPos[id2].x;
+            const dy = newPos[id1].y - newPos[id2].y;
             const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-            const minDist = 120;
+            const minDist = 100;
 
             if (dist < minDist) {
-              const force = (minDist - dist) / dist * 0.5;
-              newPos[char1.id].vx += dx * force;
-              newPos[char1.id].vy += dy * force;
+              const force = (minDist - dist) / dist * 0.3;
+              newPos[id1].vx += dx * force;
+              newPos[id1].vy += dy * force;
             }
           });
         });
 
-        relationships.forEach(rel => {
+        // 연결된 노드 끌어당김 (보이는 관계만)
+        visibleRelationshipsFiltered.slice(0, 200).forEach(rel => {
           if (!newPos[rel.source] || !newPos[rel.target]) return;
 
           const dx = newPos[rel.target].x - newPos[rel.source].x;
           const dy = newPos[rel.target].y - newPos[rel.source].y;
           const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-          const idealDist = 180;
+          const idealDist = 150;
 
           if (dist > idealDist) {
-            const force = (dist - idealDist) / dist * 0.01;
+            const force = (dist - idealDist) / dist * 0.008;
             newPos[rel.source].vx += dx * force;
             newPos[rel.source].vy += dy * force;
             newPos[rel.target].vx -= dx * force;
@@ -619,13 +723,14 @@ export default function App() {
           }
         });
 
-        Object.keys(newPos).forEach(id => {
+        // 위치 업데이트 (감쇠 적용)
+        charIds.forEach(id => {
           if (dragTarget === id) return;
 
           newPos[id].x += newPos[id].vx;
           newPos[id].y += newPos[id].vy;
-          newPos[id].vx *= 0.9;
-          newPos[id].vy *= 0.9;
+          newPos[id].vx *= 0.85;
+          newPos[id].vy *= 0.85;
         });
 
         return newPos;
@@ -641,7 +746,7 @@ export default function App() {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [positions, dragTarget]);
+  }, [positions, dragTarget, physicsEnabled, isMobile, visibleRelationshipsFiltered]);
 
   const handlePointerDown = useCallback((e, characterId = null) => {
     e.preventDefault();
@@ -652,6 +757,8 @@ export default function App() {
       setDragTarget(characterId);
       dragStartPos.current = { x: clientX, y: clientY };
       dragStartTime.current = Date.now();
+      // 노드 드래그 시 물리 재활성화
+      setPhysicsEnabled(true);
     } else {
       setIsDragging(true);
     }
@@ -776,13 +883,14 @@ export default function App() {
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <span style={{
-              fontSize: '0.8rem',
-              padding: '4px 12px',
+              fontSize: '0.75rem',
+              padding: '4px 10px',
               background: 'linear-gradient(135deg, rgba(102,126,234,0.25), rgba(118,75,162,0.25))',
               borderRadius: '12px',
               border: '1px solid rgba(102,126,234,0.35)'
             }}>
-              {filteredCharacters.length}명 / {allCharacters.length}명
+              {visibleNodes.length} / {allCharacters.length}명
+              {!physicsEnabled && <span style={{ marginLeft: '4px', opacity: 0.6 }}>⚡</span>}
             </span>
             <button
               style={{
@@ -1011,8 +1119,8 @@ export default function App() {
             </defs>
 
             <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`}>
-              {/* 관계선 */}
-              {visibleRelationships.map((rel, index) => {
+              {/* 관계선 (최적화: 보이는 것만 렌더링) */}
+              {visibleRelationshipsFiltered.map((rel, index) => {
                 const sourcePos = positions[rel.source];
                 const targetPos = positions[rel.target];
                 if (!sourcePos || !targetPos) return null;
@@ -1020,17 +1128,13 @@ export default function App() {
                 const isActive = selectedCharacter === rel.source || selectedCharacter === rel.target;
                 const relColor = relationshipColors[rel.type]?.color || '#555';
                 const bothHighlighted = highlightedIds.has(rel.source) && highlightedIds.has(rel.target);
-                const opacity = isActive ? 0.9 : (bothHighlighted ? 0.3 : 0.05);
+                const opacity = isActive ? 0.9 : (bothHighlighted ? 0.3 : 0.08);
 
-                // 데이터 흐름 애니메이션 계산
-                const dx = targetPos.x - sourcePos.x;
-                const dy = targetPos.y - sourcePos.y;
-                const length = Math.sqrt(dx * dx + dy * dy);
-                const dashOffset = isActive ? (animationTime * 50) % length : 0;
+                // 데이터 흐름 애니메이션 (활성화된 관계만 - 모바일에서는 간소화)
+                const showFlowAnimation = isActive && !isMobile;
 
                 return (
                   <g key={`rel-${index}`}>
-                    {/* 기본 라인 */}
                     <line
                       x1={sourcePos.x}
                       y1={sourcePos.y}
@@ -1041,9 +1145,7 @@ export default function App() {
                       opacity={opacity}
                       strokeLinecap="round"
                     />
-
-                    {/* 데이터 흐름 애니메이션 (활성화된 관계만) */}
-                    {isActive && (
+                    {showFlowAnimation && (
                       <line
                         x1={sourcePos.x}
                         y1={sourcePos.y}
@@ -1052,7 +1154,7 @@ export default function App() {
                         stroke="rgba(255,215,0,0.6)"
                         strokeWidth={3}
                         strokeDasharray="8 16"
-                        strokeDashoffset={-dashOffset}
+                        strokeDashoffset={-(animationTime * 50) % 200}
                         opacity={0.8}
                         strokeLinecap="round"
                         markerEnd="url(#arrowFlow)"
@@ -1062,8 +1164,8 @@ export default function App() {
                 );
               })}
 
-              {/* 노드 */}
-              {allCharacters.map(char => {
+              {/* 노드 (최적화: 보이는 것만 렌더링) */}
+              {visibleNodes.map(char => {
                 const pos = positions[char.id];
                 if (!pos) return null;
 
@@ -1072,10 +1174,14 @@ export default function App() {
                 const isHovered = hoveredNode === char.id;
                 const nodeColor = getNodeColor(char, isHighlighted, isSelected);
                 const size = getNodeSize(char);
-                const pulseScale = isSelected ? 1 + Math.sin(animationTime * 3) * 0.12 : 1;
+                // 펄스 애니메이션은 선택된 노드에만 (모바일에서는 간소화)
+                const pulseScale = isSelected && !isMobile ? 1 + Math.sin(animationTime * 3) * 0.12 : 1;
                 const isDraggingThis = dragTarget === char.id;
-                const nodeOpacity = (isHighlighted || isSelected) ? 1 : 0.2;
-                const useRainbow = nodeColor.isRainbow && (isHighlighted || isSelected);
+                const nodeOpacity = (isHighlighted || isSelected) ? 1 : 0.25;
+                const useRainbow = nodeColor.isRainbow && (isHighlighted || isSelected) && !isMobile;
+
+                // 라벨 표시 조건: 중요도가 높거나 선택/하이라이트된 경우
+                const showLabel = isSelected || isHovered || char.importance >= PERFORMANCE_CONFIG.MIN_IMPORTANCE_FOR_LABEL || zoom > 1;
 
                 return (
                   <g
@@ -1091,12 +1197,12 @@ export default function App() {
                     onMouseLeave={() => setHoveredNode(null)}
                     opacity={nodeOpacity}
                   >
-                    {/* 선택/호버 글로우 */}
-                    {(isSelected || isHovered) && isHighlighted && (
+                    {/* 선택/호버 글로우 (데스크탑만) */}
+                    {(isSelected || isHovered) && isHighlighted && !isMobile && (
                       <circle r={size + 6} fill={useRainbow ? 'url(#rainbowAnimated)' : nodeColor.glow} opacity={0.6} filter="url(#glow)" />
                     )}
 
-                    {/* 레인보우 링 (주요 인물) */}
+                    {/* 레인보우 링 (주요 인물, 데스크탑만) */}
                     {useRainbow && (
                       <circle
                         r={size + 3}
@@ -1115,17 +1221,19 @@ export default function App() {
                       strokeWidth={isSelected ? 3 : (useRainbow ? 2 : (isHovered ? 2 : 1))}
                     />
 
-                    {/* 이름 라벨 */}
-                    <text
-                      y={size + 12}
-                      textAnchor="middle"
-                      fill={isHighlighted || isSelected ? '#fff' : '#555'}
-                      fontSize={isSelected ? 11 : 9}
-                      fontWeight={isSelected ? '700' : '400'}
-                      style={{ pointerEvents: 'none' }}
-                    >
-                      {lang === 'ko' ? char.name_ko : char.name_en}
-                    </text>
+                    {/* 이름 라벨 (조건부 렌더링) */}
+                    {showLabel && (
+                      <text
+                        y={size + 12}
+                        textAnchor="middle"
+                        fill={isHighlighted || isSelected ? '#fff' : '#666'}
+                        fontSize={isSelected ? 11 : 9}
+                        fontWeight={isSelected ? '700' : '400'}
+                        style={{ pointerEvents: 'none' }}
+                      >
+                        {lang === 'ko' ? char.name_ko : char.name_en}
+                      </text>
+                    )}
                   </g>
                 );
               })}
