@@ -458,7 +458,15 @@ const getConnectedCharacters = (characterId) => {
     if (rel.source === characterId) connected.add(rel.target);
     if (rel.target === characterId) connected.add(rel.source);
   });
-  return connected;
+  // 사건을 통해 연결된 인물도 추가
+  events.forEach(event => {
+    if (event.participants && event.participants.includes(characterId)) {
+      event.participants.forEach(p => {
+        if (p !== characterId) connected.add(p);
+      });
+    }
+  });
+  return Array.from(connected);
 };
 
 // 삼위일체 중앙 삼각형 + 넓게 펼쳐진 초기 배치
@@ -1049,11 +1057,11 @@ export default function App() {
             perpY = vx / (speed + 0.01) * oscillation;
           }
 
-          if (Math.abs(vx) > 0.01 || Math.abs(vy) > 0.01) {
+          if (Math.abs(vx) > 0.005 || Math.abs(vy) > 0.005) {
             hasMovement = true;
 
-            // 감쇠
-            const damping = 0.9;
+            // 감쇠 (탄성 느낌)
+            const damping = 0.92;
 
             newPos[id] = {
               ...node,
@@ -1062,7 +1070,7 @@ export default function App() {
               vx: vx * damping,
               vy: vy * damping
             };
-          } else {
+          } else if (Math.abs(vx) > 0 || Math.abs(vy) > 0) {
             // 완전히 멈춤
             newPos[id] = { ...node, vx: 0, vy: 0 };
           }
@@ -1170,26 +1178,26 @@ export default function App() {
         connectedIds.forEach((connId, index) => {
           if (newPos[connId]) {
             const connNode = newPos[connId];
-            const dx = draggedPos.x - connNode.x;
-            const dy = draggedPos.y - connNode.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
+            const cdx = draggedPos.x - connNode.x;
+            const cdy = draggedPos.y - connNode.y;
+            const dist = Math.sqrt(cdx * cdx + cdy * cdy) || 1;
 
-            // 거리에 따른 스프링 강도 (가까울수록 강하게)
-            const idealDist = 120 + index * 20; // 이상적인 거리
-            const springForce = (dist - idealDist) * 0.008;
+            // 거리에 따른 스프링 강도 (멀수록 강하게 당김)
+            const idealDist = 100 + index * 15;
+            const springForce = Math.max(0, (dist - idealDist) * 0.05);
 
             // 탄성 + 출렁임 효과
             const wobblePhase = time * 8 + index * 0.7;
-            const wobbleX = Math.sin(wobblePhase) * 0.3;
-            const wobbleY = Math.cos(wobblePhase * 1.3) * 0.25;
+            const wobbleX = Math.sin(wobblePhase) * 0.5;
+            const wobbleY = Math.cos(wobblePhase * 1.3) * 0.4;
 
-            // 드래그 방향에 따른 추가 힘 (관성)
-            const dragInertia = 0.12 + Math.sin(time * 5 + index) * 0.05;
+            // 드래그 방향에 따른 추가 힘 (관성) - 강하게
+            const dragInertia = 0.35 + Math.sin(time * 5 + index) * 0.1;
 
             newPos[connId] = {
               ...connNode,
-              vx: (connNode.vx || 0) + (dx / dist) * springForce + moveDx * dragInertia + wobbleX,
-              vy: (connNode.vy || 0) + (dy / dist) * springForce + moveDy * dragInertia + wobbleY
+              vx: (connNode.vx || 0) + (cdx / dist) * springForce + moveDx * dragInertia + wobbleX,
+              vy: (connNode.vy || 0) + (cdy / dist) * springForce + moveDy * dragInertia + wobbleY
             };
           }
         });
