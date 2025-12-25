@@ -1061,7 +1061,10 @@ export default function App() {
   };
 
   const getNodeSize = (character) => {
-    const baseSize = character.importance * 1.3 + 5;
+    // 중요도에 따른 크기 차이를 더 크게 (importance 1: 8, importance 10: 30)
+    const baseSize = character.importance >= 8
+      ? character.importance * 2.5 + 5  // 중요 인물은 더 크게
+      : character.importance * 1.5 + 6;
     return baseSize * nodeScale;
   };
 
@@ -1313,29 +1316,29 @@ export default function App() {
           </div>
         )}
 
-        {/* 빠른 필터 버튼 - 가로 스크롤 */}
+        {/* 빠른 필터 + 사건 - 한 줄로 통합 */}
         {showFilters && (
           <div style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '8px',
-            marginTop: '10px',
-            paddingTop: '10px',
+            gap: '6px',
+            marginTop: '8px',
+            paddingTop: '8px',
             borderTop: '1px solid rgba(255,255,255,0.05)',
             overflowX: 'auto',
             whiteSpace: 'nowrap',
-            paddingBottom: '6px',
+            paddingBottom: '4px',
             scrollbarWidth: 'none',
             msOverflowStyle: 'none'
           }}>
-            <span style={{ fontSize: '0.75rem', opacity: 0.5, flexShrink: 0 }}>빠른필터:</span>
+            {/* 빠른 필터 */}
             {QUICK_FILTERS.map(filter => (
               <button
                 key={filter.id}
                 onClick={() => setActiveQuickFilter(activeQuickFilter === filter.id ? null : filter.id)}
                 style={{
-                  padding: '6px 14px',
-                  borderRadius: '16px',
+                  padding: '4px 8px',
+                  borderRadius: '12px',
                   border: activeQuickFilter === filter.id
                     ? '1px solid rgba(255,215,0,0.6)'
                     : '1px solid rgba(102,126,234,0.3)',
@@ -1344,67 +1347,40 @@ export default function App() {
                     : 'rgba(102,126,234,0.1)',
                   color: '#fff',
                   cursor: 'pointer',
-                  fontSize: '0.8rem',
+                  fontSize: '0.7rem',
                   fontWeight: activeQuickFilter === filter.id ? '600' : '400',
                   transition: 'all 0.2s ease',
-                  boxShadow: activeQuickFilter === filter.id
-                    ? '0 2px 12px rgba(255,215,0,0.2)'
-                    : 'none',
                   flexShrink: 0
                 }}
               >
                 {filter.label}
-                {activeQuickFilter === filter.id && (
-                  <span style={{ marginLeft: '6px', opacity: 0.7 }}>✕</span>
-                )}
               </button>
             ))}
-            {activeQuickFilter && (
-              <span style={{ fontSize: '0.75rem', opacity: 0.6, flexShrink: 0 }}>
-                ({filteredCharacters.length}명)
-              </span>
-            )}
-          </div>
-        )}
 
-        {/* 사건 타임라인 - 빠른필터 아래 */}
-        {showFilters && (
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            marginTop: '10px',
-            paddingTop: '10px',
-            borderTop: '1px solid rgba(255,255,255,0.05)',
-            overflowX: 'auto',
-            whiteSpace: 'nowrap',
-            paddingBottom: '6px',
-            scrollbarWidth: 'none',
-            msOverflowStyle: 'none'
-          }}>
-            <span style={{ fontSize: '0.75rem', opacity: 0.5, flexShrink: 0 }}>사건:</span>
+            {/* 구분선 */}
+            <span style={{ opacity: 0.3, flexShrink: 0 }}>|</span>
+
+            {/* 사건 */}
             {eventsByChronology.slice(0, 50).map(event => (
               <div
                 key={event.id}
                 style={{
-                  padding: '6px 12px',
+                  padding: '4px 8px',
                   background: selectedEvent === event.id
                     ? 'linear-gradient(135deg, rgba(255,215,0,0.3), rgba(255,107,107,0.3))'
                     : 'linear-gradient(135deg, rgba(102,126,234,0.15), rgba(118,75,162,0.1))',
-                  borderRadius: '16px',
+                  borderRadius: '12px',
                   cursor: 'pointer',
-                  fontSize: '0.8rem',
+                  fontSize: '0.7rem',
                   border: selectedEvent === event.id
                     ? '1px solid rgba(255,215,0,0.5)'
                     : '1px solid rgba(102,126,234,0.25)',
                   transition: 'all 0.2s ease',
-                  boxShadow: selectedEvent === event.id ? '0 2px 12px rgba(255,215,0,0.2)' : 'none',
                   flexShrink: 0
                 }}
                 onClick={() => handleEventClick(event.id)}
               >
-                <span style={{ marginRight: 4 }}>{event.icon}</span>
-                {lang === 'ko' ? event.name_ko : event.name_en}
+                {event.icon} {lang === 'ko' ? event.name_ko : event.name_en}
               </div>
             ))}
           </div>
@@ -1557,8 +1533,10 @@ export default function App() {
                 const isActive = selectedCharacter === rel.source || selectedCharacter === rel.target;
                 const relColor = relationshipColors[rel.type]?.color || '#666';
                 const bothHighlighted = highlightedIds.has(rel.source) && highlightedIds.has(rel.target);
-                // 모바일에서 관계선 더 선명하게
-                const opacity = isActive ? 1 : (bothHighlighted ? (isMobile ? 0.5 : 0.4) : (isMobile ? 0.15 : 0.1));
+                // 선택된 인물이 있으면 관련 와이어만 보이게 (포커스 모드)
+                const opacity = selectedCharacter
+                  ? (isActive ? 1 : (bothHighlighted ? 0.6 : 0))
+                  : (bothHighlighted ? (isMobile ? 0.5 : 0.4) : (isMobile ? 0.15 : 0.1));
 
                 // 데이터 흐름 애니메이션 (활성화된 관계만 - 모바일에서는 간소화)
                 const showFlowAnimation = isActive && !isMobile;
@@ -1607,7 +1585,10 @@ export default function App() {
                 // 펄스 애니메이션은 선택된 노드에만 (모바일에서는 간소화)
                 const pulseScale = isSelected && !isMobile ? 1 + Math.sin(animationTime * 3) * 0.12 : 1;
                 const isDraggingThis = dragTarget === char.id;
-                const nodeOpacity = (isHighlighted || isSelected) ? 1 : 0.25;
+                // 선택된 인물이 있으면 관련 노드만 보이게 (포커스 모드)
+                const nodeOpacity = selectedCharacter
+                  ? (isHighlighted || isSelected ? 1 : 0)
+                  : (isHighlighted ? 1 : 0.4);
                 const useRainbow = nodeColor.isRainbow && (isHighlighted || isSelected) && !isMobile;
 
                 // 라벨 표시 조건: 중요도가 높거나 선택/하이라이트된 경우 (모바일에서는 더 많이 표시)
