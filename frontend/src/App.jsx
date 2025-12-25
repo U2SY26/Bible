@@ -480,6 +480,57 @@ const PERFORMANCE_CONFIG = {
   PHYSICS_STABILIZE_AFTER: 3000,    // 물리 안정화 시간 (ms)
 };
 
+// ==================== 빠른 필터 카테고리 ====================
+const QUICK_FILTERS = [
+  { id: 'patriarch', label: '족장', keywords: ['족장', 'patriarch', '아브라함', '이삭', '야곱'] },
+  { id: 'prophet', label: '선지자', keywords: ['선지자', 'prophet', '예언자'] },
+  { id: 'king', label: '왕', keywords: ['왕', 'king', '다윗', '솔로몬'] },
+  { id: 'apostle', label: '사도', keywords: ['사도', 'apostle', '제자'] },
+  { id: 'woman', label: '여성', keywords: ['여성', '여인', 'woman', '어머니'] },
+  { id: 'angel', label: '천사', keywords: ['천사', 'angel', '미가엘', '가브리엘'] },
+];
+
+// ==================== 검색 유틸리티 ====================
+const RECENT_SEARCH_KEY = 'bible-graph-recent-searches';
+const MAX_RECENT_SEARCHES = 5;
+
+const getRecentSearches = () => {
+  try {
+    const saved = localStorage.getItem(RECENT_SEARCH_KEY);
+    return saved ? JSON.parse(saved) : [];
+  } catch {
+    return [];
+  }
+};
+
+const saveRecentSearch = (query) => {
+  if (!query || query.length < 2) return;
+  try {
+    const recent = getRecentSearches().filter(s => s !== query);
+    recent.unshift(query);
+    localStorage.setItem(RECENT_SEARCH_KEY, JSON.stringify(recent.slice(0, MAX_RECENT_SEARCHES)));
+  } catch {
+    // ignore
+  }
+};
+
+// 다중 필드 검색 (이름, 설명, 라벨)
+const multiFieldSearch = (character, query, lang) => {
+  const q = query.toLowerCase();
+  const name = (lang === 'ko' ? character.name_ko : character.name_en).toLowerCase();
+  const desc = (lang === 'ko' ? character.description_ko : character.description_en || '').toLowerCase();
+  const labels = (character.labels || []).join(' ').toLowerCase();
+
+  // 이름 매칭 (가장 높은 우선순위)
+  if (name.includes(q)) return { match: true, priority: 3 };
+  // 라벨 매칭
+  if (labels.includes(q)) return { match: true, priority: 2 };
+  // 설명 매칭
+  if (desc.includes(q)) return { match: true, priority: 1 };
+
+  return { match: false, priority: 0 };
+};
+
 // ==================== 메인 App 컴포넌트 ====================
 export default function App() {
   const isMobile = useIsMobile();
@@ -507,8 +558,12 @@ export default function App() {
   const [mbtiAnswers, setMbtiAnswers] = useState(['', '', '', '']);
   const [physicsEnabled, setPhysicsEnabled] = useState(true);
   const [viewportSize, setViewportSize] = useState({ width: 0, height: 0 });
+  const [searchFocused, setSearchFocused] = useState(false);
+  const [recentSearches, setRecentSearches] = useState(() => getRecentSearches());
+  const [activeQuickFilter, setActiveQuickFilter] = useState(null);
 
   const svgRef = useRef(null);
+  const searchInputRef = useRef(null);
   const containerRef = useRef(null);
   const animationRef = useRef(null);
   const pulseRef = useRef(null);
@@ -567,12 +622,37 @@ export default function App() {
       chars = chars.filter(c => c.era === selectedEra);
     }
 
-    if (searchQuery) {
-      chars = searchCharacters(searchQuery, lang);
+    // 빠른 필터 적용
+    if (activeQuickFilter) {
+      const filter = QUICK_FILTERS.find(f => f.id === activeQuickFilter);
+      if (filter) {
+        chars = chars.filter(c => {
+          const name = (lang === 'ko' ? c.name_ko : c.name_en).toLowerCase();
+          const labels = (c.labels || []).join(' ').toLowerCase();
+          const desc = (lang === 'ko' ? c.description_ko : c.description_en || '').toLowerCase();
+          const combined = `${name} ${labels} ${desc}`;
+          return filter.keywords.some(kw => combined.includes(kw.toLowerCase()));
+        });
+      }
+    }
+
+    // 다중 필드 검색 적용
+    if (searchQuery && searchQuery.length >= 1) {
+      const results = chars
+        .map(c => ({ char: c, ...multiFieldSearch(c, searchQuery, lang) }))
+        .filter(r => r.match)
+        .sort((a, b) => b.priority - a.priority || b.char.importance - a.char.importance);
+      chars = results.map(r => r.char);
     }
 
     return chars;
-  }, [selectedTestament, selectedBook, selectedEra, searchQuery, lang]);
+  }, [selectedTestament, selectedBook, selectedEra, searchQuery, lang, activeQuickFilter]);
+
+  // 자동완성 결과 (검색어가 있고 포커스 상태일 때만)
+  const autocompleteResults = useMemo(() => {
+    if (!searchQuery || searchQuery.length < 1 || !searchFocused) return [];
+    return filteredCharacters.slice(0, 8);
+  }, [searchQuery, searchFocused, filteredCharacters]);
 
   const highlightedIds = useMemo(() => {
     const ids = new Set(filteredCharacters.map(c => c.id));
@@ -856,8 +936,27 @@ export default function App() {
     setSelectedEra('all');
     setSelectedTestament('both');
     setSearchQuery('');
+    setActiveQuickFilter(null);
     setZoom(isMobile ? 0.5 : 0.7);
     setPan({ x: 0, y: 0 });
+  };
+
+  // 검색 제출 핸들러
+  const handleSearchSubmit = (query) => {
+    if (query && query.length >= 2) {
+      saveRecentSearch(query);
+      setRecentSearches(getRecentSearches());
+    }
+    setSearchFocused(false);
+  };
+
+  // 자동완성 항목 선택
+  const handleAutocompleteSelect = (charId) => {
+    setSelectedCharacter(charId);
+    setSearchFocused(false);
+    if (isMobile) {
+      setShowPopup('character');
+    }
   };
 
   const getNodeSize = (character) => {
@@ -865,7 +964,7 @@ export default function App() {
     return baseSize * nodeScale;
   };
 
-  const isFiltering = selectedTestament !== 'both' || selectedBook !== 'all' || selectedEra !== 'all' || searchQuery;
+  const isFiltering = selectedTestament !== 'both' || selectedBook !== 'all' || selectedEra !== 'all' || searchQuery || activeQuickFilter;
 
   // 모바일 레이아웃: 필터 접히면 분할 뷰
   const mobileContentStyle = isMobile && !showFilters ? {
@@ -908,13 +1007,136 @@ export default function App() {
 
         {showFilters && (
           <div style={styles.filterSection}>
-            <input
-              type="text"
-              placeholder="인물 검색..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              style={styles.searchInput}
-            />
+            {/* 검색 입력 + 자동완성 드롭다운 */}
+            <div style={{ position: 'relative' }}>
+              <input
+                ref={searchInputRef}
+                type="text"
+                placeholder="인물 검색... (이름/라벨/설명)"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onFocus={() => setSearchFocused(true)}
+                onBlur={() => setTimeout(() => setSearchFocused(false), 200)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleSearchSubmit(searchQuery);
+                  } else if (e.key === 'Escape') {
+                    setSearchFocused(false);
+                  }
+                }}
+                style={{
+                  ...styles.searchInput,
+                  width: isMobile ? '140px' : '200px'
+                }}
+              />
+
+              {/* 자동완성 드롭다운 */}
+              {searchFocused && (autocompleteResults.length > 0 || recentSearches.length > 0) && (
+                <div style={{
+                  position: 'absolute',
+                  top: '100%',
+                  left: 0,
+                  right: 0,
+                  marginTop: '4px',
+                  background: 'linear-gradient(135deg, rgba(20,20,50,0.98), rgba(30,30,60,0.98))',
+                  borderRadius: '12px',
+                  border: '1px solid rgba(102,126,234,0.4)',
+                  boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+                  zIndex: 200,
+                  maxHeight: '300px',
+                  overflowY: 'auto'
+                }}>
+                  {/* 최근 검색 */}
+                  {!searchQuery && recentSearches.length > 0 && (
+                    <div style={{ padding: '8px' }}>
+                      <div style={{ fontSize: '0.7rem', opacity: 0.5, marginBottom: '6px', paddingLeft: '8px' }}>
+                        최근 검색
+                      </div>
+                      {recentSearches.map((recent, i) => (
+                        <div
+                          key={i}
+                          style={{
+                            padding: '8px 12px',
+                            cursor: 'pointer',
+                            borderRadius: '8px',
+                            fontSize: '0.85rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            transition: 'background 0.2s'
+                          }}
+                          onMouseEnter={(e) => e.target.style.background = 'rgba(102,126,234,0.2)'}
+                          onMouseLeave={(e) => e.target.style.background = 'transparent'}
+                          onClick={() => {
+                            setSearchQuery(recent);
+                            handleSearchSubmit(recent);
+                          }}
+                        >
+                          <span style={{ opacity: 0.5 }}>🕐</span>
+                          {recent}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* 자동완성 결과 */}
+                  {autocompleteResults.length > 0 && (
+                    <div style={{ padding: '8px' }}>
+                      {searchQuery && (
+                        <div style={{ fontSize: '0.7rem', opacity: 0.5, marginBottom: '6px', paddingLeft: '8px' }}>
+                          검색 결과
+                        </div>
+                      )}
+                      {autocompleteResults.map((char) => (
+                        <div
+                          key={char.id}
+                          style={{
+                            padding: '10px 12px',
+                            cursor: 'pointer',
+                            borderRadius: '8px',
+                            fontSize: '0.85rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                            transition: 'background 0.2s'
+                          }}
+                          onMouseEnter={(e) => e.target.style.background = 'rgba(102,126,234,0.2)'}
+                          onMouseLeave={(e) => e.target.style.background = 'transparent'}
+                          onClick={() => handleAutocompleteSelect(char.id)}
+                        >
+                          <span style={{
+                            width: '24px',
+                            height: '24px',
+                            borderRadius: '50%',
+                            background: char.testament === 'old' ? 'rgba(74,144,217,0.4)' : 'rgba(224,86,253,0.4)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: '0.75rem',
+                            flexShrink: 0
+                          }}>
+                            {char.testament === 'old' ? '구' : '신'}
+                          </span>
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ fontWeight: '500' }}>
+                              {lang === 'ko' ? char.name_ko : char.name_en}
+                            </div>
+                            {char.labels && char.labels[0] && (
+                              <div style={{ fontSize: '0.7rem', opacity: 0.6, marginTop: '2px' }}>
+                                {char.labels[0]}
+                              </div>
+                            )}
+                          </div>
+                          <span style={{ opacity: 0.4, fontSize: '0.75rem' }}>
+                            ★{char.importance}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
 
             <select value={selectedTestament} onChange={(e) => setSelectedTestament(e.target.value)} style={styles.select}>
               <option value="both">전체</option>
@@ -981,6 +1203,55 @@ export default function App() {
             </button>
 
             <button style={styles.button} onClick={handleReset}>초기화</button>
+          </div>
+        )}
+
+        {/* 빠른 필터 버튼 */}
+        {showFilters && (
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            marginTop: '10px',
+            paddingTop: '10px',
+            borderTop: '1px solid rgba(255,255,255,0.05)',
+            flexWrap: 'wrap'
+          }}>
+            <span style={{ fontSize: '0.75rem', opacity: 0.5, marginRight: '4px' }}>빠른필터:</span>
+            {QUICK_FILTERS.map(filter => (
+              <button
+                key={filter.id}
+                onClick={() => setActiveQuickFilter(activeQuickFilter === filter.id ? null : filter.id)}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: '16px',
+                  border: activeQuickFilter === filter.id
+                    ? '1px solid rgba(255,215,0,0.6)'
+                    : '1px solid rgba(102,126,234,0.3)',
+                  background: activeQuickFilter === filter.id
+                    ? 'linear-gradient(135deg, rgba(255,215,0,0.3), rgba(255,107,107,0.3))'
+                    : 'rgba(102,126,234,0.1)',
+                  color: '#fff',
+                  cursor: 'pointer',
+                  fontSize: '0.8rem',
+                  fontWeight: activeQuickFilter === filter.id ? '600' : '400',
+                  transition: 'all 0.2s ease',
+                  boxShadow: activeQuickFilter === filter.id
+                    ? '0 2px 12px rgba(255,215,0,0.2)'
+                    : 'none'
+                }}
+              >
+                {filter.label}
+                {activeQuickFilter === filter.id && (
+                  <span style={{ marginLeft: '6px', opacity: 0.7 }}>✕</span>
+                )}
+              </button>
+            ))}
+            {activeQuickFilter && (
+              <span style={{ fontSize: '0.75rem', opacity: 0.6, marginLeft: '8px' }}>
+                ({filteredCharacters.length}명)
+              </span>
+            )}
           </div>
         )}
 
