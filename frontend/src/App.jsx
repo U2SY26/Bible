@@ -2264,26 +2264,30 @@ function EventDetail({ event, lang, eras, onCharacterSelect, artwork }) {
         {lang === 'ko' ? event.description_ko : event.description_en}
       </p>
 
-      <div style={styles.card}>
-        <h4 style={{ marginBottom: 12, fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span>📜</span> 성경 구절
-        </h4>
-        <p style={{ color: '#ffd700', marginBottom: 8, fontSize: '0.9rem', fontWeight: '500' }}>
-          {event.verses.join(', ')}
-        </p>
-        <p style={{
-          fontStyle: 'italic',
-          opacity: 0.85,
-          fontSize: '0.9rem',
-          lineHeight: 1.7,
-          padding: '12px',
-          background: 'rgba(0,0,0,0.3)',
-          borderRadius: 10,
-          borderLeft: '3px solid #ffd700'
-        }}>
-          "{lang === 'ko' ? event.verse_text_ko : event.verse_text_en}"
-        </p>
-      </div>
+      {event.verses && event.verses.length > 0 && (
+        <div style={styles.card}>
+          <h4 style={{ marginBottom: 12, fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span>📜</span> 성경 구절
+          </h4>
+          <p style={{ color: '#ffd700', marginBottom: 8, fontSize: '0.9rem', fontWeight: '500' }}>
+            {event.verses.join(', ')}
+          </p>
+          {(event.verse_text_ko || event.verse_text_en) && (
+            <p style={{
+              fontStyle: 'italic',
+              opacity: 0.85,
+              fontSize: '0.9rem',
+              lineHeight: 1.7,
+              padding: '12px',
+              background: 'rgba(0,0,0,0.3)',
+              borderRadius: 10,
+              borderLeft: '3px solid #ffd700'
+            }}>
+              "{lang === 'ko' ? event.verse_text_ko : event.verse_text_en}"
+            </p>
+          )}
+        </div>
+      )}
 
       {event.commentary_ko && (
         <div style={styles.card}>
@@ -2296,30 +2300,34 @@ function EventDetail({ event, lang, eras, onCharacterSelect, artwork }) {
         </div>
       )}
 
-      <div style={styles.card}>
-        <h4 style={{ marginBottom: 12, fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span>👥</span> 관련 인물
-        </h4>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-          {event.characters.map(charId => {
-            const char = getCharacterById(charId);
-            if (!char) return null;
-            return (
-              <button
-                key={charId}
-                style={{ ...styles.button, fontSize: '0.85rem', padding: '8px 14px' }}
-                onClick={() => onCharacterSelect(charId)}
-              >
-                {lang === 'ko' ? char.name_ko : char.name_en}
-              </button>
-            );
-          })}
+      {event.characters && event.characters.length > 0 && (
+        <div style={styles.card}>
+          <h4 style={{ marginBottom: 12, fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span>👥</span> 관련 인물
+          </h4>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+            {event.characters.map(charId => {
+              const char = getCharacterById(charId);
+              if (!char) return null;
+              return (
+                <button
+                  key={charId}
+                  style={{ ...styles.button, fontSize: '0.85rem', padding: '8px 14px' }}
+                  onClick={() => onCharacterSelect(charId)}
+                >
+                  {lang === 'ko' ? char.name_ko : char.name_en}
+                </button>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      )}
 
-      <p style={{ opacity: 0.4, fontSize: '0.8rem', marginTop: 14, textAlign: 'center' }}>
-        📍 {event.location}
-      </p>
+      {event.location && (
+        <p style={{ opacity: 0.4, fontSize: '0.8rem', marginTop: 14, textAlign: 'center' }}>
+          📍 {event.location}
+        </p>
+      )}
     </>
   );
 }
