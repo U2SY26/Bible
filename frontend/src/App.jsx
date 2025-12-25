@@ -485,10 +485,10 @@ const calculateMBTISimilarity = (mbti1, mbti2) => {
 
 // ==================== 성능 최적화 설정 ====================
 const PERFORMANCE_CONFIG = {
-  MAX_VISIBLE_NODES: 150,           // 최대 표시 노드 수
+  MAX_VISIBLE_NODES: 500,           // 최대 표시 노드 수 (모든 인물 표시)
   PHYSICS_SAMPLE_SIZE: 80,          // 물리 계산 샘플 크기
   ANIMATION_THROTTLE_MS: 50,        // 애니메이션 간격 (모바일)
-  MOBILE_MAX_NODES: 100,            // 모바일 최대 노드
+  MOBILE_MAX_NODES: 400,            // 모바일 최대 노드 (모든 인물 표시)
   MIN_IMPORTANCE_FOR_LABEL: 3,      // 라벨 표시 최소 중요도
   PHYSICS_STABILIZE_AFTER: 3000,    // 물리 안정화 시간 (ms)
 };
@@ -693,6 +693,20 @@ export default function App() {
 
     return ids;
   }, [filteredCharacters, selectedCharacter, selectedEvent]);
+
+  // 인물별 관련 사건 매핑
+  const characterEventsMap = useMemo(() => {
+    const map = new Map();
+    events.forEach(event => {
+      if (event.characters) {
+        event.characters.forEach(charId => {
+          if (!map.has(charId)) map.set(charId, []);
+          map.get(charId).push(event);
+        });
+      }
+    });
+    return map;
+  }, []);
 
   const visibleRelationships = useMemo(() => {
     return relationships.filter(rel =>
@@ -1387,22 +1401,22 @@ export default function App() {
             paddingTop: '6px',
             borderTop: '1px solid rgba(255,255,255,0.03)',
             flexWrap: 'wrap',
-            maxHeight: isMobile ? '85px' : '70px',
+            maxHeight: isMobile ? '110px' : '90px',
             overflowY: 'auto',
             scrollbarWidth: 'thin'
           }}>
-            <span style={{ fontSize: '0.6rem', opacity: 0.5, marginRight: '2px', flexShrink: 0 }}>사건</span>
-            {eventsByChronology.slice(0, 50).map(event => (
+            <span style={{ fontSize: '0.65rem', opacity: 0.5, marginRight: '2px', flexShrink: 0 }}>사건</span>
+            {eventsByChronology.map(event => (
               <div
                 key={event.id}
                 style={{
-                  padding: '2px 6px',
+                  padding: '3px 8px',
                   background: selectedEvent === event.id
                     ? 'linear-gradient(135deg, rgba(255,215,0,0.4), rgba(255,107,107,0.4))'
                     : 'linear-gradient(135deg, rgba(102,126,234,0.15), rgba(118,75,162,0.1))',
                   borderRadius: '8px',
                   cursor: 'pointer',
-                  fontSize: '0.6rem',
+                  fontSize: '0.65rem',
                   whiteSpace: 'nowrap',
                   border: selectedEvent === event.id
                     ? '2px solid rgba(255,215,0,0.8)'
@@ -1628,10 +1642,17 @@ export default function App() {
                 const pulseScale = isSelected && !isMobile ? 1 + Math.sin(animationTime * 3) * 0.12 : 1;
                 const isDraggingThis = dragTarget === char.id;
                 // 선택된 인물이나 사건이 있으면 관련 노드만 보이게 (포커스 모드)
-                const nodeOpacity = (selectedCharacter || selectedEvent)
+                const isFocusMode = selectedCharacter || selectedEvent;
+                const nodeOpacity = isFocusMode
                   ? (isHighlighted || isSelected ? 1 : 0)
                   : (isHighlighted ? 1 : 0.4);
-                const useRainbow = nodeColor.isRainbow && (isHighlighted || isSelected) && !isMobile;
+                // 포커스 모드에서 레인보우 효과 강화
+                const useRainbow = (nodeColor.isRainbow || (isFocusMode && isHighlighted)) && (isHighlighted || isSelected) && !isMobile;
+                // 포커스 모드에서 네온 글로우 효과
+                const focusGlow = isFocusMode && isHighlighted && !isMobile;
+
+                // 인물 관련 사건 가져오기
+                const charEvents = characterEventsMap.get(char.id) || [];
 
                 // 라벨 표시 조건: 중요도가 높거나 선택/하이라이트된 경우 (모바일에서는 더 많이 표시)
                 const minImportance = isMobile ? 4 : PERFORMANCE_CONFIG.MIN_IMPORTANCE_FOR_LABEL;
@@ -1651,19 +1672,29 @@ export default function App() {
                     onMouseLeave={() => setHoveredNode(null)}
                     opacity={nodeOpacity}
                   >
+                    {/* 포커스 모드 네온 배경 글로우 */}
+                    {focusGlow && (
+                      <circle
+                        r={size + 12}
+                        fill="url(#rainbowAnimated)"
+                        opacity={0.3 + Math.sin(animationTime * 2) * 0.15}
+                        filter="url(#glow)"
+                      />
+                    )}
+
                     {/* 선택/호버 글로우 (데스크탑만) */}
-                    {(isSelected || isHovered) && isHighlighted && !isMobile && (
+                    {(isSelected || isHovered || focusGlow) && isHighlighted && !isMobile && (
                       <circle r={size + 6} fill={useRainbow ? 'url(#rainbowAnimated)' : nodeColor.glow} opacity={0.6} filter="url(#glow)" />
                     )}
 
-                    {/* 레인보우 링 (주요 인물, 데스크탑만) */}
+                    {/* 레인보우 링 (포커스 모드에서 강화) */}
                     {useRainbow && (
                       <circle
                         r={size + 3}
                         fill="none"
                         stroke="url(#rainbowAnimated)"
-                        strokeWidth={2}
-                        opacity={0.5}
+                        strokeWidth={focusGlow ? 3 : 2}
+                        opacity={focusGlow ? 0.8 : 0.5}
                       />
                     )}
 
@@ -1689,6 +1720,24 @@ export default function App() {
                         }}
                       >
                         {lang === 'ko' ? char.name_ko : char.name_en}
+                      </text>
+                    )}
+
+                    {/* 관련 사건 라벨 (선택/하이라이트시) */}
+                    {showLabel && charEvents.length > 0 && (isSelected || isHovered || (isFocusMode && isHighlighted)) && (
+                      <text
+                        y={size + (isMobile ? 20 : 24)}
+                        textAnchor="middle"
+                        fill="#ffd700"
+                        fontSize={isMobile ? 6 : 8}
+                        fontWeight="400"
+                        style={{
+                          pointerEvents: 'none',
+                          textShadow: '0 0 4px rgba(255,215,0,0.5)'
+                        }}
+                      >
+                        {charEvents.slice(0, 3).map(e => e.icon).join(' ')}
+                        {charEvents.length > 3 ? ` +${charEvents.length - 3}` : ''}
                       </text>
                     )}
                   </g>
