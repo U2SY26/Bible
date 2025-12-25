@@ -675,8 +675,24 @@ export default function App() {
       getConnectedCharacters(selectedCharacter).forEach(id => ids.add(id));
     }
 
+    // 사건 선택시 해당 사건의 인물들만 하이라이트
+    if (selectedEvent) {
+      const eventData = events.find(e => e.id === selectedEvent);
+      if (eventData && eventData.characters) {
+        const eventCharIds = new Set(eventData.characters);
+        // 필터링된 캐릭터 중 사건에 포함된 것만 유지
+        for (const id of ids) {
+          if (!eventCharIds.has(id)) {
+            ids.delete(id);
+          }
+        }
+        // 사건 인물들 추가
+        eventData.characters.forEach(id => ids.add(id));
+      }
+    }
+
     return ids;
-  }, [filteredCharacters, selectedCharacter]);
+  }, [filteredCharacters, selectedCharacter, selectedEvent]);
 
   const visibleRelationships = useMemo(() => {
     return relationships.filter(rel =>
@@ -1335,7 +1351,7 @@ export default function App() {
                   padding: '2px 6px',
                   borderRadius: '8px',
                   border: activeQuickFilter === filter.id
-                    ? '1px solid rgba(255,215,0,0.6)'
+                    ? '2px solid rgba(255,215,0,0.8)'
                     : '1px solid rgba(102,126,234,0.3)',
                   background: activeQuickFilter === filter.id
                     ? 'linear-gradient(135deg, rgba(255,215,0,0.3), rgba(255,107,107,0.3))'
@@ -1344,7 +1360,10 @@ export default function App() {
                   cursor: 'pointer',
                   fontSize: '0.65rem',
                   fontWeight: activeQuickFilter === filter.id ? '600' : '400',
-                  transition: 'all 0.2s ease'
+                  transition: 'all 0.2s ease',
+                  boxShadow: activeQuickFilter === filter.id
+                    ? '0 0 10px rgba(255,215,0,0.6), 0 0 20px rgba(255,215,0,0.3)'
+                    : 'none'
                 }}
               >
                 {filter.label}
@@ -1358,38 +1377,52 @@ export default function App() {
           </div>
         )}
 
-        {/* 사건 타임라인 - 빠른필터 아래, 여러 줄로 표시 */}
+        {/* 사건 타임라인 - 빠른필터 아래, 여러 줄 + 스크롤 */}
         {showFilters && (
           <div style={{
             display: 'flex',
-            alignItems: 'center',
-            gap: '3px',
+            alignItems: 'flex-start',
+            gap: '4px',
             marginTop: '6px',
             paddingTop: '6px',
             borderTop: '1px solid rgba(255,255,255,0.03)',
-            flexWrap: 'wrap'
+            flexWrap: 'wrap',
+            maxHeight: isMobile ? '85px' : '70px',
+            overflowY: 'auto',
+            scrollbarWidth: 'thin'
           }}>
-            <span style={{ fontSize: '0.6rem', opacity: 0.5, marginRight: '2px' }}>사건</span>
+            <span style={{ fontSize: '0.6rem', opacity: 0.5, marginRight: '2px', flexShrink: 0 }}>사건</span>
             {eventsByChronology.slice(0, 50).map(event => (
               <div
                 key={event.id}
                 style={{
-                  padding: '2px 5px',
+                  padding: '2px 6px',
                   background: selectedEvent === event.id
-                    ? 'linear-gradient(135deg, rgba(255,215,0,0.3), rgba(255,107,107,0.3))'
+                    ? 'linear-gradient(135deg, rgba(255,215,0,0.4), rgba(255,107,107,0.4))'
                     : 'linear-gradient(135deg, rgba(102,126,234,0.15), rgba(118,75,162,0.1))',
-                  borderRadius: '6px',
+                  borderRadius: '8px',
                   cursor: 'pointer',
                   fontSize: '0.6rem',
+                  whiteSpace: 'nowrap',
                   border: selectedEvent === event.id
-                    ? '1px solid rgba(255,215,0,0.5)'
+                    ? '2px solid rgba(255,215,0,0.8)'
                     : '1px solid rgba(102,126,234,0.2)',
-                  transition: 'all 0.2s ease'
+                  transition: 'all 0.2s ease',
+                  boxShadow: selectedEvent === event.id
+                    ? '0 0 10px rgba(255,215,0,0.6), 0 0 20px rgba(255,215,0,0.3)'
+                    : 'none'
                 }}
-                onClick={() => handleEventClick(event.id)}
-                title={lang === 'ko' ? event.name_ko : event.name_en}
+                onClick={() => {
+                  // 토글: 같은 사건 클릭시 선택 해제
+                  if (selectedEvent === event.id) {
+                    setSelectedEvent(null);
+                    setShowPopup(null);
+                  } else {
+                    handleEventClick(event.id);
+                  }
+                }}
               >
-                {event.icon}
+                {event.icon} {lang === 'ko' ? event.name_ko : event.name_en}
               </div>
             ))}
           </div>
@@ -1542,8 +1575,8 @@ export default function App() {
                 const isActive = selectedCharacter === rel.source || selectedCharacter === rel.target;
                 const relColor = relationshipColors[rel.type]?.color || '#666';
                 const bothHighlighted = highlightedIds.has(rel.source) && highlightedIds.has(rel.target);
-                // 선택된 인물이 있으면 관련 와이어만 보이게 (포커스 모드)
-                const opacity = selectedCharacter
+                // 선택된 인물이나 사건이 있으면 관련 와이어만 보이게 (포커스 모드)
+                const opacity = (selectedCharacter || selectedEvent)
                   ? (isActive ? 1 : (bothHighlighted ? 0.6 : 0))
                   : (bothHighlighted ? (isMobile ? 0.5 : 0.4) : (isMobile ? 0.15 : 0.1));
 
@@ -1594,8 +1627,8 @@ export default function App() {
                 // 펄스 애니메이션은 선택된 노드에만 (모바일에서는 간소화)
                 const pulseScale = isSelected && !isMobile ? 1 + Math.sin(animationTime * 3) * 0.12 : 1;
                 const isDraggingThis = dragTarget === char.id;
-                // 선택된 인물이 있으면 관련 노드만 보이게 (포커스 모드)
-                const nodeOpacity = selectedCharacter
+                // 선택된 인물이나 사건이 있으면 관련 노드만 보이게 (포커스 모드)
+                const nodeOpacity = (selectedCharacter || selectedEvent)
                   ? (isHighlighted || isSelected ? 1 : 0)
                   : (isHighlighted ? 1 : 0.4);
                 const useRainbow = nodeColor.isRainbow && (isHighlighted || isSelected) && !isMobile;
@@ -1799,11 +1832,11 @@ export default function App() {
       {/* 이벤트 팝업 - Portal로 분리 */}
       {showPopup === 'event' && selectedEventData && createPortal(
         <>
-          <div style={styles.overlay} onClick={() => setShowPopup(null)} />
+          <div style={styles.overlay} onClick={() => { setShowPopup(null); setSelectedEvent(null); }} />
           <div style={styles.popup}>
             <button
               style={{ position: 'absolute', top: 14, right: 14, ...styles.button, padding: '8px 12px' }}
-              onClick={() => setShowPopup(null)}
+              onClick={() => { setShowPopup(null); setSelectedEvent(null); }}
             >✕</button>
             <EventDetail
               event={selectedEventData}
