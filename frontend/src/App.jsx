@@ -445,7 +445,9 @@ const getConnectedCharacters = (characterId) => {
   return connected;
 };
 
-// 넓게 펼쳐진 초기 배치
+// 삼위일체 중앙 삼각형 + 넓게 펼쳐진 초기 배치
+const TRINITY_IDS_INIT = ['god', 'jesus', 'holy_spirit'];
+
 const initializePositions = (characters, width, height, isMobile = false) => {
   const positions = {};
   const centerX = width / 2;
@@ -455,11 +457,34 @@ const initializePositions = (characters, width, height, isMobile = false) => {
   const baseFactor = isMobile ? 0.5 : 1;
   const nodesPerLayer = isMobile ? 12 : 15;
 
-  characters.forEach((char, index) => {
+  // 삼위일체 중앙 삼각형 배치
+  const trinityRadius = 60 * baseFactor;
+  const trinityAngles = [-Math.PI / 2, Math.PI / 6, Math.PI * 5 / 6]; // 상단, 우하, 좌하
+
+  positions['god'] = {
+    x: centerX + Math.cos(trinityAngles[0]) * trinityRadius,
+    y: centerY + Math.sin(trinityAngles[0]) * trinityRadius,
+    vx: 0, vy: 0
+  };
+  positions['jesus'] = {
+    x: centerX + Math.cos(trinityAngles[1]) * trinityRadius,
+    y: centerY + Math.sin(trinityAngles[1]) * trinityRadius,
+    vx: 0, vy: 0
+  };
+  positions['holy_spirit'] = {
+    x: centerX + Math.cos(trinityAngles[2]) * trinityRadius,
+    y: centerY + Math.sin(trinityAngles[2]) * trinityRadius,
+    vx: 0, vy: 0
+  };
+
+  // 삼위일체 제외한 나머지 인물 배치
+  const otherCharacters = characters.filter(c => !TRINITY_IDS_INIT.includes(c.id));
+
+  otherCharacters.forEach((char, index) => {
     const layer = Math.floor(index / nodesPerLayer);
     const indexInLayer = index % nodesPerLayer;
     const angle = (indexInLayer / nodesPerLayer) * Math.PI * 2 + (layer * 0.4);
-    const baseRadius = (150 + layer * 100) * baseFactor;
+    const baseRadius = (180 + layer * 100) * baseFactor; // 삼위일체 바깥에서 시작
     const radius = baseRadius + Math.random() * 60 * baseFactor;
 
     positions[char.id] = {
@@ -544,32 +569,6 @@ const multiFieldSearch = (character, query, lang) => {
   return { match: false, priority: 0 };
 };
 
-function BibleVersePopup({ popupState, onClose }) {
-  if (!popupState.show) return null;
-
-  return createPortal(
-    <>
-      <div style={styles.overlay} onClick={onClose} />
-      <div style={{ ...styles.popup, maxWidth: '450px', zIndex: 1001 }}>
-        <button
-          style={{ position: 'absolute', top: 14, right: 14, ...styles.button, padding: '8px 12px' }}
-          onClick={onClose}
-        >✕</button>
-        <h3 style={{ fontSize: '1.1rem', marginBottom: '20px', color: '#ffd700' }}>
-          {popupState.reference}
-        </h3>
-        {popupState.loading ? (
-          <p>로딩 중...</p>
-        ) : (
-          <p style={{ lineHeight: 1.8, fontSize: '1rem', opacity: 0.95, whiteSpace: 'pre-wrap' }}>
-            {popupState.text}
-          </p>
-        )}
-      </div>
-    </>,
-    document.body
-  );
-}
 
 export default function App() {
   const isMobile = useIsMobile();
@@ -610,33 +609,6 @@ export default function App() {
   const dragStartPos = useRef(null);
   const dragStartTime = useRef(null);
 
-  const handleVerseClick = useCallback(async (verseRef) => {
-    setBibleVersePopup({ show: true, reference: verseRef, text: '', loading: true });
-
-    // 구절 파싱 (예: "창세기 1:1")
-    const parts = verseRef.match(/(\S+)\s(\d+):(\d+)(?:-\d+)?/);
-    if (!parts) {
-      setBibleVersePopup({ show: true, reference: verseRef, text: '잘못된 구절 형식입니다.', loading: false });
-      return;
-    }
-    const [, book, chapter, verse] = parts;
-
-    try {
-      const response = await fetch(`/api/bible?book=${encodeURIComponent(book)}&chapter=${chapter}&verse=${verse}`);
-      if (!response.ok) {
-        throw new Error('네트워크 오류');
-      }
-      const data = await response.json();
-      if (data.error) {
-        setBibleVersePopup({ show: true, reference: verseRef, text: data.error, loading: false });
-      } else {
-        setBibleVersePopup({ show: true, reference: verseRef, text: data.text, loading: false });
-      }
-    } catch (error) {
-      setBibleVersePopup({ show: true, reference: verseRef, text: '구절을 불러오는 데 실패했습니다.', loading: false });
-    }
-  }, [setBibleVersePopup]);
-  
   // 펄스 애니메이션 (throttled for mobile)
   useEffect(() => {    let lastTime = 0;
     const throttleMs = isMobile ? PERFORMANCE_CONFIG.ANIMATION_THROTTLE_MS : 16;
@@ -720,34 +692,7 @@ export default function App() {
     return filteredCharacters.slice(0, 8);
   }, [searchQuery, searchFocused, filteredCharacters]);
 
-  const highlightedIds = useMemo(() => {
-    const ids = new Set(filteredCharacters.map(c => c.id));
-
-    if (selectedCharacter) {
-      ids.add(selectedCharacter);
-      getConnectedCharacters(selectedCharacter).forEach(id => ids.add(id));
-    }
-
-    // 사건 선택시 해당 사건의 인물들만 하이라이트
-    if (selectedEvent) {
-      const eventData = events.find(e => e.id === selectedEvent);
-      if (eventData && eventData.characters) {
-        const eventCharIds = new Set(eventData.characters);
-        // 필터링된 캐릭터 중 사건에 포함된 것만 유지
-        for (const id of ids) {
-          if (!eventCharIds.has(id)) {
-            ids.delete(id);
-          }
-        }
-        // 사건 인물들 추가
-        eventData.characters.forEach(id => ids.add(id));
-      }
-    }
-
-    return ids;
-  }, [filteredCharacters, selectedCharacter, selectedEvent]);
-
-  // 인물별 관련 사건 매핑
+  // 인물별 관련 사건 매핑 (highlightedIds 전에 정의)
   const characterEventsMap = useMemo(() => {
     const map = new Map();
     events.forEach(event => {
@@ -760,6 +705,37 @@ export default function App() {
     });
     return map;
   }, []);
+
+  const highlightedIds = useMemo(() => {
+    // 선택된 캐릭터가 있으면: 관계+사건으로 연결된 캐릭터만 표시
+    if (selectedCharacter) {
+      const ids = new Set([selectedCharacter]);
+
+      // 와이어(관계)로 연결된 캐릭터
+      getConnectedCharacters(selectedCharacter).forEach(id => ids.add(id));
+
+      // 사건으로 연결된 캐릭터
+      const charEvents = characterEventsMap.get(selectedCharacter) || [];
+      charEvents.forEach(event => {
+        if (event.characters) {
+          event.characters.forEach(id => ids.add(id));
+        }
+      });
+
+      return ids;
+    }
+
+    // 사건 선택시: 해당 사건의 인물들만 표시
+    if (selectedEvent) {
+      const eventData = events.find(e => e.id === selectedEvent);
+      if (eventData && eventData.characters) {
+        return new Set(eventData.characters);
+      }
+    }
+
+    // 기본: 필터된 캐릭터 전체
+    return new Set(filteredCharacters.map(c => c.id));
+  }, [filteredCharacters, selectedCharacter, selectedEvent, characterEventsMap]);
 
   // 두 인물간 공통 사건 찾기
   const getCommonEvents = useCallback((charId1, charId2) => {
@@ -938,6 +914,51 @@ export default function App() {
     };
   }, [physicsEnabled, dragTarget]);
 
+  // 드래그 중 연결된 노드 따라오기 애니메이션
+  const dragAnimationRef = useRef(null);
+  useEffect(() => {
+    if (!dragTarget) {
+      if (dragAnimationRef.current) {
+        cancelAnimationFrame(dragAnimationRef.current);
+        dragAnimationRef.current = null;
+      }
+      return;
+    }
+
+    const animateDrag = () => {
+      setPositions(prev => {
+        const newPos = { ...prev };
+        let hasMovement = false;
+
+        Object.keys(newPos).forEach(id => {
+          if (id === dragTarget) return;
+          const node = newPos[id];
+          if (!node || (Math.abs(node.vx || 0) < 0.01 && Math.abs(node.vy || 0) < 0.01)) return;
+
+          hasMovement = true;
+          newPos[id] = {
+            ...node,
+            x: node.x + (node.vx || 0),
+            y: node.y + (node.vy || 0),
+            vx: (node.vx || 0) * 0.85, // 감쇠
+            vy: (node.vy || 0) * 0.85
+          };
+        });
+
+        return hasMovement ? newPos : prev;
+      });
+
+      dragAnimationRef.current = requestAnimationFrame(animateDrag);
+    };
+
+    dragAnimationRef.current = requestAnimationFrame(animateDrag);
+    return () => {
+      if (dragAnimationRef.current) {
+        cancelAnimationFrame(dragAnimationRef.current);
+      }
+    };
+  }, [dragTarget]);
+
   // 핀치 줌 상태
   const lastTouchDistance = useRef(null);
 
@@ -988,16 +1009,37 @@ export default function App() {
     const dy = clientY - lastMouse.y;
 
     if (dragTarget && positions[dragTarget]) {
-      setPositions(prev => ({
-        ...prev,
-        [dragTarget]: {
+      // 연결된 노드들도 함께 따라오기 (스프링 효과)
+      const connectedIds = getConnectedCharacters(dragTarget);
+
+      setPositions(prev => {
+        const newPos = { ...prev };
+        const moveDx = dx / zoom;
+        const moveDy = dy / zoom;
+
+        // 드래그 대상 노드 이동
+        newPos[dragTarget] = {
           ...prev[dragTarget],
-          x: prev[dragTarget].x + dx / zoom,
-          y: prev[dragTarget].y + dy / zoom,
-          vx: dx / zoom * 0.3,
-          vy: dy / zoom * 0.3
-        }
-      }));
+          x: prev[dragTarget].x + moveDx,
+          y: prev[dragTarget].y + moveDy,
+          vx: moveDx * 0.3,
+          vy: moveDy * 0.3
+        };
+
+        // 연결된 노드들 스프링 효과로 따라오기
+        connectedIds.forEach(connId => {
+          if (newPos[connId]) {
+            const followStrength = 0.15; // 따라오는 강도 (0~1)
+            newPos[connId] = {
+              ...newPos[connId],
+              vx: (newPos[connId].vx || 0) + moveDx * followStrength,
+              vy: (newPos[connId].vy || 0) + moveDy * followStrength
+            };
+          }
+        });
+
+        return newPos;
+      });
     } else if (isDragging) {
       setPan(prev => ({ x: prev.x + dx, y: prev.y + dy }));
     }
@@ -2115,17 +2157,26 @@ export default function App() {
 function CharacterDetail({ character, lang, relatedEvents, relatedHymns, relatedRelationships, relatedLocations, selectedCharacter, onCharacterSelect, onEventClick, artwork, mbtiData }) {
   const nodeColor = getNodeColor(character, true, true);
 
+  // 기본 아트워크 (예술 작품이 없는 경우)
+  const defaultArtwork = !artwork ? {
+    isDefault: true,
+    gradient: character.testament === 'old'
+      ? 'linear-gradient(135deg, #2c3e50 0%, #4ca1af 50%, #c9d6ff 100%)'
+      : 'linear-gradient(135deg, #43cea2 0%, #185a9d 50%, #a855f7 100%)',
+    icon: character.testament === 'old' ? '📜' : '✝️'
+  } : null;
+
   return (
     <>
-      {/* 미술 작품 (있는 경우) */}
-      {artwork && (
-        <div style={{
-          marginBottom: '16px',
-          borderRadius: '14px',
-          overflow: 'hidden',
-          border: '1px solid rgba(102,126,234,0.3)',
-          position: 'relative'
-        }}>
+      {/* 미술 작품 또는 기본 이미지 */}
+      <div style={{
+        marginBottom: '16px',
+        borderRadius: '14px',
+        overflow: 'hidden',
+        border: '1px solid rgba(102,126,234,0.3)',
+        position: 'relative'
+      }}>
+        {artwork ? (
           <img
             src={artwork.url}
             alt={artwork.title}
@@ -2136,6 +2187,20 @@ function CharacterDetail({ character, lang, relatedEvents, relatedHymns, related
             }}
             onError={(e) => { e.target.style.display = 'none'; }}
           />
+        ) : (
+          <div style={{
+            width: '100%',
+            height: '160px',
+            background: defaultArtwork.gradient,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '4rem'
+          }}>
+            {defaultArtwork.icon}
+          </div>
+        )}
+        {artwork && (
           <div style={{
             position: 'absolute',
             bottom: 0,
@@ -2148,8 +2213,8 @@ function CharacterDetail({ character, lang, relatedEvents, relatedHymns, related
             <div style={{ fontWeight: '600' }}>{artwork.title}</div>
             <div style={{ opacity: 0.7 }}>{artwork.artist}, {artwork.year}</div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
       <div style={{
         display: 'flex',
@@ -2397,15 +2462,15 @@ function EventDetail({ event, lang, eras, onCharacterSelect, artwork, onVerseCli
 
   return (
     <>
-      {/* 미술 작품 (있는 경우) */}
-      {artwork && (
-        <div style={{
-          marginBottom: '16px',
-          borderRadius: '14px',
-          overflow: 'hidden',
-          border: '1px solid rgba(102,126,234,0.3)',
-          position: 'relative'
-        }}>
+      {/* 미술 작품 또는 기본 이미지 */}
+      <div style={{
+        marginBottom: '16px',
+        borderRadius: '14px',
+        overflow: 'hidden',
+        border: '1px solid rgba(102,126,234,0.3)',
+        position: 'relative'
+      }}>
+        {artwork ? (
           <img
             src={artwork.url}
             alt={artwork.title}
@@ -2416,6 +2481,20 @@ function EventDetail({ event, lang, eras, onCharacterSelect, artwork, onVerseCli
             }}
             onError={(e) => { e.target.style.display = 'none'; }}
           />
+        ) : (
+          <div style={{
+            width: '100%',
+            height: '160px',
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '4rem'
+          }}>
+            {event.icon || '📖'}
+          </div>
+        )}
+        {artwork && (
           <div style={{
             position: 'absolute',
             bottom: 0,
@@ -2428,8 +2507,8 @@ function EventDetail({ event, lang, eras, onCharacterSelect, artwork, onVerseCli
             <div style={{ fontWeight: '600' }}>{artwork.title}</div>
             <div style={{ opacity: 0.7 }}>{artwork.artist}, {artwork.year}</div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
       <div style={{
         display: 'flex',
