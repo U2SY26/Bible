@@ -12,7 +12,9 @@ import {
   getEventsByCharacter,
   eventsByChronology,
   bibleBooks,
-  getHymnsByCharacter
+  getHymnsByCharacter,
+  getLocationsByCharacter,
+  locationTypeIcons
 } from './data/index.js';
 
 // ==================== MBTI 데이터 ====================
@@ -929,6 +931,7 @@ export default function App() {
   const relatedHymns = selectedCharacter ? getHymnsByCharacter(selectedCharacter) : [];
   const relatedEvents = selectedCharacter ? getEventsByCharacter(selectedCharacter) : [];
   const relatedRelationships = selectedCharacter ? getRelationshipsByCharacter(selectedCharacter) : [];
+  const relatedLocations = selectedCharacter ? getLocationsByCharacter(selectedCharacter) : [];
 
   const handleReset = () => {
     setSelectedCharacter(null);
@@ -1584,6 +1587,7 @@ export default function App() {
               relatedEvents={relatedEvents}
               relatedHymns={relatedHymns}
               relatedRelationships={relatedRelationships}
+              relatedLocations={relatedLocations}
               selectedCharacter={selectedCharacter}
               onCharacterSelect={setSelectedCharacter}
               onEventClick={handleEventClick}
@@ -1602,6 +1606,7 @@ export default function App() {
               relatedEvents={relatedEvents}
               relatedHymns={relatedHymns}
               relatedRelationships={relatedRelationships}
+              relatedLocations={relatedLocations}
               selectedCharacter={selectedCharacter}
               onCharacterSelect={setSelectedCharacter}
               onEventClick={handleEventClick}
@@ -1668,6 +1673,7 @@ export default function App() {
               relatedEvents={relatedEvents}
               relatedHymns={relatedHymns}
               relatedRelationships={relatedRelationships}
+              relatedLocations={relatedLocations}
               selectedCharacter={selectedCharacter}
               onCharacterSelect={(id) => { setSelectedCharacter(id); }}
               onEventClick={handleEventClick}
@@ -1774,7 +1780,7 @@ export default function App() {
 }
 
 // ==================== 인물 상세 컴포넌트 ====================
-function CharacterDetail({ character, lang, relatedEvents, relatedHymns, relatedRelationships, selectedCharacter, onCharacterSelect, onEventClick, artwork, mbtiData }) {
+function CharacterDetail({ character, lang, relatedEvents, relatedHymns, relatedRelationships, relatedLocations, selectedCharacter, onCharacterSelect, onEventClick, artwork, mbtiData }) {
   const nodeColor = getNodeColor(character, true, true);
 
   return (
@@ -1991,6 +1997,34 @@ function CharacterDetail({ character, lang, relatedEvents, relatedHymns, related
               {lang === 'ko' ? hymn.title_ko : hymn.title_en}
             </div>
           ))}
+        </div>
+      )}
+
+      {relatedLocations && relatedLocations.length > 0 && (
+        <div style={styles.card}>
+          <h4 style={{ marginBottom: 12, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span>📍</span> 관련 장소 ({relatedLocations.length}곳)
+          </h4>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+            {relatedLocations.slice(0, 8).map(loc => (
+              <div
+                key={loc.id}
+                style={{
+                  padding: '8px 12px',
+                  background: 'linear-gradient(135deg, rgba(32,178,170,0.2), rgba(72,201,176,0.2))',
+                  borderRadius: 10,
+                  fontSize: '0.82rem',
+                  border: '1px solid rgba(32,178,170,0.3)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6
+                }}
+              >
+                <span>{locationTypeIcons[loc.type] || '📍'}</span>
+                <span>{lang === 'ko' ? loc.name_ko : loc.name_en}</span>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 

@@ -14,6 +14,16 @@ import { eventsExpanded } from './events-expanded.js';
 import { eventsPhase2 } from './events-phase2.js';
 import { bibleBooks, allBooks, categoryColors, getBookById } from './books.js';
 import { hymns, getHymnsByCharacter, getHymnsByEvent } from './hymns.js';
+import {
+  locations,
+  regions as locationRegions,
+  locationTypeIcons,
+  searchLocations,
+  getLocationsByCharacter,
+  getLocationsByEvent,
+  getLocationsByRegion,
+  locationsByImportance
+} from './locations.js';
 
 // 모든 인물 통합 (중복 제거)
 const allCharactersRaw = [
@@ -434,5 +444,14 @@ export {
   getBookById,
   hymns,
   getHymnsByCharacter,
-  getHymnsByEvent
+  getHymnsByEvent,
+  // 지리 데이터
+  locations,
+  locationRegions,
+  locationTypeIcons,
+  searchLocations,
+  getLocationsByCharacter,
+  getLocationsByEvent,
+  getLocationsByRegion,
+  locationsByImportance
 };
