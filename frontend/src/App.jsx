@@ -1316,29 +1316,24 @@ export default function App() {
           </div>
         )}
 
-        {/* 빠른 필터 + 사건 - 한 줄로 통합 */}
+        {/* 빠른 필터 - 한 줄에 모두 보이도록 작게 */}
         {showFilters && (
           <div style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '6px',
+            gap: '4px',
             marginTop: '8px',
             paddingTop: '8px',
-            borderTop: '1px solid rgba(255,255,255,0.05)',
-            overflowX: 'auto',
-            whiteSpace: 'nowrap',
-            paddingBottom: '4px',
-            scrollbarWidth: 'none',
-            msOverflowStyle: 'none'
+            borderTop: '1px solid rgba(255,255,255,0.05)'
           }}>
-            {/* 빠른 필터 */}
+            <span style={{ fontSize: '0.65rem', opacity: 0.5, marginRight: '2px' }}>필터</span>
             {QUICK_FILTERS.map(filter => (
               <button
                 key={filter.id}
                 onClick={() => setActiveQuickFilter(activeQuickFilter === filter.id ? null : filter.id)}
                 style={{
-                  padding: '4px 8px',
-                  borderRadius: '12px',
+                  padding: '2px 6px',
+                  borderRadius: '8px',
                   border: activeQuickFilter === filter.id
                     ? '1px solid rgba(255,215,0,0.6)'
                     : '1px solid rgba(102,126,234,0.3)',
@@ -1347,29 +1342,47 @@ export default function App() {
                     : 'rgba(102,126,234,0.1)',
                   color: '#fff',
                   cursor: 'pointer',
-                  fontSize: '0.7rem',
+                  fontSize: '0.65rem',
                   fontWeight: activeQuickFilter === filter.id ? '600' : '400',
-                  transition: 'all 0.2s ease',
-                  flexShrink: 0
+                  transition: 'all 0.2s ease'
                 }}
               >
                 {filter.label}
               </button>
             ))}
+            {activeQuickFilter && (
+              <span style={{ fontSize: '0.6rem', opacity: 0.5, marginLeft: '4px' }}>
+                ({filteredCharacters.length})
+              </span>
+            )}
+          </div>
+        )}
 
-            {/* 구분선 */}
-            <span style={{ opacity: 0.3, flexShrink: 0 }}>|</span>
-
-            {/* 사건 */}
+        {/* 사건 타임라인 - 빠른필터 아래 */}
+        {showFilters && (
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            marginTop: '6px',
+            paddingTop: '6px',
+            borderTop: '1px solid rgba(255,255,255,0.03)',
+            overflowX: 'auto',
+            whiteSpace: 'nowrap',
+            paddingBottom: '4px',
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none'
+          }}>
+            <span style={{ fontSize: '0.65rem', opacity: 0.5, flexShrink: 0 }}>사건</span>
             {eventsByChronology.slice(0, 50).map(event => (
               <div
                 key={event.id}
                 style={{
-                  padding: '4px 8px',
+                  padding: '3px 8px',
                   background: selectedEvent === event.id
                     ? 'linear-gradient(135deg, rgba(255,215,0,0.3), rgba(255,107,107,0.3))'
                     : 'linear-gradient(135deg, rgba(102,126,234,0.15), rgba(118,75,162,0.1))',
-                  borderRadius: '12px',
+                  borderRadius: '10px',
                   cursor: 'pointer',
                   fontSize: '0.7rem',
                   border: selectedEvent === event.id
