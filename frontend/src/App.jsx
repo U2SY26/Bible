@@ -1017,62 +1017,61 @@ export default function App() {
     }
   }, []);
 
-  // 최적화된 물리 시뮬레이션 (샘플링 + 조기 중지)
+  // 물리 시뮬레이션 (안정화된 버전 - 초기 정렬 후 정지)
+  const physicsFrameRef = useRef(0);
+  const maxPhysicsFrames = 120; // 약 2초간만 물리 실행
+
   useEffect(() => {
     if (Object.keys(positions).length === 0 || !physicsEnabled) return;
-
-    const sampleSize = PERFORMANCE_CONFIG.PHYSICS_SAMPLE_SIZE;
-    let frameCount = 0;
+    if (physicsFrameRef.current >= maxPhysicsFrames) return;
 
     const simulate = () => {
-      frameCount++;
+      physicsFrameRef.current++;
 
-      // 모바일에서는 2프레임마다 실행
-      if (isMobile && frameCount % 2 !== 0) {
-        animationRef.current = requestAnimationFrame(simulate);
+      // 최대 프레임 도달 시 정지
+      if (physicsFrameRef.current >= maxPhysicsFrames) {
+        setPhysicsEnabled(false);
         return;
       }
 
       setPositions(prev => {
         const newPos = { ...prev };
         const charIds = Object.keys(newPos);
+        let totalMovement = 0;
 
-        // 샘플링: 모든 노드 대신 일부만 계산
-        const sampleIds = charIds.length > sampleSize
-          ? charIds.sort(() => Math.random() - 0.5).slice(0, sampleSize)
-          : charIds;
-
-        // 반발력 계산 (샘플링된 노드만)
-        sampleIds.forEach(id1 => {
+        // 반발력 계산 (가까운 노드만)
+        charIds.forEach(id1 => {
           if (!newPos[id1]) return;
 
-          sampleIds.forEach(id2 => {
-            if (id1 === id2 || !newPos[id2]) return;
+          charIds.forEach(id2 => {
+            if (id1 >= id2 || !newPos[id2]) return;
 
             const dx = newPos[id1].x - newPos[id2].x;
             const dy = newPos[id1].y - newPos[id2].y;
             const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-            const minDist = 100;
+            const minDist = 80;
 
             if (dist < minDist) {
-              const force = (minDist - dist) / dist * 0.3;
+              const force = (minDist - dist) / dist * 0.15;
               newPos[id1].vx += dx * force;
               newPos[id1].vy += dy * force;
+              newPos[id2].vx -= dx * force;
+              newPos[id2].vy -= dy * force;
             }
           });
         });
 
-        // 연결된 노드 끌어당김 (보이는 관계만)
-        visibleRelationshipsFiltered.slice(0, 200).forEach(rel => {
+        // 연결된 노드 끌어당김 (약하게)
+        relationships.slice(0, 150).forEach(rel => {
           if (!newPos[rel.source] || !newPos[rel.target]) return;
 
           const dx = newPos[rel.target].x - newPos[rel.source].x;
           const dy = newPos[rel.target].y - newPos[rel.source].y;
           const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-          const idealDist = 150;
+          const idealDist = 120;
 
           if (dist > idealDist) {
-            const force = (dist - idealDist) / dist * 0.008;
+            const force = (dist - idealDist) / dist * 0.003;
             newPos[rel.source].vx += dx * force;
             newPos[rel.source].vy += dy * force;
             newPos[rel.target].vx -= dx * force;
@@ -1080,15 +1079,21 @@ export default function App() {
           }
         });
 
-        // 위치 업데이트 (감쇠 적용)
+        // 위치 업데이트 (강한 감쇠)
         charIds.forEach(id => {
           if (dragTarget === id) return;
 
           newPos[id].x += newPos[id].vx;
           newPos[id].y += newPos[id].vy;
-          newPos[id].vx *= 0.85;
-          newPos[id].vy *= 0.85;
+          totalMovement += Math.abs(newPos[id].vx) + Math.abs(newPos[id].vy);
+          newPos[id].vx *= 0.7;
+          newPos[id].vy *= 0.7;
         });
+
+        // 움직임이 거의 없으면 조기 종료
+        if (totalMovement < 1) {
+          physicsFrameRef.current = maxPhysicsFrames;
+        }
 
         return newPos;
       });
@@ -1103,7 +1108,7 @@ export default function App() {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [positions, dragTarget, physicsEnabled, isMobile, visibleRelationshipsFiltered]);
+  }, [physicsEnabled, dragTarget]);
 
   const handlePointerDown = useCallback((e, characterId = null) => {
     e.preventDefault();
