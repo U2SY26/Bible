@@ -517,6 +517,14 @@ const styles = {
     boxShadow: '0 2px 10px rgba(102,126,234,0.3)'
   },
   filterSection: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(3, 1fr)',
+    gap: '8px',
+    marginTop: '8px',
+    paddingTop: '8px',
+    borderTop: '1px solid rgba(255,255,255,0.08)'
+  },
+  filterSectionDesktop: {
     display: 'flex',
     alignItems: 'center',
     gap: '12px',
@@ -538,29 +546,29 @@ const styles = {
     boxShadow: 'inset 0 2px 8px rgba(0,0,0,0.3), 0 0 15px rgba(102,126,234,0.1)'
   },
   select: {
-    padding: '10px 14px',
-    borderRadius: '12px',
-    border: '2px solid rgba(102,126,234,0.4)',
+    padding: '8px 10px',
+    borderRadius: '10px',
+    border: '1px solid rgba(102,126,234,0.4)',
     background: 'linear-gradient(135deg, rgba(15,15,40,0.98), rgba(25,25,55,0.98))',
     color: '#fff',
     cursor: 'pointer',
     outline: 'none',
-    fontSize: '0.85rem',
-    minWidth: '100px',
+    fontSize: '0.75rem',
+    width: '100%',
     transition: 'all 0.3s ease',
-    boxShadow: '0 4px 15px rgba(0,0,0,0.3), 0 0 10px rgba(102,126,234,0.15)'
+    boxShadow: '0 2px 8px rgba(0,0,0,0.3)'
   },
   button: {
-    padding: '10px 16px',
-    borderRadius: '12px',
-    border: '2px solid rgba(102,126,234,0.4)',
+    padding: '8px 12px',
+    borderRadius: '10px',
+    border: '1px solid rgba(102,126,234,0.4)',
     background: 'linear-gradient(135deg, rgba(102,126,234,0.2), rgba(118,75,162,0.2))',
     color: '#fff',
     cursor: 'pointer',
-    fontSize: '0.85rem',
+    fontSize: '0.75rem',
     fontWeight: '500',
     transition: 'all 0.3s ease',
-    boxShadow: '0 2px 10px rgba(0,0,0,0.2)'
+    boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
   },
   mainContent: {
     flex: 1,
@@ -714,17 +722,21 @@ const getConnectedCharacters = (characterId) => {
 };
 
 // 넓게 펼쳐진 초기 배치
-const initializePositions = (characters, width, height) => {
+const initializePositions = (characters, width, height, isMobile = false) => {
   const positions = {};
   const centerX = width / 2;
   const centerY = height / 2;
 
+  // 모바일에서는 더 조밀하게 배치
+  const baseFactor = isMobile ? 0.5 : 1;
+  const nodesPerLayer = isMobile ? 12 : 15;
+
   characters.forEach((char, index) => {
-    const layer = Math.floor(index / 15);
-    const indexInLayer = index % 15;
-    const angle = (indexInLayer / 15) * Math.PI * 2 + (layer * 0.4);
-    const baseRadius = 300 + layer * 200;
-    const radius = baseRadius + Math.random() * 120;
+    const layer = Math.floor(index / nodesPerLayer);
+    const indexInLayer = index % nodesPerLayer;
+    const angle = (indexInLayer / nodesPerLayer) * Math.PI * 2 + (layer * 0.4);
+    const baseRadius = (150 + layer * 100) * baseFactor;
+    const radius = baseRadius + Math.random() * 60 * baseFactor;
 
     positions[char.id] = {
       x: centerX + Math.cos(angle) * radius,
@@ -820,7 +832,7 @@ export default function App() {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [showPopup, setShowPopup] = useState(null);
   const [positions, setPositions] = useState({});
-  const [zoom, setZoom] = useState(isMobile ? 0.5 : 0.7);
+  const [zoom, setZoom] = useState(isMobile ? 0.8 : 0.6);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragTarget, setDragTarget] = useState(null);
@@ -1013,9 +1025,9 @@ export default function App() {
   useEffect(() => {
     if (containerRef.current) {
       const { width, height } = containerRef.current.getBoundingClientRect();
-      setPositions(initializePositions(allCharacters, width, height));
+      setPositions(initializePositions(allCharacters, width, height, isMobile));
     }
-  }, []);
+  }, [isMobile]);
 
   // 물리 시뮬레이션 (안정화된 버전 - 초기 정렬 후 정지)
   const physicsFrameRef = useRef(0);
@@ -1110,17 +1122,29 @@ export default function App() {
     };
   }, [physicsEnabled, dragTarget]);
 
+  // 핀치 줌 상태
+  const lastTouchDistance = useRef(null);
+
   const handlePointerDown = useCallback((e, characterId = null) => {
-    e.preventDefault();
+    // 두 손가락 터치는 핀치 줌으로 처리
+    if (e.touches && e.touches.length === 2) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      lastTouchDistance.current = Math.sqrt(dx * dx + dy * dy);
+      return;
+    }
+
+    if (e.touches && e.touches.length > 1) return;
+
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
     const clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
     if (characterId) {
+      e.preventDefault();
+      e.stopPropagation();
       setDragTarget(characterId);
       dragStartPos.current = { x: clientX, y: clientY };
       dragStartTime.current = Date.now();
-      // 노드 드래그 시 물리 재활성화
-      setPhysicsEnabled(true);
     } else {
       setIsDragging(true);
     }
@@ -1128,6 +1152,20 @@ export default function App() {
   }, []);
 
   const handlePointerMove = useCallback((e) => {
+    // 핀치 줌 처리
+    if (e.touches && e.touches.length === 2 && lastTouchDistance.current) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      const newDist = Math.sqrt(dx * dx + dy * dy);
+      const scale = newDist / lastTouchDistance.current;
+
+      setZoom(prev => Math.max(0.2, Math.min(3, prev * scale)));
+      lastTouchDistance.current = newDist;
+      return;
+    }
+
+    if (e.touches && e.touches.length > 1) return;
+
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
     const clientY = e.touches ? e.touches[0].clientY : e.clientY;
     const dx = clientX - lastMouse.x;
@@ -1152,13 +1190,17 @@ export default function App() {
   }, [dragTarget, isDragging, lastMouse, zoom, positions]);
 
   const handlePointerUp = useCallback((e) => {
+    // 핀치 줌 종료
+    lastTouchDistance.current = null;
+
     if (dragTarget && dragStartPos.current && dragStartTime.current) {
       const clientX = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
       const clientY = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
       const totalMove = Math.abs(clientX - dragStartPos.current.x) + Math.abs(clientY - dragStartPos.current.y);
       const duration = Date.now() - dragStartTime.current;
 
-      if (totalMove < 10 && duration < 300) {
+      // 클릭으로 판정 (이동량 적고 시간 짧음)
+      if (totalMove < 15 && duration < 400) {
         setSelectedCharacter(dragTarget);
         if (isMobile) {
           setShowPopup('character');
@@ -1220,7 +1262,7 @@ export default function App() {
     setSelectedTestament('both');
     setSearchQuery('');
     setActiveQuickFilter(null);
-    setZoom(isMobile ? 0.5 : 0.7);
+    setZoom(isMobile ? 0.8 : 0.6);
     setPan({ x: 0, y: 0 });
   };
 
@@ -1289,13 +1331,13 @@ export default function App() {
         </div>
 
         {showFilters && (
-          <div style={styles.filterSection}>
+          <div style={isMobile ? styles.filterSection : styles.filterSectionDesktop}>
             {/* 검색 입력 + 자동완성 드롭다운 */}
-            <div style={{ position: 'relative' }}>
+            <div style={{ position: 'relative', gridColumn: isMobile ? 'span 3' : 'auto' }}>
               <input
                 ref={searchInputRef}
                 type="text"
-                placeholder="인물 검색... (이름/라벨/설명)"
+                placeholder={isMobile ? "검색..." : "인물 검색... (이름/라벨/설명)"}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => setSearchFocused(true)}
@@ -1309,7 +1351,7 @@ export default function App() {
                 }}
                 style={{
                   ...styles.searchInput,
-                  width: isMobile ? '140px' : '200px'
+                  width: isMobile ? '100%' : '200px'
                 }}
               />
 
@@ -1448,32 +1490,38 @@ export default function App() {
               ))}
             </select>
 
-            <div style={styles.sliderContainer}>
-              <span>크기</span>
-              <input
-                type="range"
-                min="0.4"
-                max="2.5"
-                step="0.1"
-                value={nodeScale}
-                onChange={(e) => setNodeScale(parseFloat(e.target.value))}
-                style={styles.slider}
-              />
-              <span style={{ minWidth: '35px' }}>{Math.round(nodeScale * 100)}%</span>
-            </div>
+            {/* 크기 슬라이더 - 데스크탑만 */}
+            {!isMobile && (
+              <div style={styles.sliderContainer}>
+                <span>크기</span>
+                <input
+                  type="range"
+                  min="0.4"
+                  max="2.5"
+                  step="0.1"
+                  value={nodeScale}
+                  onChange={(e) => setNodeScale(parseFloat(e.target.value))}
+                  style={styles.slider}
+                />
+                <span style={{ minWidth: '35px' }}>{Math.round(nodeScale * 100)}%</span>
+              </div>
+            )}
 
-            <button
-              style={{
-                ...styles.button,
-                background: showMBTI
-                  ? 'linear-gradient(135deg, rgba(255,215,0,0.4), rgba(255,107,107,0.4))'
-                  : styles.button.background,
-                border: showMBTI ? '2px solid rgba(255,215,0,0.5)' : styles.button.border
-              }}
-              onClick={() => setShowMBTI(!showMBTI)}
-            >
-              🧠 MBTI
-            </button>
+            {/* MBTI 버튼 - 데스크탑만 */}
+            {!isMobile && (
+              <button
+                style={{
+                  ...styles.button,
+                  background: showMBTI
+                    ? 'linear-gradient(135deg, rgba(255,215,0,0.4), rgba(255,107,107,0.4))'
+                    : styles.button.background,
+                  border: showMBTI ? '2px solid rgba(255,215,0,0.5)' : styles.button.border
+                }}
+                onClick={() => setShowMBTI(!showMBTI)}
+              >
+                🧠 MBTI
+              </button>
+            )}
 
             <button
               style={{
@@ -1489,8 +1537,8 @@ export default function App() {
           </div>
         )}
 
-        {/* 빠른 필터 버튼 */}
-        {showFilters && (
+        {/* 빠른 필터 버튼 - 데스크탑만 */}
+        {showFilters && !isMobile && (
           <div style={{
             display: 'flex',
             alignItems: 'center',
@@ -1539,7 +1587,7 @@ export default function App() {
         )}
 
         {/* MBTI 섹션 */}
-        {showMBTI && showFilters && (
+        {showMBTI && showFilters && !isMobile && (
           <div style={{
             marginTop: '12px',
             padding: '16px',
@@ -1640,7 +1688,7 @@ export default function App() {
           onTouchEnd={handlePointerUp}
           onWheel={handleWheel}
         >
-          <svg ref={svgRef} width="100%" height="100%" style={{ cursor: isDragging ? 'grabbing' : 'grab', touchAction: 'none' }}>
+          <svg ref={svgRef} width="100%" height="100%" style={{ cursor: isDragging ? 'grabbing' : 'grab', touchAction: 'manipulation' }}>
             <defs>
               <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
                 <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
@@ -1680,9 +1728,10 @@ export default function App() {
                 if (!sourcePos || !targetPos) return null;
 
                 const isActive = selectedCharacter === rel.source || selectedCharacter === rel.target;
-                const relColor = relationshipColors[rel.type]?.color || '#555';
+                const relColor = relationshipColors[rel.type]?.color || '#666';
                 const bothHighlighted = highlightedIds.has(rel.source) && highlightedIds.has(rel.target);
-                const opacity = isActive ? 0.9 : (bothHighlighted ? 0.3 : 0.08);
+                // 모바일에서 관계선 더 선명하게
+                const opacity = isActive ? 1 : (bothHighlighted ? (isMobile ? 0.5 : 0.4) : (isMobile ? 0.15 : 0.1));
 
                 // 데이터 흐름 애니메이션 (활성화된 관계만 - 모바일에서는 간소화)
                 const showFlowAnimation = isActive && !isMobile;
@@ -1694,8 +1743,8 @@ export default function App() {
                       y1={sourcePos.y}
                       x2={targetPos.x}
                       y2={targetPos.y}
-                      stroke={isActive || bothHighlighted ? relColor : '#333'}
-                      strokeWidth={isActive ? 2.5 : 1}
+                      stroke={isActive || bothHighlighted ? relColor : '#444'}
+                      strokeWidth={isActive ? (isMobile ? 2 : 2.5) : (isMobile ? 1.2 : 1)}
                       opacity={opacity}
                       strokeLinecap="round"
                     />
@@ -1734,8 +1783,9 @@ export default function App() {
                 const nodeOpacity = (isHighlighted || isSelected) ? 1 : 0.25;
                 const useRainbow = nodeColor.isRainbow && (isHighlighted || isSelected) && !isMobile;
 
-                // 라벨 표시 조건: 중요도가 높거나 선택/하이라이트된 경우
-                const showLabel = isSelected || isHovered || char.importance >= PERFORMANCE_CONFIG.MIN_IMPORTANCE_FOR_LABEL || zoom > 1;
+                // 라벨 표시 조건: 중요도가 높거나 선택/하이라이트된 경우 (모바일에서는 더 많이 표시)
+                const minImportance = isMobile ? 4 : PERFORMANCE_CONFIG.MIN_IMPORTANCE_FOR_LABEL;
+                const showLabel = isSelected || isHovered || isHighlighted || char.importance >= minImportance || zoom > 0.8;
 
                 return (
                   <g
@@ -1778,12 +1828,15 @@ export default function App() {
                     {/* 이름 라벨 (조건부 렌더링) */}
                     {showLabel && (
                       <text
-                        y={size + 12}
+                        y={size + (isMobile ? 10 : 12)}
                         textAnchor="middle"
-                        fill={isHighlighted || isSelected ? '#fff' : '#666'}
-                        fontSize={isSelected ? 11 : 9}
-                        fontWeight={isSelected ? '700' : '400'}
-                        style={{ pointerEvents: 'none' }}
+                        fill={isHighlighted || isSelected ? '#fff' : '#888'}
+                        fontSize={isMobile ? (isSelected ? 10 : 8) : (isSelected ? 12 : 10)}
+                        fontWeight={isSelected ? '700' : '500'}
+                        style={{
+                          pointerEvents: 'none',
+                          textShadow: '0 1px 3px rgba(0,0,0,0.8)'
+                        }}
                       >
                         {lang === 'ko' ? char.name_ko : char.name_en}
                       </text>
