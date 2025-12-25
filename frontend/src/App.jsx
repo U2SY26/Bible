@@ -612,11 +612,14 @@ const styles = {
     userSelect: 'none'
   },
   sidebar: {
-    width: '340px',
+    width: '30%',
+    minWidth: '320px',
+    maxWidth: '450px',
     background: 'linear-gradient(180deg, rgba(15,15,30,0.98) 0%, rgba(10,10,25,0.98) 100%)',
     borderLeft: '1px solid rgba(102,126,234,0.2)',
     overflowY: 'auto',
-    padding: '20px'
+    padding: '20px',
+    flexShrink: 0
   },
   characterList: {
     marginTop: '12px',
@@ -1752,14 +1755,11 @@ export default function App() {
       </header>
 
       {/* 메인 콘텐츠 */}
-      <div style={isMobile ? styles.mainContentMobile : { ...styles.mainContent, ...mobileContentStyle }}>
+      <div style={isMobile ? styles.mainContentMobile : styles.mainContent}>
         {/* 그래프 영역 */}
         <div
           ref={containerRef}
-          style={isMobile ? styles.graphContainerMobile : {
-            ...styles.graphContainer,
-            flex: !showFilters && selectedCharacterData ? '0 0 45%' : 1
-          }}
+          style={isMobile ? styles.graphContainerMobile : styles.graphContainer}
           onMouseDown={(e) => handlePointerDown(e)}
           onMouseMove={handlePointerMove}
           onMouseUp={handlePointerUp}
