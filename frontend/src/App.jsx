@@ -1123,14 +1123,17 @@ export default function App() {
     const dx = clientX - lastMouse.x;
     const dy = clientY - lastMouse.y;
 
-    if (dragTarget && positions[dragTarget]) {
+    if (dragTarget) {
       // 연결된 노드들도 함께 따라오기 (스프링 효과)
       const connectedIds = getConnectedCharacters(dragTarget);
+      const currentZoom = zoom;
 
       setPositions(prev => {
+        if (!prev[dragTarget]) return prev;
+
         const newPos = { ...prev };
-        const moveDx = dx / zoom;
-        const moveDy = dy / zoom;
+        const moveDx = dx / currentZoom;
+        const moveDy = dy / currentZoom;
 
         // 드래그 대상 노드 이동
         newPos[dragTarget] = {
@@ -1186,7 +1189,7 @@ export default function App() {
     }
 
     setLastMouse({ x: clientX, y: clientY });
-  }, [dragTarget, isDragging, lastMouse, zoom, positions]);
+  }, [dragTarget, isDragging, lastMouse, zoom]);
 
   const handlePointerUp = useCallback((e) => {
     // 핀치 줌 종료
@@ -1249,14 +1252,44 @@ export default function App() {
     setSelectedEvent(eventId);
     setShowPopup('event');
 
-    // 사건의 인물들 화면에 맞추기
+    // 사건의 인물들 화면에 맞추기 (fitToNodes 직접 구현)
     setTimeout(() => {
       const eventData = events.find(e => e.id === eventId);
-      if (eventData && eventData.characters && eventData.characters.length > 0) {
-        fitToNodes(eventData.characters);
+      if (eventData && eventData.characters && eventData.characters.length > 0 && containerRef.current) {
+        const nodeIds = eventData.characters;
+        const validPositions = nodeIds
+          .map(id => positions[id])
+          .filter(pos => pos);
+
+        if (validPositions.length === 0) return;
+
+        const xs = validPositions.map(p => p.x);
+        const ys = validPositions.map(p => p.y);
+        const minX = Math.min(...xs);
+        const maxX = Math.max(...xs);
+        const minY = Math.min(...ys);
+        const maxY = Math.max(...ys);
+
+        const bbox = {
+          width: maxX - minX + 100,
+          height: maxY - minY + 100,
+          centerX: (minX + maxX) / 2,
+          centerY: (minY + maxY) / 2
+        };
+
+        const { width: viewWidth, height: viewHeight } = containerRef.current.getBoundingClientRect();
+        const scaleX = viewWidth / bbox.width;
+        const scaleY = viewHeight / bbox.height;
+        const newZoom = Math.min(Math.max(Math.min(scaleX, scaleY) * 0.8, 0.3), 2);
+
+        const newPanX = viewWidth / 2 - bbox.centerX * newZoom;
+        const newPanY = viewHeight / 2 - bbox.centerY * newZoom;
+
+        setZoom(newZoom);
+        setPan({ x: newPanX, y: newPanY });
       }
     }, 100);
-  }, [fitToNodes]);
+  }, [positions]);
 
   // ESC 키로 선택 해제 (PC)
   useEffect(() => {
