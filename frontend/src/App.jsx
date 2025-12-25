@@ -960,11 +960,16 @@ export default function App() {
   // 드래그 중 연결된 노드 따라오기 애니메이션 (탄성 물리)
   const dragAnimationRef = useRef(null);
   const animatingRef = useRef(false);
+  const setPositionsRef = useRef(setPositions);
+  setPositionsRef.current = setPositions;
 
-  // 애니메이션 루프 (독립적으로 실행)
-  const runAnimation = useCallback(() => {
+  // 애니메이션 시작 함수 (ref로 관리하여 순환 참조 방지)
+  const startAnimationRef = useRef(() => {
+    if (animatingRef.current) return;
+    animatingRef.current = true;
+
     const animate = () => {
-      setPositions(prev => {
+      setPositionsRef.current(prev => {
         const newPos = { ...prev };
         let hasMovement = false;
         const charIds = Object.keys(newPos);
@@ -1060,24 +1065,21 @@ export default function App() {
       }
     };
 
-    if (!animatingRef.current) {
-      animatingRef.current = true;
-      dragAnimationRef.current = requestAnimationFrame(animate);
-    }
-  }, []);
+    dragAnimationRef.current = requestAnimationFrame(animate);
+  });
 
   // 드래그 끝나면 관성 애니메이션 시작
   useEffect(() => {
-    if (!dragTarget && animatingRef.current === false) {
+    if (!dragTarget) {
       // 드래그 끝났는데 아직 움직이는 노드가 있으면 애니메이션 시작
       const hasMovingNodes = Object.values(positions).some(
         p => p && (Math.abs(p.vx || 0) > 0.1 || Math.abs(p.vy || 0) > 0.1)
       );
       if (hasMovingNodes) {
-        runAnimation();
+        startAnimationRef.current();
       }
     }
-  }, [dragTarget, positions, runAnimation]);
+  }, [dragTarget, positions]);
 
   // 핀치 줌 상태
   const lastTouchDistance = useRef(null);
@@ -1181,13 +1183,13 @@ export default function App() {
       });
 
       // 연결된 노드 애니메이션 시작
-      runAnimation();
+      startAnimationRef.current();
     } else if (isDragging) {
       setPan(prev => ({ x: prev.x + dx, y: prev.y + dy }));
     }
 
     setLastMouse({ x: clientX, y: clientY });
-  }, [dragTarget, isDragging, lastMouse, zoom, positions, runAnimation]);
+  }, [dragTarget, isDragging, lastMouse, zoom, positions]);
 
   const handlePointerUp = useCallback((e) => {
     // 핀치 줌 종료
