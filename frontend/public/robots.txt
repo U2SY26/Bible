@@ -2,7 +2,11 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://bible-graph.vercel.app/sitemap.xml
+Sitemap: https://bible-psi-nine.vercel.app/sitemap.xml
+
+# Google AdSense
+User-agent: Mediapartners-Google
+Allow: /
 
 # Crawl-delay for bots
 Crawl-delay: 1
