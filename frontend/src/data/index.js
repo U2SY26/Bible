@@ -6,9 +6,12 @@ import { patriarchCharacters } from './characters-patriarchs.js';
 import { exodusCharacters } from './characters-exodus.js';
 import { judgesKingsCharacters } from './characters-judges-kings.js';
 import { prophetCharacters } from './characters-prophets.js';
+import { charactersNTExpanded } from './characters-nt-expanded.js';
+import { charactersOTSupplemental } from './characters-ot-supplemental.js';
 import { relationships as baseRelationships, relationshipColors, getRelationshipsByCharacter } from './relationships.js';
 import { events as baseEvents, eras, getEventsByCharacter, getEventsByEra, eventsByChronology as baseChronology } from './events.js';
 import { eventsExpanded } from './events-expanded.js';
+import { eventsPhase2 } from './events-phase2.js';
 import { bibleBooks, allBooks, categoryColors, getBookById } from './books.js';
 import { hymns, getHymnsByCharacter, getHymnsByEvent } from './hymns.js';
 
@@ -20,7 +23,9 @@ const allCharactersRaw = [
   ...patriarchCharacters,
   ...exodusCharacters,
   ...judgesKingsCharacters,
-  ...prophetCharacters
+  ...prophetCharacters,
+  ...charactersNTExpanded,
+  ...charactersOTSupplemental
 ];
 
 // 중복 ID 제거 (나중에 추가된 것 우선)
@@ -31,7 +36,7 @@ allCharactersRaw.forEach(char => {
 export const allCharacters = Array.from(characterMap.values());
 
 // 모든 이벤트 통합
-const allEventsRaw = [...baseEvents, ...eventsExpanded];
+const allEventsRaw = [...baseEvents, ...eventsExpanded, ...eventsPhase2];
 const eventMap = new Map();
 allEventsRaw.forEach(event => {
   eventMap.set(event.id, event);
@@ -182,7 +187,180 @@ const expandedRelationships = [
   { source: 'eliphaz', target: 'job', type: 'friend' },
   { source: 'bildad', target: 'job', type: 'friend' },
   { source: 'zophar', target: 'job', type: 'friend' },
-  { source: 'elihu', target: 'job', type: 'counselor' }
+  { source: 'elihu', target: 'job', type: 'counselor' },
+
+  // ==================== Phase 2: 신약 확장 관계 ====================
+  // 일곱 집사
+  { source: 'stephen', target: 'philip_deacon', type: 'colleague' },
+  { source: 'prochorus', target: 'stephen', type: 'colleague' },
+  { source: 'nicanor', target: 'stephen', type: 'colleague' },
+  { source: 'timon', target: 'stephen', type: 'colleague' },
+  { source: 'parmenas', target: 'stephen', type: 'colleague' },
+  { source: 'nicolas', target: 'stephen', type: 'colleague' },
+
+  // 바울의 스승과 제자
+  { source: 'paul', target: 'gamaliel', type: 'student' },
+  { source: 'timothy', target: 'paul', type: 'disciple' },
+  { source: 'timothy', target: 'eunice', type: 'child' },
+  { source: 'eunice', target: 'lois', type: 'child' },
+  { source: 'titus', target: 'paul', type: 'disciple' },
+  { source: 'silas', target: 'paul', type: 'coworker' },
+  { source: 'luke', target: 'paul', type: 'coworker' },
+
+  // 바울의 동역자들
+  { source: 'aquila', target: 'priscilla', type: 'spouse' },
+  { source: 'aquila', target: 'paul', type: 'coworker' },
+  { source: 'priscilla', target: 'paul', type: 'coworker' },
+  { source: 'priscilla', target: 'apollos', type: 'mentor' },
+  { source: 'barnabas', target: 'paul', type: 'coworker' },
+  { source: 'barnabas', target: 'john_mark', type: 'relative' },
+  { source: 'john_mark', target: 'paul', type: 'coworker' },
+  { source: 'john_mark', target: 'peter', type: 'disciple' },
+  { source: 'epaphras', target: 'paul', type: 'coworker' },
+  { source: 'tychicus', target: 'paul', type: 'coworker' },
+  { source: 'aristarchus', target: 'paul', type: 'coworker' },
+  { source: 'epaphroditus', target: 'paul', type: 'coworker' },
+
+  // 빌레몬 관련
+  { source: 'onesimus', target: 'philemon', type: 'slave' },
+  { source: 'onesimus', target: 'paul', type: 'convert' },
+  { source: 'philemon', target: 'apphia', type: 'spouse' },
+  { source: 'archippus', target: 'philemon', type: 'colleague' },
+
+  // 헤롯 가문
+  { source: 'herod_agrippa_i', target: 'herod_agrippa_ii', type: 'parent' },
+  { source: 'herod_agrippa_ii', target: 'bernice', type: 'sibling' },
+  { source: 'herod_agrippa_i', target: 'drusilla', type: 'parent' },
+  { source: 'drusilla', target: 'felix', type: 'spouse' },
+
+  // 바울의 재판
+  { source: 'paul', target: 'felix', type: 'prisoner' },
+  { source: 'paul', target: 'festus', type: 'prisoner' },
+  { source: 'paul', target: 'herod_agrippa_ii', type: 'appeared_before' },
+  { source: 'festus', target: 'felix', type: 'successor' },
+  { source: 'claudius_lysias', target: 'paul', type: 'protector' },
+  { source: 'julius', target: 'paul', type: 'guard' },
+
+  // 고린도/빌립보 교회
+  { source: 'lydia', target: 'paul', type: 'convert' },
+  { source: 'crispus', target: 'paul', type: 'convert' },
+  { source: 'sosthenes', target: 'paul', type: 'coworker' },
+  { source: 'phoebe', target: 'paul', type: 'servant' },
+  { source: 'erastus', target: 'paul', type: 'coworker' },
+  { source: 'euodia', target: 'syntyche', type: 'colleague' },
+
+  // 초대교회 인물
+  { source: 'cornelius', target: 'peter', type: 'convert' },
+  { source: 'ananias_damascus', target: 'paul', type: 'baptizer' },
+  { source: 'tabitha', target: 'peter', type: 'raised_by' },
+  { source: 'rhoda', target: 'peter', type: 'servant' },
+  { source: 'agabus', target: 'paul', type: 'prophet_to' },
+
+  // ==================== Phase 2: 구약 보충 관계 ====================
+  // 분열왕국 북이스라엘 왕조
+  { source: 'jeroboam', target: 'rehoboam', type: 'rival' },
+  { source: 'nadab_israel', target: 'jeroboam', type: 'child' },
+  { source: 'baasha', target: 'nadab_israel', type: 'killed' },
+  { source: 'elah_israel', target: 'baasha', type: 'child' },
+  { source: 'zimri', target: 'elah_israel', type: 'killed' },
+  { source: 'omri', target: 'zimri', type: 'killed' },
+  { source: 'ahab', target: 'omri', type: 'child' },
+  { source: 'ahaziah_israel', target: 'ahab', type: 'child' },
+  { source: 'joram_israel', target: 'ahab', type: 'child' },
+  { source: 'jehu', target: 'joram_israel', type: 'killed' },
+  { source: 'jehoahaz_israel', target: 'jehu', type: 'child' },
+  { source: 'jehoash_israel', target: 'jehoahaz_israel', type: 'child' },
+  { source: 'jeroboam_ii', target: 'jehoash_israel', type: 'child' },
+  { source: 'zechariah_israel', target: 'jeroboam_ii', type: 'child' },
+  { source: 'shallum_israel', target: 'zechariah_israel', type: 'killed' },
+  { source: 'menahem', target: 'shallum_israel', type: 'killed' },
+  { source: 'pekahiah', target: 'menahem', type: 'child' },
+  { source: 'pekah', target: 'pekahiah', type: 'killed' },
+  { source: 'hoshea_king', target: 'pekah', type: 'killed' },
+
+  // 분열왕국 남유다 왕조
+  { source: 'abijah_judah', target: 'rehoboam', type: 'child' },
+  { source: 'asa', target: 'abijah_judah', type: 'child' },
+  { source: 'jehoshaphat', target: 'asa', type: 'child' },
+  { source: 'jehoram_judah', target: 'jehoshaphat', type: 'child' },
+  { source: 'ahaziah_judah', target: 'jehoram_judah', type: 'child' },
+  { source: 'athaliah', target: 'ahaziah_judah', type: 'parent' },
+  { source: 'joash_judah', target: 'ahaziah_judah', type: 'child' },
+  { source: 'amaziah', target: 'joash_judah', type: 'child' },
+  { source: 'uzziah', target: 'amaziah', type: 'child' },
+  { source: 'jotham', target: 'uzziah', type: 'child' },
+  { source: 'ahaz', target: 'jotham', type: 'child' },
+  { source: 'hezekiah', target: 'ahaz', type: 'child' },
+  { source: 'manasseh_king', target: 'hezekiah', type: 'child' },
+  { source: 'amon', target: 'manasseh_king', type: 'child' },
+  { source: 'josiah', target: 'amon', type: 'child' },
+  { source: 'jehoahaz_judah', target: 'josiah', type: 'child' },
+  { source: 'jehoiakim', target: 'josiah', type: 'child' },
+  { source: 'jehoiachin', target: 'jehoiakim', type: 'child' },
+  { source: 'zedekiah', target: 'josiah', type: 'child' },
+
+  // 엘리야/엘리사 관련
+  { source: 'obadiah_servant', target: 'ahab', type: 'servant' },
+  { source: 'obadiah_servant', target: 'elijah', type: 'ally' },
+  { source: 'widow_zarephath', target: 'elijah', type: 'host' },
+  { source: 'naaman', target: 'elisha', type: 'healed_by' },
+  { source: 'gehazi', target: 'elisha', type: 'servant' },
+  { source: 'shunammite_woman', target: 'elisha', type: 'host' },
+  { source: 'hazael', target: 'ben_hadad_ii', type: 'killed' },
+  { source: 'hazael', target: 'elisha', type: 'anointed_by' },
+
+  // 에스라/느헤미야 시대
+  { source: 'sheshbazzar', target: 'zerubbabel', type: 'predecessor' },
+  { source: 'haggai', target: 'zerubbabel', type: 'prophet_to' },
+  { source: 'zechariah_prophet', target: 'zerubbabel', type: 'prophet_to' },
+  { source: 'sanballat', target: 'nehemiah', type: 'enemy' },
+  { source: 'tobiah', target: 'nehemiah', type: 'enemy' },
+  { source: 'geshem', target: 'nehemiah', type: 'enemy' },
+  { source: 'hanani', target: 'nehemiah', type: 'sibling' },
+
+  // 예레미야 관련
+  { source: 'baruch', target: 'jeremiah', type: 'scribe' },
+  { source: 'ebed_melech', target: 'jeremiah', type: 'rescuer' },
+  { source: 'pashhur', target: 'jeremiah', type: 'persecutor' },
+  { source: 'hananiah_prophet', target: 'jeremiah', type: 'opponent' },
+  { source: 'gedaliah', target: 'nebuchadnezzar', type: 'appointed_by' },
+  { source: 'ishmael_assassin', target: 'gedaliah', type: 'killed' },
+  { source: 'johanan_commander', target: 'gedaliah', type: 'protector' },
+
+  // 이사야 시대
+  { source: 'shebna', target: 'hezekiah', type: 'servant' },
+  { source: 'eliakim_hilkiah', target: 'hezekiah', type: 'servant' },
+  { source: 'eliakim_hilkiah', target: 'shebna', type: 'successor' },
+  { source: 'rabshakeh', target: 'sennacherib', type: 'servant' },
+  { source: 'sennacherib', target: 'hezekiah', type: 'enemy' },
+  { source: 'merodach_baladan', target: 'hezekiah', type: 'ally' },
+
+  // 룻기 가계
+  { source: 'elimelech', target: 'naomi', type: 'spouse' },
+  { source: 'mahlon', target: 'elimelech', type: 'child' },
+  { source: 'chilion', target: 'elimelech', type: 'child' },
+  { source: 'ruth', target: 'mahlon', type: 'spouse' },
+  { source: 'orpah', target: 'chilion', type: 'spouse' },
+  { source: 'boaz', target: 'ruth', type: 'spouse' },
+
+  // 사무엘 시대 추가
+  { source: 'peninnah', target: 'elkanah', type: 'spouse' },
+  { source: 'ichabod', target: 'phinehas_eli', type: 'child' },
+  { source: 'achish', target: 'david', type: 'host' },
+  { source: 'doeg', target: 'saul', type: 'servant' },
+  { source: 'doeg', target: 'ahimelech', type: 'killed' },
+  { source: 'ahimelech', target: 'david', type: 'ally' },
+  { source: 'abiathar', target: 'ahimelech', type: 'child' },
+  { source: 'abiathar', target: 'david', type: 'priest' },
+  { source: 'zadok', target: 'david', type: 'priest' },
+  { source: 'zadok', target: 'solomon', type: 'priest' },
+  { source: 'hushai', target: 'david', type: 'friend' },
+  { source: 'hushai', target: 'absalom', type: 'spy' },
+  { source: 'ahithophel', target: 'david', type: 'counselor' },
+  { source: 'ahithophel', target: 'absalom', type: 'counselor' },
+  { source: 'shimei', target: 'david', type: 'enemy' },
+  { source: 'ziba', target: 'mephibosheth', type: 'servant' },
+  { source: 'barzillai', target: 'david', type: 'supporter' }
 ];
 
 // 중복 관계 제거
