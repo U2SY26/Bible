@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C \"d:\\\\Bible\" log --oneline -10)",
+      "Bash(vercel link:*)",
+      "Bash(npx vercel:*)",
+      "Bash(git add:*)",
+      "Bash(git reset:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nAdd Vercel deployment with node graph visualization\n\n- Add Vercel serverless API \\(FastAPI\\)\n- Add react-force-graph-2d for Obsidian-style graph\n- Add GitHub Actions workflow for CI/CD\n- Add Google AdSense integration\n- Update UI with interactive node graph\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git push:*)",
+      "Bash(dir:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm install:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nUpgrade to premium UI with glassmorphism and animations\n\n- Add background particle animation system\n- Implement glassmorphism design for header, sidebar, timeline\n- Add SVG glow filters for nodes \\(gold, blue, purple\\)\n- Add pulse animation for selected nodes\n- Add particle flow animation on active relationships\n- Add hover effects with scale transitions\n- Integrate rich Bible data \\(100+ characters, 50+ events, 150+ relationships, 43 hymns\\)\n- Add 66 Bible books reference data\n- Add legend for node colors\n- Improve dropdown styling with dark background\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git commit:*)"
+    ]
+  }
+}

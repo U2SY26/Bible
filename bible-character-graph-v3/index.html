@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="성경 인물 관계도 - 구약 39권, 신약 27권의 인물, 사건, 찬송가를 연결한 인터랙티브 그래프" />
+  <meta name="keywords" content="성경, 인물관계도, Bible, Graph, 찬송가, 개역개정" />
+  <meta name="theme-color" content="#1a1a2e" />
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="성경 인물 관계도" />
+  <meta property="og:description" content="100+ 성경 인물과 사건을 인터랙티브 그래프로 탐색하세요" />
+  <meta property="og:type" content="website" />
+  
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📖</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  
+  <title>📖 성경 인물 관계도 | Bible Character Graph</title>
+  
+  <style>
+    /* 로딩 화면 */
+    #loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease;
+    }
+    
+    #loading.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .loading-icon {
+      font-size: 4rem;
+      animation: bounce 1s ease infinite;
+    }
+    
+    .loading-text {
+      margin-top: 20px;
+      color: #fff;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 1.2rem;
+      opacity: 0.8;
+    }
+    
+    .loading-bar {
+      width: 200px;
+      height: 4px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 2px;
+      margin-top: 20px;
+      overflow: hidden;
+    }
+    
+    .loading-bar-inner {
+      width: 30%;
+      height: 100%;
+      background: linear-gradient(90deg, #ffd700, #ff6b6b);
+      border-radius: 2px;
+      animation: loading 1.5s ease infinite;
+    }
+    
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    @keyframes loading {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(400%); }
+    }
+  </style>
+</head>
+<body>
+  <div id="loading">
+    <div class="loading-icon">📖</div>
+    <div class="loading-text">성경 인물 관계도를 불러오는 중...</div>
+    <div class="loading-bar">
+      <div class="loading-bar-inner"></div>
+    </div>
+  </div>
+  
+  <div id="root"></div>
+  
+  <script type="module" src="/src/main.jsx"></script>
+  <script>
+    // 로딩 화면 숨기기
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.getElementById('loading').classList.add('hidden');
+      }, 500);
+    });
+  </script>
+</body>
+</html>
