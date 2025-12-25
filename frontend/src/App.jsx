@@ -14,6 +14,170 @@ import {
   getHymnsByCharacter
 } from './data/index.js';
 
+// ==================== MBTI 데이터 ====================
+const mbtiData = {
+  god: { mbti: 'INFJ', traits: ['직관적', '이상주의적', '심오한 통찰'] },
+  jesus: { mbti: 'INFJ', traits: ['공감능력', '희생정신', '지혜로움'] },
+  moses: { mbti: 'ISTJ', traits: ['책임감', '원칙주의', '인내심'] },
+  david: { mbti: 'ENFP', traits: ['열정적', '창의적', '감성적'] },
+  paul: { mbti: 'ENTJ', traits: ['리더십', '논리적', '목표지향적'] },
+  peter: { mbti: 'ESFP', traits: ['충동적', '열정적', '행동파'] },
+  abraham: { mbti: 'ISFJ', traits: ['충실함', '인내', '순종'] },
+  solomon: { mbti: 'INTP', traits: ['지혜로움', '분석적', '호기심'] },
+  elijah: { mbti: 'INTJ', traits: ['비전가', '결단력', '독립적'] },
+  ruth: { mbti: 'ISFJ', traits: ['헌신적', '충성스러움', '겸손'] },
+  esther: { mbti: 'ENFJ', traits: ['용감함', '리더십', '카리스마'] },
+  joseph: { mbti: 'INFJ', traits: ['꿈꾸는자', '인내', '용서'] },
+  daniel: { mbti: 'INTJ', traits: ['지혜', '원칙주의', '신실함'] },
+  mary: { mbti: 'ISFP', traits: ['겸손', '순종', '묵상적'] },
+  john_apostle: { mbti: 'INFP', traits: ['사랑', '이상주의', '영적'] },
+  martha: { mbti: 'ESTJ', traits: ['실용적', '조직력', '봉사'] },
+  noah: { mbti: 'ISTJ', traits: ['순종', '인내', '신실함'] },
+  jacob: { mbti: 'ENTP', traits: ['영리함', '야망', '적응력'] },
+  samuel: { mbti: 'INFJ', traits: ['예언자', '분별력', '헌신'] },
+  jonah: { mbti: 'ISFP', traits: ['감정적', '내향적', '성장'] }
+};
+
+// MBTI 유형별 설명
+const mbtiDescriptions = {
+  ISTJ: '신뢰할 수 있는 청지기',
+  ISFJ: '헌신적인 수호자',
+  INFJ: '예언적 조언자',
+  INTJ: '비전의 설계자',
+  ISTP: '실용적 장인',
+  ISFP: '온유한 예술가',
+  INFP: '이상주의적 치유자',
+  INTP: '지혜로운 분석가',
+  ESTP: '행동하는 모험가',
+  ESFP: '열정의 연예인',
+  ENFP: '영감을 주는 옹호자',
+  ENTP: '혁신적 발명가',
+  ESTJ: '효율적 관리자',
+  ESFJ: '돌보는 제공자',
+  ENFJ: '카리스마 멘토',
+  ENTJ: '대담한 지휘관'
+};
+
+// MBTI 퀴즈 질문
+const mbtiQuestions = [
+  { q: '사람들과 함께할 때 에너지가 충전되나요?', e: 'E', i: 'I' },
+  { q: '미래의 가능성보다 현재의 사실을 중시하나요?', e: 'S', i: 'N' },
+  { q: '결정할 때 감정보다 논리를 우선하나요?', e: 'T', i: 'F' },
+  { q: '계획을 세우고 따르는 것을 선호하나요?', e: 'J', i: 'P' }
+];
+
+// 주요 인물 미술 작품 (퍼블릭 도메인)
+const characterArtwork = {
+  jesus: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Christ_as_Salvator_Mundi%2C_by_Leonardo_da_Vinci%2C_1499-1500.jpg/400px-Christ_as_Salvator_Mundi%2C_by_Leonardo_da_Vinci%2C_1499-1500.jpg',
+    title: 'Salvator Mundi',
+    artist: 'Leonardo da Vinci',
+    year: '1500'
+  },
+  moses: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/%27Moses%27_by_Michelangelo_JBU160.jpg/400px-%27Moses%27_by_Michelangelo_JBU160.jpg',
+    title: 'Moses',
+    artist: 'Michelangelo',
+    year: '1515'
+  },
+  david: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Rembrandt_Harmensz._van_Rijn_-_David_Playing_the_Harp_-_WGA19215.jpg/400px-Rembrandt_Harmensz._van_Rijn_-_David_Playing_the_Harp_-_WGA19215.jpg',
+    title: 'David Playing the Harp',
+    artist: 'Rembrandt',
+    year: '1656'
+  },
+  abraham: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Rembrandt_-_Sacrifice_of_Isaac_-_WGA19079.jpg/400px-Rembrandt_-_Sacrifice_of_Isaac_-_WGA19079.jpg',
+    title: 'Sacrifice of Isaac',
+    artist: 'Rembrandt',
+    year: '1635'
+  },
+  mary: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Sassoferrato_-_Madonna_col_Bambino.jpg/400px-Sassoferrato_-_Madonna_col_Bambino.jpg',
+    title: 'Madonna and Child',
+    artist: 'Sassoferrato',
+    year: '1640'
+  },
+  adam: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Michelangelo_-_Creation_of_Adam_%28cropped%29.jpg/400px-Michelangelo_-_Creation_of_Adam_%28cropped%29.jpg',
+    title: 'Creation of Adam',
+    artist: 'Michelangelo',
+    year: '1512'
+  },
+  eve: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Lucas_Cranach_d._%C3%84._-_Adam_und_Eva_%28Courtauld_Institute_of_Art%29.jpg/400px-Lucas_Cranach_d._%C3%84._-_Adam_und_Eva_%28Courtauld_Institute_of_Art%29.jpg',
+    title: 'Adam and Eve',
+    artist: 'Lucas Cranach',
+    year: '1526'
+  },
+  noah: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Edward_Hicks_-_Noah%27s_Ark.jpg/400px-Edward_Hicks_-_Noah%27s_Ark.jpg',
+    title: "Noah's Ark",
+    artist: 'Edward Hicks',
+    year: '1846'
+  },
+  joseph: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Pontormo_-_Joseph_in_Egypt_-_WGA18106.jpg/400px-Pontormo_-_Joseph_in_Egypt_-_WGA18106.jpg',
+    title: 'Joseph in Egypt',
+    artist: 'Pontormo',
+    year: '1518'
+  },
+  solomon: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Judgment_of_Solomon.jpg/400px-Judgment_of_Solomon.jpg',
+    title: 'Judgment of Solomon',
+    artist: 'Nicolas Poussin',
+    year: '1649'
+  },
+  daniel: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Peter_Paul_Rubens_-_Daniel_in_the_Lion%27s_Den_-_Google_Art_Project.jpg/400px-Peter_Paul_Rubens_-_Daniel_in_the_Lion%27s_Den_-_Google_Art_Project.jpg',
+    title: "Daniel in the Lion's Den",
+    artist: 'Peter Paul Rubens',
+    year: '1615'
+  },
+  elijah: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Washington_Allston_-_Elijah_in_the_Desert_-_13.107_-_Museum_of_Fine_Arts.jpg/400px-Washington_Allston_-_Elijah_in_the_Desert_-_13.107_-_Museum_of_Fine_Arts.jpg',
+    title: 'Elijah in the Desert',
+    artist: 'Washington Allston',
+    year: '1818'
+  },
+  paul: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Saint_Paul%2C_Rembrandt_van_Rijn_%28and_Workshop%3F%29%2C_c._1657.jpg/400px-Saint_Paul%2C_Rembrandt_van_Rijn_%28and_Workshop%3F%29%2C_c._1657.jpg',
+    title: 'Saint Paul',
+    artist: 'Rembrandt',
+    year: '1657'
+  },
+  peter: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Pope-peter_pprubens.jpg/400px-Pope-peter_pprubens.jpg',
+    title: 'Saint Peter',
+    artist: 'Peter Paul Rubens',
+    year: '1611'
+  },
+  john_baptist: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Caravaggio_-_San_Giovanni_Battista_%28Galleria_Nazionale_d%27Arte_Antica%29.jpg/400px-Caravaggio_-_San_Giovanni_Battista_%28Galleria_Nazionale_d%27Arte_Antica%29.jpg',
+    title: 'John the Baptist',
+    artist: 'Caravaggio',
+    year: '1604'
+  },
+  samson: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Samson_and_Delilah_by_Rubens.jpg/400px-Samson_and_Delilah_by_Rubens.jpg',
+    title: 'Samson and Delilah',
+    artist: 'Peter Paul Rubens',
+    year: '1610'
+  },
+  esther: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Artemisia_Gentileschi_-_Esther_before_Ahasuerus.JPG/400px-Artemisia_Gentileschi_-_Esther_before_Ahasuerus.JPG',
+    title: 'Esther before Ahasuerus',
+    artist: 'Artemisia Gentileschi',
+    year: '1628'
+  },
+  ruth: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Julius_Schnorr_von_Carolsfeld-_Ruth_im_Feld_des_Boaz.jpg/400px-Julius_Schnorr_von_Carolsfeld-_Ruth_im_Feld_des_Boaz.jpg',
+    title: 'Ruth in the Field of Boaz',
+    artist: 'Julius Schnorr',
+    year: '1828'
+  }
+};
+
 // ==================== 모바일 감지 ====================
 const useIsMobile = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
@@ -39,10 +203,11 @@ const styles = {
     position: 'relative'
   },
   header: {
-    padding: '8px 16px',
-    background: 'rgba(20, 20, 30, 0.95)',
-    borderBottom: '1px solid rgba(255,255,255,0.1)',
-    zIndex: 100
+    padding: '10px 20px',
+    background: 'linear-gradient(180deg, rgba(20,20,35,0.98) 0%, rgba(15,15,30,0.95) 100%)',
+    borderBottom: '1px solid rgba(100,126,234,0.3)',
+    zIndex: 100,
+    boxShadow: '0 4px 20px rgba(0,0,0,0.5)'
   },
   headerTop: {
     display: 'flex',
@@ -51,64 +216,73 @@ const styles = {
     gap: '12px'
   },
   title: {
-    fontSize: '1.1rem',
+    fontSize: '1.2rem',
     fontWeight: '700',
-    background: 'linear-gradient(135deg, #ffd700, #ff6b6b)',
+    background: 'linear-gradient(135deg, #ffd700 0%, #ff6b6b 50%, #a855f7 100%)',
     WebkitBackgroundClip: 'text',
     WebkitTextFillColor: 'transparent',
-    whiteSpace: 'nowrap'
+    whiteSpace: 'nowrap',
+    textShadow: '0 0 30px rgba(255,215,0,0.3)'
   },
   filterToggle: {
-    padding: '6px 12px',
-    borderRadius: '8px',
-    border: '1px solid rgba(255,255,255,0.2)',
-    background: 'rgba(255,255,255,0.1)',
+    padding: '8px 16px',
+    borderRadius: '20px',
+    border: '1px solid rgba(102,126,234,0.5)',
+    background: 'linear-gradient(135deg, rgba(102,126,234,0.3), rgba(118,75,162,0.3))',
     color: '#fff',
     cursor: 'pointer',
-    fontSize: '0.8rem',
+    fontSize: '0.85rem',
     display: 'flex',
     alignItems: 'center',
-    gap: '6px'
+    gap: '8px',
+    transition: 'all 0.3s ease',
+    boxShadow: '0 2px 10px rgba(102,126,234,0.3)'
   },
   filterSection: {
     display: 'flex',
     alignItems: 'center',
-    gap: '10px',
+    gap: '12px',
     flexWrap: 'wrap',
-    marginTop: '10px',
-    paddingTop: '10px',
-    borderTop: '1px solid rgba(255,255,255,0.1)'
+    marginTop: '12px',
+    paddingTop: '12px',
+    borderTop: '1px solid rgba(255,255,255,0.08)'
   },
   searchInput: {
-    padding: '8px 14px',
-    borderRadius: '20px',
-    border: '1px solid rgba(255,255,255,0.15)',
-    background: 'rgba(255,255,255,0.08)',
+    padding: '10px 18px',
+    borderRadius: '25px',
+    border: '2px solid rgba(102,126,234,0.4)',
+    background: 'linear-gradient(135deg, rgba(20,20,50,0.95), rgba(30,30,60,0.95))',
     color: '#fff',
-    width: '140px',
+    width: '160px',
     outline: 'none',
-    fontSize: '0.85rem'
+    fontSize: '0.9rem',
+    transition: 'all 0.3s ease',
+    boxShadow: 'inset 0 2px 8px rgba(0,0,0,0.3), 0 0 15px rgba(102,126,234,0.1)'
   },
   select: {
-    padding: '8px 12px',
-    borderRadius: '8px',
-    border: '1px solid rgba(255,255,255,0.15)',
-    background: 'rgba(30, 30, 50, 0.95)',
+    padding: '10px 14px',
+    borderRadius: '12px',
+    border: '2px solid rgba(102,126,234,0.4)',
+    background: 'linear-gradient(135deg, rgba(15,15,40,0.98), rgba(25,25,55,0.98))',
     color: '#fff',
     cursor: 'pointer',
     outline: 'none',
-    fontSize: '0.8rem',
-    minWidth: '90px'
+    fontSize: '0.85rem',
+    minWidth: '100px',
+    transition: 'all 0.3s ease',
+    boxShadow: '0 4px 15px rgba(0,0,0,0.3), 0 0 10px rgba(102,126,234,0.15)'
   },
   button: {
-    padding: '8px 12px',
-    borderRadius: '8px',
-    border: '1px solid rgba(255,255,255,0.15)',
-    background: 'rgba(255,255,255,0.1)',
+    padding: '10px 16px',
+    borderRadius: '12px',
+    border: '2px solid rgba(102,126,234,0.4)',
+    background: 'linear-gradient(135deg, rgba(102,126,234,0.2), rgba(118,75,162,0.2))',
     color: '#fff',
     cursor: 'pointer',
-    fontSize: '0.8rem',
-    fontWeight: '500'
+    fontSize: '0.85rem',
+    fontWeight: '500',
+    transition: 'all 0.3s ease',
+    boxShadow: '0 2px 10px rgba(0,0,0,0.2)'
   },
   mainContent: {
     flex: 1,
@@ -123,43 +297,49 @@ const styles = {
     background: '#000'
   },
   sidebar: {
-    width: '320px',
-    background: 'rgba(15, 15, 25, 0.98)',
-    borderLeft: '1px solid rgba(255,255,255,0.1)',
+    width: '340px',
+    background: 'linear-gradient(180deg, rgba(15,15,30,0.98) 0%, rgba(10,10,25,0.98) 100%)',
+    borderLeft: '1px solid rgba(102,126,234,0.2)',
     overflowY: 'auto',
-    padding: '16px'
+    padding: '20px'
   },
   characterList: {
-    marginTop: '10px',
-    maxHeight: '120px',
+    marginTop: '12px',
+    maxHeight: '140px',
     overflowY: 'auto',
     display: 'flex',
     flexWrap: 'wrap',
-    gap: '6px'
+    gap: '8px',
+    padding: '12px',
+    background: 'linear-gradient(135deg, rgba(102,126,234,0.1), rgba(118,75,162,0.1))',
+    borderRadius: '12px',
+    border: '1px solid rgba(102,126,234,0.2)'
   },
   characterChip: {
-    padding: '4px 10px',
-    borderRadius: '12px',
-    background: 'rgba(255,255,255,0.1)',
-    fontSize: '0.75rem',
+    padding: '6px 14px',
+    borderRadius: '20px',
+    background: 'linear-gradient(135deg, rgba(74,144,217,0.25), rgba(118,75,162,0.25))',
+    fontSize: '0.8rem',
     cursor: 'pointer',
-    border: '1px solid transparent',
-    transition: 'all 0.2s'
+    border: '1px solid rgba(102,126,234,0.35)',
+    transition: 'all 0.2s ease',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
   },
   popup: {
     position: 'fixed',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    background: 'rgba(20, 20, 35, 0.98)',
-    borderRadius: '16px',
-    padding: '20px',
-    width: 'calc(100vw - 32px)',
-    maxWidth: '500px',
-    maxHeight: '85vh',
+    background: 'linear-gradient(135deg, rgba(20,20,40,0.98), rgba(15,15,35,0.98))',
+    borderRadius: '20px',
+    padding: '24px',
+    width: 'calc(100vw - 24px)',
+    maxWidth: '520px',
+    maxHeight: '90vh',
     overflowY: 'auto',
     zIndex: 1000,
-    border: '1px solid rgba(255,255,255,0.15)'
+    border: '1px solid rgba(102,126,234,0.3)',
+    boxShadow: '0 20px 60px rgba(0,0,0,0.6), 0 0 40px rgba(102,126,234,0.1)'
   },
   overlay: {
     position: 'fixed',
@@ -168,48 +348,59 @@ const styles = {
     right: 0,
     bottom: 0,
     background: 'rgba(0,0,0,0.85)',
+    backdropFilter: 'blur(4px)',
     zIndex: 999
   },
   badge: {
     display: 'inline-block',
-    padding: '3px 8px',
-    borderRadius: '12px',
-    fontSize: '0.7rem',
-    marginRight: '5px',
-    marginBottom: '5px',
-    fontWeight: '500'
+    padding: '4px 10px',
+    borderRadius: '15px',
+    fontSize: '0.72rem',
+    marginRight: '6px',
+    marginBottom: '6px',
+    fontWeight: '500',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
   },
   card: {
-    background: 'rgba(255,255,255,0.05)',
-    borderRadius: '12px',
-    padding: '14px',
-    marginBottom: '12px',
-    border: '1px solid rgba(255,255,255,0.08)'
+    background: 'linear-gradient(135deg, rgba(102,126,234,0.1), rgba(118,75,162,0.08))',
+    borderRadius: '14px',
+    padding: '16px',
+    marginBottom: '14px',
+    border: '1px solid rgba(102,126,234,0.2)',
+    backdropFilter: 'blur(10px)'
   },
   sliderContainer: {
     display: 'flex',
     alignItems: 'center',
-    gap: '8px',
-    fontSize: '0.75rem'
+    gap: '10px',
+    fontSize: '0.8rem',
+    padding: '8px 14px',
+    background: 'linear-gradient(135deg, rgba(102,126,234,0.15), rgba(118,75,162,0.15))',
+    borderRadius: '20px',
+    border: '1px solid rgba(102,126,234,0.25)'
   },
   slider: {
-    width: '80px',
-    height: '4px',
+    width: '90px',
+    height: '6px',
     cursor: 'pointer',
-    accentColor: '#667eea'
+    accentColor: '#667eea',
+    borderRadius: '3px'
   }
 };
 
-// ==================== 노드 색상 ====================
+// ==================== 노드 색상 (레인보우 그라데이션 추가) ====================
 const getNodeColor = (character, isHighlighted, isSelected) => {
   if (!isHighlighted && !isSelected) {
-    return { fill: '#222', stroke: '#333', opacity: 0.15, glow: 'transparent' };
+    return { fill: '#1a1a2e', stroke: '#2a2a4e', opacity: 0.2, glow: 'transparent', isRainbow: false };
   }
 
+  // 주요 인물 (importance >= 8)은 레인보우 그라데이션
+  const isImportant = character.importance >= 8;
+
   const colors = {
-    god: { fill: '#ffd700', stroke: '#ffed4a', glow: 'rgba(255, 215, 0, 0.5)' },
-    jesus: { fill: '#ff6b6b', stroke: '#ff8787', glow: 'rgba(255, 107, 107, 0.5)' },
-    holy_spirit: { fill: '#74b9ff', stroke: '#a3d5ff', glow: 'rgba(116, 185, 255, 0.5)' }
+    god: { fill: '#ffd700', stroke: '#ffed4a', glow: 'rgba(255, 215, 0, 0.6)', isRainbow: true },
+    jesus: { fill: '#ff6b6b', stroke: '#ff8787', glow: 'rgba(255, 107, 107, 0.6)', isRainbow: true },
+    holy_spirit: { fill: '#74b9ff', stroke: '#a3d5ff', glow: 'rgba(116, 185, 255, 0.6)', isRainbow: true }
   };
 
   if (colors[character.id]) {
@@ -217,12 +408,13 @@ const getNodeColor = (character, isHighlighted, isSelected) => {
   }
 
   const testamentColors = {
-    old: { fill: '#4a90d9', stroke: '#6ba3e0', glow: 'rgba(74, 144, 217, 0.4)' },
-    new: { fill: '#e056fd', stroke: '#e878fc', glow: 'rgba(224, 86, 253, 0.4)' },
-    both: { fill: '#a29bfe', stroke: '#b8b3ff', glow: 'rgba(162, 155, 254, 0.4)' }
+    old: { fill: '#4a90d9', stroke: '#6ba3e0', glow: 'rgba(74, 144, 217, 0.5)' },
+    new: { fill: '#e056fd', stroke: '#e878fc', glow: 'rgba(224, 86, 253, 0.5)' },
+    both: { fill: '#a29bfe', stroke: '#b8b3ff', glow: 'rgba(162, 155, 254, 0.5)' }
   };
 
-  return { ...testamentColors[character.testament] || testamentColors.old, opacity: 1 };
+  const base = testamentColors[character.testament] || testamentColors.old;
+  return { ...base, opacity: 1, isRainbow: isImportant };
 };
 
 // ==================== 유틸리티 함수 ====================
@@ -240,15 +432,13 @@ const initializePositions = (characters, width, height) => {
   const positions = {};
   const centerX = width / 2;
   const centerY = height / 2;
-  const count = characters.length;
 
-  // 여러 겹의 원형 배치로 더 넓게 분산
   characters.forEach((char, index) => {
-    const layer = Math.floor(index / 20); // 20개씩 레이어 분리
-    const indexInLayer = index % 20;
-    const angle = (indexInLayer / 20) * Math.PI * 2 + (layer * 0.5);
-    const baseRadius = 250 + layer * 180; // 레이어마다 더 넓게
-    const radius = baseRadius + Math.random() * 100;
+    const layer = Math.floor(index / 15);
+    const indexInLayer = index % 15;
+    const angle = (indexInLayer / 15) * Math.PI * 2 + (layer * 0.4);
+    const baseRadius = 300 + layer * 200;
+    const radius = baseRadius + Math.random() * 120;
 
     positions[char.id] = {
       x: centerX + Math.cos(angle) * radius,
@@ -259,6 +449,16 @@ const initializePositions = (characters, width, height) => {
   });
 
   return positions;
+};
+
+// MBTI 유사도 계산
+const calculateMBTISimilarity = (mbti1, mbti2) => {
+  if (!mbti1 || !mbti2) return 0;
+  let score = 0;
+  for (let i = 0; i < 4; i++) {
+    if (mbti1[i] === mbti2[i]) score += 25;
+  }
+  return score;
 };
 
 // ==================== 메인 App 컴포넌트 ====================
@@ -273,7 +473,7 @@ export default function App() {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [showPopup, setShowPopup] = useState(null);
   const [positions, setPositions] = useState({});
-  const [zoom, setZoom] = useState(isMobile ? 0.6 : 0.8);
+  const [zoom, setZoom] = useState(isMobile ? 0.5 : 0.7);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragTarget, setDragTarget] = useState(null);
@@ -282,16 +482,22 @@ export default function App() {
   const [animationTime, setAnimationTime] = useState(0);
   const [showFilters, setShowFilters] = useState(!isMobile);
   const [nodeScale, setNodeScale] = useState(1.0);
+  const [showMBTI, setShowMBTI] = useState(false);
+  const [userMBTI, setUserMBTI] = useState('');
+  const [mbtiQuizStep, setMbtiQuizStep] = useState(0);
+  const [mbtiAnswers, setMbtiAnswers] = useState(['', '', '', '']);
 
   const svgRef = useRef(null);
   const containerRef = useRef(null);
   const animationRef = useRef(null);
   const pulseRef = useRef(null);
+  const dragStartPos = useRef(null);
+  const dragStartTime = useRef(null);
 
   // 펄스 애니메이션
   useEffect(() => {
     const animate = () => {
-      setAnimationTime(t => (t + 0.02) % (Math.PI * 2));
+      setAnimationTime(t => (t + 0.02) % (Math.PI * 200));
       pulseRef.current = requestAnimationFrame(animate);
     };
     pulseRef.current = requestAnimationFrame(animate);
@@ -328,18 +534,30 @@ export default function App() {
       getConnectedCharacters(selectedCharacter).forEach(id => ids.add(id));
     }
 
-    filteredCharacters.forEach(char => {
-      getConnectedCharacters(char.id).forEach(id => ids.add(id));
-    });
-
     return ids;
   }, [filteredCharacters, selectedCharacter]);
 
   const visibleRelationships = useMemo(() => {
     return relationships.filter(rel =>
-      highlightedIds.has(rel.source) || highlightedIds.has(rel.target)
+      highlightedIds.has(rel.source) && highlightedIds.has(rel.target)
     );
   }, [highlightedIds]);
+
+  // MBTI 매칭 결과
+  const mbtiMatches = useMemo(() => {
+    if (!userMBTI || userMBTI.length !== 4) return [];
+
+    return Object.entries(mbtiData)
+      .map(([id, data]) => ({
+        id,
+        character: getCharacterById(id),
+        mbti: data.mbti,
+        traits: data.traits,
+        similarity: calculateMBTISimilarity(userMBTI.toUpperCase(), data.mbti)
+      }))
+      .filter(m => m.character)
+      .sort((a, b) => b.similarity - a.similarity);
+  }, [userMBTI]);
 
   useEffect(() => {
     if (containerRef.current) {
@@ -348,7 +566,7 @@ export default function App() {
     }
   }, []);
 
-  // 물리 시뮬레이션 - 더 넓은 간격
+  // 물리 시뮬레이션
   useEffect(() => {
     if (Object.keys(positions).length === 0) return;
 
@@ -356,7 +574,6 @@ export default function App() {
       setPositions(prev => {
         const newPos = { ...prev };
 
-        // 반발력 - 더 강하고 넓은 범위
         allCharacters.forEach(char1 => {
           if (!newPos[char1.id]) return;
 
@@ -366,27 +583,26 @@ export default function App() {
             const dx = newPos[char1.id].x - newPos[char2.id].x;
             const dy = newPos[char1.id].y - newPos[char2.id].y;
             const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-            const minDist = 100; // 최소 거리 증가
+            const minDist = 120;
 
             if (dist < minDist) {
-              const force = (minDist - dist) / dist * 0.4;
+              const force = (minDist - dist) / dist * 0.5;
               newPos[char1.id].vx += dx * force;
               newPos[char1.id].vy += dy * force;
             }
           });
         });
 
-        // 연결된 노드 끌어당김 - 더 느슨하게
         relationships.forEach(rel => {
           if (!newPos[rel.source] || !newPos[rel.target]) return;
 
           const dx = newPos[rel.target].x - newPos[rel.source].x;
           const dy = newPos[rel.target].y - newPos[rel.source].y;
           const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-          const idealDist = 150; // 이상적 거리 증가
+          const idealDist = 180;
 
           if (dist > idealDist) {
-            const force = (dist - idealDist) / dist * 0.008;
+            const force = (dist - idealDist) / dist * 0.01;
             newPos[rel.source].vx += dx * force;
             newPos[rel.source].vy += dy * force;
             newPos[rel.target].vx -= dx * force;
@@ -399,8 +615,8 @@ export default function App() {
 
           newPos[id].x += newPos[id].vx;
           newPos[id].y += newPos[id].vy;
-          newPos[id].vx *= 0.92;
-          newPos[id].vy *= 0.92;
+          newPos[id].vx *= 0.9;
+          newPos[id].vy *= 0.9;
         });
 
         return newPos;
@@ -418,35 +634,36 @@ export default function App() {
     };
   }, [positions, dragTarget]);
 
-  const handleMouseDown = useCallback((e, characterId = null) => {
+  const handlePointerDown = useCallback((e, characterId = null) => {
+    e.preventDefault();
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
     const clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
     if (characterId) {
       setDragTarget(characterId);
-      setSelectedCharacter(characterId);
-      if (isMobile) {
-        setShowPopup('character');
-      }
+      dragStartPos.current = { x: clientX, y: clientY };
+      dragStartTime.current = Date.now();
     } else {
       setIsDragging(true);
     }
     setLastMouse({ x: clientX, y: clientY });
-  }, [isMobile]);
+  }, []);
 
-  const handleMouseMove = useCallback((e) => {
+  const handlePointerMove = useCallback((e) => {
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
     const clientY = e.touches ? e.touches[0].clientY : e.clientY;
     const dx = clientX - lastMouse.x;
     const dy = clientY - lastMouse.y;
 
-    if (dragTarget) {
+    if (dragTarget && positions[dragTarget]) {
       setPositions(prev => ({
         ...prev,
         [dragTarget]: {
           ...prev[dragTarget],
           x: prev[dragTarget].x + dx / zoom,
-          y: prev[dragTarget].y + dy / zoom
+          y: prev[dragTarget].y + dy / zoom,
+          vx: dx / zoom * 0.3,
+          vy: dy / zoom * 0.3
         }
       }));
     } else if (isDragging) {
@@ -454,16 +671,32 @@ export default function App() {
     }
 
     setLastMouse({ x: clientX, y: clientY });
-  }, [dragTarget, isDragging, lastMouse, zoom]);
+  }, [dragTarget, isDragging, lastMouse, zoom, positions]);
 
-  const handleMouseUp = useCallback(() => {
+  const handlePointerUp = useCallback((e) => {
+    if (dragTarget && dragStartPos.current && dragStartTime.current) {
+      const clientX = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
+      const clientY = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
+      const totalMove = Math.abs(clientX - dragStartPos.current.x) + Math.abs(clientY - dragStartPos.current.y);
+      const duration = Date.now() - dragStartTime.current;
+
+      if (totalMove < 10 && duration < 300) {
+        setSelectedCharacter(dragTarget);
+        if (isMobile) {
+          setShowPopup('character');
+        }
+      }
+    }
+
     setDragTarget(null);
     setIsDragging(false);
-  }, []);
+    dragStartPos.current = null;
+    dragStartTime.current = null;
+  }, [dragTarget, isMobile]);
 
   const handleWheel = useCallback((e) => {
     e.preventDefault();
-    const delta = e.deltaY > 0 ? 0.92 : 1.08;
+    const delta = e.deltaY > 0 ? 0.9 : 1.1;
     setZoom(prev => Math.max(0.1, Math.min(5, prev * delta)));
   }, []);
 
@@ -479,6 +712,21 @@ export default function App() {
     setShowPopup('event');
   }, []);
 
+  // MBTI 퀴즈 처리
+  const handleMBTIQuizAnswer = (answer) => {
+    const newAnswers = [...mbtiAnswers];
+    newAnswers[mbtiQuizStep] = answer;
+    setMbtiAnswers(newAnswers);
+
+    if (mbtiQuizStep < 3) {
+      setMbtiQuizStep(mbtiQuizStep + 1);
+    } else {
+      const mbti = newAnswers.join('');
+      setUserMBTI(mbti);
+      setMbtiQuizStep(0);
+    }
+  };
+
   const selectedCharacterData = selectedCharacter ? getCharacterById(selectedCharacter) : null;
   const selectedEventData = selectedEvent ? events.find(e => e.id === selectedEvent) : null;
 
@@ -492,18 +740,23 @@ export default function App() {
     setSelectedEra('all');
     setSelectedTestament('both');
     setSearchQuery('');
-    setZoom(isMobile ? 0.6 : 0.8);
+    setZoom(isMobile ? 0.5 : 0.7);
     setPan({ x: 0, y: 0 });
   };
 
-  // 노드 크기 계산 함수
   const getNodeSize = (character) => {
-    const baseSize = character.importance * 1.2 + 4;
+    const baseSize = character.importance * 1.3 + 5;
     return baseSize * nodeScale;
   };
 
-  // 필터 적용 여부
   const isFiltering = selectedTestament !== 'both' || selectedBook !== 'all' || selectedEra !== 'all' || searchQuery;
+
+  // 모바일 레이아웃: 필터 접히면 분할 뷰
+  const mobileContentStyle = isMobile && !showFilters ? {
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%'
+  } : {};
 
   return (
     <div style={styles.container}>
@@ -512,12 +765,23 @@ export default function App() {
         <div style={styles.headerTop}>
           <h1 style={styles.title}>성경 인물 관계도</h1>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '0.75rem', opacity: 0.7 }}>
-              {filteredCharacters.length}명
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span style={{
+              fontSize: '0.8rem',
+              padding: '4px 12px',
+              background: 'linear-gradient(135deg, rgba(102,126,234,0.25), rgba(118,75,162,0.25))',
+              borderRadius: '12px',
+              border: '1px solid rgba(102,126,234,0.35)'
+            }}>
+              {filteredCharacters.length}명 / {allCharacters.length}명
             </span>
             <button
-              style={styles.filterToggle}
+              style={{
+                ...styles.filterToggle,
+                background: showFilters
+                  ? 'linear-gradient(135deg, rgba(102,126,234,0.5), rgba(118,75,162,0.5))'
+                  : styles.filterToggle.background
+              }}
               onClick={() => setShowFilters(!showFilters)}
             >
               {showFilters ? '▲ 접기' : '▼ 필터'}
@@ -529,7 +793,7 @@ export default function App() {
           <div style={styles.filterSection}>
             <input
               type="text"
-              placeholder="검색..."
+              placeholder="인물 검색..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               style={styles.searchInput}
@@ -542,42 +806,60 @@ export default function App() {
             </select>
 
             <select value={selectedBook} onChange={(e) => setSelectedBook(e.target.value)} style={styles.select}>
-              <option value="all">성경</option>
+              <option value="all">전체 성경</option>
               <optgroup label="구약">
-                {bibleBooks.old.slice(0, 10).map(book => (
+                {bibleBooks.old.map(book => (
                   <option key={book.id} value={book.id}>{book.name_ko}</option>
                 ))}
               </optgroup>
               <optgroup label="신약">
-                {bibleBooks.new.slice(0, 10).map(book => (
+                {bibleBooks.new.map(book => (
                   <option key={book.id} value={book.id}>{book.name_ko}</option>
                 ))}
               </optgroup>
             </select>
 
             <select value={selectedEra} onChange={(e) => setSelectedEra(e.target.value)} style={styles.select}>
-              <option value="all">시대</option>
+              <option value="all">전체 시대</option>
               {eras.map(era => (
                 <option key={era.id} value={era.id}>{era.name_ko}</option>
               ))}
             </select>
 
-            {/* 노드 크기 조절 슬라이더 */}
             <div style={styles.sliderContainer}>
               <span>크기</span>
               <input
                 type="range"
-                min="0.5"
-                max="2"
+                min="0.4"
+                max="2.5"
                 step="0.1"
                 value={nodeScale}
                 onChange={(e) => setNodeScale(parseFloat(e.target.value))}
                 style={styles.slider}
               />
-              <span>{Math.round(nodeScale * 100)}%</span>
+              <span style={{ minWidth: '35px' }}>{Math.round(nodeScale * 100)}%</span>
             </div>
 
-            <button style={styles.button} onClick={() => setLang(lang === 'ko' ? 'en' : 'ko')}>
+            <button
+              style={{
+                ...styles.button,
+                background: showMBTI
+                  ? 'linear-gradient(135deg, rgba(255,215,0,0.4), rgba(255,107,107,0.4))'
+                  : styles.button.background,
+                border: showMBTI ? '2px solid rgba(255,215,0,0.5)' : styles.button.border
+              }}
+              onClick={() => setShowMBTI(!showMBTI)}
+            >
+              🧠 MBTI
+            </button>
+
+            <button
+              style={{
+                ...styles.button,
+                background: lang === 'en' ? 'linear-gradient(135deg, rgba(102,126,234,0.4), rgba(118,75,162,0.4))' : styles.button.background
+              }}
+              onClick={() => setLang(lang === 'ko' ? 'en' : 'ko')}
+            >
               {lang === 'ko' ? 'EN' : 'KO'}
             </button>
 
@@ -585,25 +867,84 @@ export default function App() {
           </div>
         )}
 
-        {/* 필터링된 인물 리스트 */}
+        {/* MBTI 섹션 */}
+        {showMBTI && showFilters && (
+          <div style={{
+            marginTop: '12px',
+            padding: '16px',
+            background: 'linear-gradient(135deg, rgba(255,215,0,0.1), rgba(255,107,107,0.1))',
+            borderRadius: '14px',
+            border: '1px solid rgba(255,215,0,0.3)'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+              <span style={{ fontSize: '0.9rem' }}>나의 MBTI:</span>
+              <input
+                type="text"
+                value={userMBTI}
+                onChange={(e) => setUserMBTI(e.target.value.toUpperCase().slice(0, 4))}
+                placeholder="예: INFJ"
+                maxLength={4}
+                style={{
+                  ...styles.searchInput,
+                  width: '80px',
+                  textAlign: 'center',
+                  textTransform: 'uppercase'
+                }}
+              />
+              <span style={{ fontSize: '0.8rem', opacity: 0.7 }}>또는</span>
+              <button
+                style={{ ...styles.button, fontSize: '0.8rem', padding: '8px 12px' }}
+                onClick={() => { setMbtiQuizStep(0); setMbtiAnswers(['','','','']); setShowPopup('mbtiQuiz'); }}
+              >
+                간단 테스트
+              </button>
+            </div>
+
+            {mbtiMatches.length > 0 && (
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                {mbtiMatches.slice(0, 5).map(match => (
+                  <div
+                    key={match.id}
+                    onClick={() => handleCharacterClick(match.id)}
+                    style={{
+                      padding: '8px 14px',
+                      background: `linear-gradient(135deg, rgba(255,215,0,${match.similarity/200}), rgba(255,107,107,${match.similarity/200}))`,
+                      borderRadius: '20px',
+                      cursor: 'pointer',
+                      border: '1px solid rgba(255,215,0,0.4)',
+                      fontSize: '0.85rem'
+                    }}
+                  >
+                    <span style={{ fontWeight: '600' }}>{lang === 'ko' ? match.character.name_ko : match.character.name_en}</span>
+                    <span style={{ opacity: 0.8, marginLeft: '6px' }}>({match.mbti} · {match.similarity}%)</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
         {isFiltering && showFilters && (
           <div style={styles.characterList}>
-            {filteredCharacters.slice(0, 30).map(char => (
+            {filteredCharacters.slice(0, 40).map(char => (
               <span
                 key={char.id}
                 style={{
                   ...styles.characterChip,
-                  background: selectedCharacter === char.id ? 'rgba(102,126,234,0.4)' : 'rgba(255,255,255,0.1)',
-                  borderColor: selectedCharacter === char.id ? '#667eea' : 'transparent'
+                  background: selectedCharacter === char.id
+                    ? 'linear-gradient(135deg, rgba(102,126,234,0.6), rgba(118,75,162,0.6))'
+                    : styles.characterChip.background,
+                  borderColor: selectedCharacter === char.id ? '#667eea' : 'rgba(102,126,234,0.35)',
+                  transform: selectedCharacter === char.id ? 'scale(1.05)' : 'scale(1)'
                 }}
                 onClick={() => handleCharacterClick(char.id)}
               >
                 {lang === 'ko' ? char.name_ko : char.name_en}
               </span>
             ))}
-            {filteredCharacters.length > 30 && (
-              <span style={{ ...styles.characterChip, opacity: 0.5 }}>
-                +{filteredCharacters.length - 30}명
+            {filteredCharacters.length > 40 && (
+              <span style={{ ...styles.characterChip, opacity: 0.6, cursor: 'default' }}>
+                +{filteredCharacters.length - 40}명
               </span>
             )}
           </div>
@@ -611,29 +952,53 @@ export default function App() {
       </header>
 
       {/* 메인 콘텐츠 */}
-      <div style={styles.mainContent}>
+      <div style={{ ...styles.mainContent, ...mobileContentStyle }}>
         {/* 그래프 영역 */}
         <div
           ref={containerRef}
-          style={styles.graphContainer}
-          onMouseDown={(e) => handleMouseDown(e)}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
-          onTouchStart={(e) => handleMouseDown(e)}
-          onTouchMove={handleMouseMove}
-          onTouchEnd={handleMouseUp}
+          style={{
+            ...styles.graphContainer,
+            flex: isMobile && !showFilters && selectedCharacterData ? '0 0 45%' : 1
+          }}
+          onMouseDown={(e) => handlePointerDown(e)}
+          onMouseMove={handlePointerMove}
+          onMouseUp={handlePointerUp}
+          onMouseLeave={handlePointerUp}
+          onTouchStart={(e) => handlePointerDown(e)}
+          onTouchMove={handlePointerMove}
+          onTouchEnd={handlePointerUp}
           onWheel={handleWheel}
         >
-          <svg ref={svgRef} width="100%" height="100%" style={{ cursor: isDragging ? 'grabbing' : 'grab' }}>
+          <svg ref={svgRef} width="100%" height="100%" style={{ cursor: isDragging ? 'grabbing' : 'grab', touchAction: 'none' }}>
             <defs>
               <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
                 <feMerge>
                   <feMergeNode in="coloredBlur"/>
                   <feMergeNode in="SourceGraphic"/>
                 </feMerge>
               </filter>
+
+              {/* 레인보우 그라데이션 */}
+              <linearGradient id="rainbowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#ff6b6b" />
+                <stop offset="25%" stopColor="#ffd700" />
+                <stop offset="50%" stopColor="#4ecdc4" />
+                <stop offset="75%" stopColor="#667eea" />
+                <stop offset="100%" stopColor="#a855f7" />
+              </linearGradient>
+
+              {/* 애니메이션된 레인보우 */}
+              <linearGradient id="rainbowAnimated" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor={`hsl(${(animationTime * 30) % 360}, 80%, 60%)`} />
+                <stop offset="50%" stopColor={`hsl(${(animationTime * 30 + 120) % 360}, 80%, 60%)`} />
+                <stop offset="100%" stopColor={`hsl(${(animationTime * 30 + 240) % 360}, 80%, 60%)`} />
+              </linearGradient>
+
+              {/* 데이터 흐름 애니메이션 마커 */}
+              <marker id="arrowFlow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(255,215,0,0.8)" />
+              </marker>
             </defs>
 
             <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`}>
@@ -644,21 +1009,47 @@ export default function App() {
                 if (!sourcePos || !targetPos) return null;
 
                 const isActive = selectedCharacter === rel.source || selectedCharacter === rel.target;
-                const relColor = relationshipColors[rel.type]?.color || '#444';
-                const opacity = isActive ? 0.8 : (highlightedIds.has(rel.source) && highlightedIds.has(rel.target) ? 0.25 : 0.05);
+                const relColor = relationshipColors[rel.type]?.color || '#555';
+                const bothHighlighted = highlightedIds.has(rel.source) && highlightedIds.has(rel.target);
+                const opacity = isActive ? 0.9 : (bothHighlighted ? 0.3 : 0.05);
+
+                // 데이터 흐름 애니메이션 계산
+                const dx = targetPos.x - sourcePos.x;
+                const dy = targetPos.y - sourcePos.y;
+                const length = Math.sqrt(dx * dx + dy * dy);
+                const dashOffset = isActive ? (animationTime * 50) % length : 0;
 
                 return (
-                  <line
-                    key={`rel-${index}`}
-                    x1={sourcePos.x}
-                    y1={sourcePos.y}
-                    x2={targetPos.x}
-                    y2={targetPos.y}
-                    stroke={relColor}
-                    strokeWidth={isActive ? 2 : 1}
-                    opacity={opacity}
-                    strokeLinecap="round"
-                  />
+                  <g key={`rel-${index}`}>
+                    {/* 기본 라인 */}
+                    <line
+                      x1={sourcePos.x}
+                      y1={sourcePos.y}
+                      x2={targetPos.x}
+                      y2={targetPos.y}
+                      stroke={isActive || bothHighlighted ? relColor : '#333'}
+                      strokeWidth={isActive ? 2.5 : 1}
+                      opacity={opacity}
+                      strokeLinecap="round"
+                    />
+
+                    {/* 데이터 흐름 애니메이션 (활성화된 관계만) */}
+                    {isActive && (
+                      <line
+                        x1={sourcePos.x}
+                        y1={sourcePos.y}
+                        x2={targetPos.x}
+                        y2={targetPos.y}
+                        stroke="rgba(255,215,0,0.6)"
+                        strokeWidth={3}
+                        strokeDasharray="8 16"
+                        strokeDashoffset={-dashOffset}
+                        opacity={0.8}
+                        strokeLinecap="round"
+                        markerEnd="url(#arrowFlow)"
+                      />
+                    )}
+                  </g>
                 );
               })}
 
@@ -672,40 +1063,56 @@ export default function App() {
                 const isHovered = hoveredNode === char.id;
                 const nodeColor = getNodeColor(char, isHighlighted, isSelected);
                 const size = getNodeSize(char);
-                const pulseScale = isSelected ? 1 + Math.sin(animationTime * 3) * 0.1 : 1;
+                const pulseScale = isSelected ? 1 + Math.sin(animationTime * 3) * 0.12 : 1;
+                const isDraggingThis = dragTarget === char.id;
+                const nodeOpacity = (isHighlighted || isSelected) ? 1 : 0.2;
+                const useRainbow = nodeColor.isRainbow && (isHighlighted || isSelected);
 
                 return (
                   <g
                     key={char.id}
                     transform={`translate(${pos.x}, ${pos.y}) scale(${pulseScale})`}
-                    style={{ cursor: 'pointer' }}
-                    onMouseDown={(e) => { e.stopPropagation(); handleMouseDown(e, char.id); }}
-                    onTouchStart={(e) => { e.stopPropagation(); handleMouseDown(e, char.id); }}
-                    onClick={() => handleCharacterClick(char.id)}
+                    style={{
+                      cursor: isDraggingThis ? 'grabbing' : 'pointer',
+                      touchAction: 'none'
+                    }}
+                    onMouseDown={(e) => { e.stopPropagation(); handlePointerDown(e, char.id); }}
+                    onTouchStart={(e) => { e.stopPropagation(); handlePointerDown(e, char.id); }}
                     onMouseEnter={() => setHoveredNode(char.id)}
                     onMouseLeave={() => setHoveredNode(null)}
-                    opacity={nodeColor.opacity}
+                    opacity={nodeOpacity}
                   >
                     {/* 선택/호버 글로우 */}
                     {(isSelected || isHovered) && isHighlighted && (
-                      <circle r={size + 4} fill={nodeColor.glow} opacity={0.5} filter="url(#glow)" />
+                      <circle r={size + 6} fill={useRainbow ? 'url(#rainbowAnimated)' : nodeColor.glow} opacity={0.6} filter="url(#glow)" />
+                    )}
+
+                    {/* 레인보우 링 (주요 인물) */}
+                    {useRainbow && (
+                      <circle
+                        r={size + 3}
+                        fill="none"
+                        stroke="url(#rainbowAnimated)"
+                        strokeWidth={2}
+                        opacity={0.5}
+                      />
                     )}
 
                     {/* 메인 노드 */}
                     <circle
                       r={size}
-                      fill={nodeColor.fill}
-                      stroke={isSelected ? '#fff' : nodeColor.stroke}
-                      strokeWidth={isSelected ? 2 : 1}
+                      fill={isHighlighted || isSelected ? nodeColor.fill : '#1a1a2e'}
+                      stroke={isSelected ? '#fff' : (useRainbow ? 'url(#rainbowGrad)' : (isHighlighted ? nodeColor.stroke : '#2a2a4e'))}
+                      strokeWidth={isSelected ? 3 : (useRainbow ? 2 : (isHovered ? 2 : 1))}
                     />
 
                     {/* 이름 라벨 */}
                     <text
-                      y={size + 10}
+                      y={size + 12}
                       textAnchor="middle"
-                      fill={isHighlighted ? '#fff' : '#444'}
-                      fontSize={isSelected ? 10 : 8}
-                      fontWeight={isSelected ? '600' : '400'}
+                      fill={isHighlighted || isSelected ? '#fff' : '#555'}
+                      fontSize={isSelected ? 11 : 9}
+                      fontWeight={isSelected ? '700' : '400'}
                       style={{ pointerEvents: 'none' }}
                     >
                       {lang === 'ko' ? char.name_ko : char.name_en}
@@ -719,52 +1126,86 @@ export default function App() {
           {/* 줌 컨트롤 */}
           <div style={{
             position: 'absolute',
-            bottom: isMobile ? 10 : 20,
-            left: isMobile ? 10 : 20,
+            bottom: isMobile ? 15 : 25,
+            left: isMobile ? 15 : 25,
             display: 'flex',
             flexDirection: 'column',
-            gap: 6,
-            background: 'rgba(20, 20, 30, 0.9)',
-            padding: '8px',
-            borderRadius: '10px',
-            border: '1px solid rgba(255,255,255,0.1)'
+            gap: 8,
+            background: 'linear-gradient(135deg, rgba(20,20,40,0.95), rgba(15,15,35,0.95))',
+            padding: '12px',
+            borderRadius: '14px',
+            border: '1px solid rgba(102,126,234,0.3)',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.4)'
           }}>
-            <button style={{...styles.button, padding: '6px 10px'}} onClick={() => setZoom(z => Math.min(5, z * 1.3))}>+</button>
-            <span style={{ fontSize: '0.7rem', color: '#888', textAlign: 'center' }}>{Math.round(zoom * 100)}%</span>
-            <button style={{...styles.button, padding: '6px 10px'}} onClick={() => setZoom(z => Math.max(0.1, z / 1.3))}>-</button>
+            <button
+              style={{...styles.button, padding: '8px 14px', fontSize: '1rem'}}
+              onClick={() => setZoom(z => Math.min(5, z * 1.3))}
+            >+</button>
+            <span style={{ fontSize: '0.75rem', color: '#8a8aaa', textAlign: 'center', padding: '2px 0' }}>
+              {Math.round(zoom * 100)}%
+            </span>
+            <button
+              style={{...styles.button, padding: '8px 14px', fontSize: '1rem'}}
+              onClick={() => setZoom(z => Math.max(0.1, z / 1.3))}
+            >-</button>
           </div>
 
-          {/* 범례 - 모바일에서는 숨김 */}
+          {/* 범례 */}
           {!isMobile && (
             <div style={{
               position: 'absolute',
-              bottom: 20,
-              right: selectedCharacter ? 340 : 20,
-              background: 'rgba(20, 20, 30, 0.9)',
-              padding: '10px 14px',
-              borderRadius: '10px',
-              border: '1px solid rgba(255,255,255,0.1)',
-              fontSize: '0.7rem',
+              bottom: 25,
+              right: selectedCharacter ? 360 : 25,
+              background: 'linear-gradient(135deg, rgba(20,20,40,0.95), rgba(15,15,35,0.95))',
+              padding: '12px 18px',
+              borderRadius: '14px',
+              border: '1px solid rgba(102,126,234,0.3)',
+              fontSize: '0.75rem',
               display: 'flex',
-              gap: '12px'
+              gap: '16px',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.4)'
             }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-                <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#4a90d9' }}/>
-                <span style={{ opacity: 0.7 }}>구약</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#4a90d9', boxShadow: '0 0 8px rgba(74,144,217,0.5)' }}/>
+                <span style={{ opacity: 0.8 }}>구약</span>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-                <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#e056fd' }}/>
-                <span style={{ opacity: 0.7 }}>신약</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#e056fd', boxShadow: '0 0 8px rgba(224,86,253,0.5)' }}/>
+                <span style={{ opacity: 0.8 }}>신약</span>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-                <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#ffd700' }}/>
-                <span style={{ opacity: 0.7 }}>삼위일체</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <div style={{ width: 10, height: 10, borderRadius: '50%', background: 'linear-gradient(135deg, #ff6b6b, #ffd700, #667eea)', boxShadow: '0 0 8px rgba(255,215,0,0.5)' }}/>
+                <span style={{ opacity: 0.8 }}>주요인물</span>
               </div>
             </div>
           )}
         </div>
 
-        {/* 사이드바 - 데스크탑만 */}
+        {/* 모바일 하단 콘텐츠 영역 (필터 접힘 + 인물 선택) */}
+        {isMobile && !showFilters && selectedCharacterData && (
+          <div style={{
+            flex: '0 0 55%',
+            background: 'linear-gradient(180deg, rgba(15,15,30,0.98) 0%, rgba(10,10,25,0.98) 100%)',
+            borderTop: '1px solid rgba(102,126,234,0.3)',
+            overflowY: 'auto',
+            padding: '16px'
+          }}>
+            <CharacterDetail
+              character={selectedCharacterData}
+              lang={lang}
+              relatedEvents={relatedEvents}
+              relatedHymns={relatedHymns}
+              relatedRelationships={relatedRelationships}
+              selectedCharacter={selectedCharacter}
+              onCharacterSelect={setSelectedCharacter}
+              onEventClick={handleEventClick}
+              artwork={characterArtwork[selectedCharacter]}
+              mbtiData={mbtiData[selectedCharacter]}
+            />
+          </div>
+        )}
+
+        {/* 사이드바 - 데스크탑 */}
         {!isMobile && selectedCharacterData && (
           <aside style={styles.sidebar}>
             <CharacterDetail
@@ -776,38 +1217,47 @@ export default function App() {
               selectedCharacter={selectedCharacter}
               onCharacterSelect={setSelectedCharacter}
               onEventClick={handleEventClick}
+              artwork={characterArtwork[selectedCharacter]}
+              mbtiData={mbtiData[selectedCharacter]}
             />
           </aside>
         )}
       </div>
 
-      {/* 타임라인 - 모바일에서는 숨김 */}
+      {/* 타임라인 - 데스크탑만 */}
       {!isMobile && (
         <div style={{
-          height: '55px',
-          background: 'rgba(15, 15, 25, 0.95)',
-          borderTop: '1px solid rgba(255,255,255,0.1)',
+          height: '60px',
+          background: 'linear-gradient(180deg, rgba(15,15,30,0.98) 0%, rgba(10,10,25,0.98) 100%)',
+          borderTop: '1px solid rgba(102,126,234,0.2)',
           display: 'flex',
           alignItems: 'center',
-          padding: '0 16px',
-          overflowX: 'auto'
+          padding: '0 20px',
+          overflowX: 'auto',
+          boxShadow: '0 -4px 20px rgba(0,0,0,0.4)'
         }}>
-          <div style={{ display: 'flex', gap: 6, minWidth: '100%' }}>
-            {eventsByChronology.slice(0, 35).map(event => (
+          <div style={{ display: 'flex', gap: 8, minWidth: '100%' }}>
+            {eventsByChronology.slice(0, 50).map(event => (
               <div
                 key={event.id}
                 style={{
-                  padding: '6px 12px',
-                  background: selectedEvent === event.id ? 'rgba(255,215,0,0.2)' : 'rgba(255,255,255,0.05)',
-                  borderRadius: 8,
+                  padding: '8px 14px',
+                  background: selectedEvent === event.id
+                    ? 'linear-gradient(135deg, rgba(255,215,0,0.3), rgba(255,107,107,0.3))'
+                    : 'linear-gradient(135deg, rgba(102,126,234,0.15), rgba(118,75,162,0.1))',
+                  borderRadius: 10,
                   cursor: 'pointer',
                   whiteSpace: 'nowrap',
-                  fontSize: '0.75rem',
-                  border: selectedEvent === event.id ? '1px solid rgba(255,215,0,0.4)' : '1px solid transparent'
+                  fontSize: '0.8rem',
+                  border: selectedEvent === event.id
+                    ? '1px solid rgba(255,215,0,0.5)'
+                    : '1px solid rgba(102,126,234,0.25)',
+                  transition: 'all 0.2s ease',
+                  boxShadow: selectedEvent === event.id ? '0 2px 12px rgba(255,215,0,0.2)' : 'none'
                 }}
                 onClick={() => handleEventClick(event.id)}
               >
-                <span style={{ marginRight: 4 }}>{event.icon}</span>
+                <span style={{ marginRight: 6 }}>{event.icon}</span>
                 {lang === 'ko' ? event.name_ko : event.name_en}
               </div>
             ))}
@@ -815,13 +1265,13 @@ export default function App() {
         </div>
       )}
 
-      {/* 모바일 인물 팝업 */}
-      {showPopup === 'character' && selectedCharacterData && (
+      {/* 모바일 인물 팝업 (필터 펼쳐져 있을 때만) */}
+      {showPopup === 'character' && selectedCharacterData && showFilters && (
         <>
           <div style={styles.overlay} onClick={() => setShowPopup(null)} />
           <div style={styles.popup}>
             <button
-              style={{ position: 'absolute', top: 12, right: 12, ...styles.button, padding: '6px 10px' }}
+              style={{ position: 'absolute', top: 14, right: 14, ...styles.button, padding: '8px 12px' }}
               onClick={() => setShowPopup(null)}
             >✕</button>
             <CharacterDetail
@@ -833,6 +1283,8 @@ export default function App() {
               selectedCharacter={selectedCharacter}
               onCharacterSelect={(id) => { setSelectedCharacter(id); }}
               onEventClick={handleEventClick}
+              artwork={characterArtwork[selectedCharacter]}
+              mbtiData={mbtiData[selectedCharacter]}
             />
           </div>
         </>
@@ -844,7 +1296,7 @@ export default function App() {
           <div style={styles.overlay} onClick={() => setShowPopup(null)} />
           <div style={styles.popup}>
             <button
-              style={{ position: 'absolute', top: 12, right: 12, ...styles.button, padding: '6px 10px' }}
+              style={{ position: 'absolute', top: 14, right: 14, ...styles.button, padding: '8px 12px' }}
               onClick={() => setShowPopup(null)}
             >✕</button>
             <EventDetail
@@ -856,64 +1308,238 @@ export default function App() {
           </div>
         </>
       )}
+
+      {/* MBTI 퀴즈 팝업 */}
+      {showPopup === 'mbtiQuiz' && (
+        <>
+          <div style={styles.overlay} onClick={() => setShowPopup(null)} />
+          <div style={{...styles.popup, maxWidth: '400px'}}>
+            <button
+              style={{ position: 'absolute', top: 14, right: 14, ...styles.button, padding: '8px 12px' }}
+              onClick={() => setShowPopup(null)}
+            >✕</button>
+
+            <h3 style={{
+              fontSize: '1.1rem',
+              marginBottom: '20px',
+              background: 'linear-gradient(135deg, #ffd700, #ff6b6b)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent'
+            }}>
+              🧠 간단 MBTI 테스트
+            </h3>
+
+            <p style={{ marginBottom: '8px', opacity: 0.6, fontSize: '0.85rem' }}>
+              질문 {mbtiQuizStep + 1} / 4
+            </p>
+
+            <p style={{ fontSize: '1rem', marginBottom: '20px', lineHeight: 1.6 }}>
+              {mbtiQuestions[mbtiQuizStep].q}
+            </p>
+
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <button
+                style={{
+                  ...styles.button,
+                  flex: 1,
+                  padding: '14px',
+                  background: 'linear-gradient(135deg, rgba(76,175,80,0.3), rgba(56,142,60,0.3))',
+                  border: '2px solid rgba(76,175,80,0.5)'
+                }}
+                onClick={() => handleMBTIQuizAnswer(mbtiQuestions[mbtiQuizStep].e)}
+              >
+                네 ✓
+              </button>
+              <button
+                style={{
+                  ...styles.button,
+                  flex: 1,
+                  padding: '14px',
+                  background: 'linear-gradient(135deg, rgba(244,67,54,0.3), rgba(211,47,47,0.3))',
+                  border: '2px solid rgba(244,67,54,0.5)'
+                }}
+                onClick={() => handleMBTIQuizAnswer(mbtiQuestions[mbtiQuizStep].i)}
+              >
+                아니오 ✗
+              </button>
+            </div>
+
+            <div style={{ display: 'flex', gap: '6px', marginTop: '20px', justifyContent: 'center' }}>
+              {[0,1,2,3].map(i => (
+                <div key={i} style={{
+                  width: '40px',
+                  height: '6px',
+                  borderRadius: '3px',
+                  background: i < mbtiQuizStep ? 'linear-gradient(135deg, #ffd700, #ff6b6b)' :
+                              i === mbtiQuizStep ? 'rgba(255,215,0,0.5)' : 'rgba(255,255,255,0.1)'
+                }} />
+              ))}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
 
 // ==================== 인물 상세 컴포넌트 ====================
-function CharacterDetail({ character, lang, relatedEvents, relatedHymns, relatedRelationships, selectedCharacter, onCharacterSelect, onEventClick }) {
+function CharacterDetail({ character, lang, relatedEvents, relatedHymns, relatedRelationships, selectedCharacter, onCharacterSelect, onEventClick, artwork, mbtiData }) {
   const nodeColor = getNodeColor(character, true, true);
 
   return (
     <>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14, paddingBottom: 14, borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+      {/* 미술 작품 (있는 경우) */}
+      {artwork && (
         <div style={{
-          width: 40,
-          height: 40,
+          marginBottom: '16px',
+          borderRadius: '14px',
+          overflow: 'hidden',
+          border: '1px solid rgba(102,126,234,0.3)',
+          position: 'relative'
+        }}>
+          <img
+            src={artwork.url}
+            alt={artwork.title}
+            style={{
+              width: '100%',
+              height: '160px',
+              objectFit: 'cover'
+            }}
+            onError={(e) => { e.target.style.display = 'none'; }}
+          />
+          <div style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            padding: '8px 12px',
+            background: 'linear-gradient(transparent, rgba(0,0,0,0.9))',
+            fontSize: '0.75rem'
+          }}>
+            <div style={{ fontWeight: '600' }}>{artwork.title}</div>
+            <div style={{ opacity: 0.7 }}>{artwork.artist}, {artwork.year}</div>
+          </div>
+        </div>
+      )}
+
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 14,
+        marginBottom: 18,
+        paddingBottom: 18,
+        borderBottom: '1px solid rgba(102,126,234,0.2)'
+      }}>
+        <div style={{
+          width: 50,
+          height: 50,
           borderRadius: '50%',
-          background: `linear-gradient(135deg, ${nodeColor.fill}, ${nodeColor.stroke})`,
+          background: character.importance >= 8
+            ? 'linear-gradient(135deg, #ff6b6b, #ffd700, #4ecdc4, #667eea)'
+            : `linear-gradient(135deg, ${nodeColor.fill}, ${nodeColor.stroke})`,
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center'
+          justifyContent: 'center',
+          boxShadow: `0 4px 15px ${nodeColor.glow}`
         }}>
-          <span style={{ fontSize: '1rem' }}>{character.testament === 'old' ? '📜' : '✝️'}</span>
+          <span style={{ fontSize: '1.3rem' }}>{character.testament === 'old' ? '📜' : '✝️'}</span>
         </div>
         <div>
-          <h2 style={{ fontSize: '1.1rem', fontWeight: '700', color: nodeColor.fill }}>
+          <h2 style={{
+            fontSize: '1.15rem',
+            fontWeight: '700',
+            color: nodeColor.fill,
+            textShadow: `0 0 20px ${nodeColor.glow}`
+          }}>
             {lang === 'ko' ? character.name_ko : character.name_en}
           </h2>
-          <div style={{ display: 'flex', gap: 6, marginTop: 4 }}>
-            <span style={{ ...styles.badge, background: character.testament === 'old' ? 'rgba(74, 144, 217, 0.3)' : 'rgba(224, 86, 253, 0.3)' }}>
+          <div style={{ display: 'flex', gap: 8, marginTop: 6, flexWrap: 'wrap' }}>
+            <span style={{
+              ...styles.badge,
+              background: character.testament === 'old' ? 'rgba(74, 144, 217, 0.3)' : 'rgba(224, 86, 253, 0.3)',
+              border: `1px solid ${character.testament === 'old' ? 'rgba(74,144,217,0.5)' : 'rgba(224,86,253,0.5)'}`
+            }}>
               {character.testament === 'old' ? '구약' : character.testament === 'new' ? '신약' : '구약+신약'}
             </span>
-            <span style={{ ...styles.badge, background: 'rgba(243, 156, 18, 0.2)' }}>
+            <span style={{
+              ...styles.badge,
+              background: 'rgba(243, 156, 18, 0.2)',
+              border: '1px solid rgba(243,156,18,0.4)'
+            }}>
               중요도 {character.importance}/10
             </span>
+            {mbtiData && (
+              <span style={{
+                ...styles.badge,
+                background: 'linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,107,107,0.2))',
+                border: '1px solid rgba(255,215,0,0.4)'
+              }}>
+                🧠 {mbtiData.mbti}
+              </span>
+            )}
           </div>
         </div>
       </div>
 
+      {/* MBTI 정보 */}
+      {mbtiData && (
+        <div style={{
+          ...styles.card,
+          background: 'linear-gradient(135deg, rgba(255,215,0,0.1), rgba(255,107,107,0.1))',
+          border: '1px solid rgba(255,215,0,0.3)'
+        }}>
+          <h4 style={{ marginBottom: 10, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span>🧠</span> MBTI 성향
+          </h4>
+          <p style={{ fontWeight: '600', color: '#ffd700', marginBottom: '6px' }}>
+            {mbtiData.mbti} - {mbtiDescriptions[mbtiData.mbti]}
+          </p>
+          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+            {mbtiData.traits.map((trait, i) => (
+              <span key={i} style={{
+                padding: '4px 10px',
+                background: 'rgba(255,255,255,0.1)',
+                borderRadius: '12px',
+                fontSize: '0.75rem'
+              }}>{trait}</span>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div style={styles.card}>
-        <p style={{ fontSize: '0.85rem', lineHeight: 1.6, opacity: 0.9 }}>
+        <p style={{ fontSize: '0.9rem', lineHeight: 1.7, opacity: 0.9 }}>
           {lang === 'ko' ? character.description_ko : character.description_en}
         </p>
       </div>
 
       {character.labels && (
-        <div style={{ marginBottom: 12 }}>
+        <div style={{ marginBottom: 14 }}>
           {character.labels.map((label, i) => (
-            <span key={i} style={{ ...styles.badge, background: 'rgba(255,255,255,0.08)' }}>{label}</span>
+            <span key={i} style={{
+              ...styles.badge,
+              background: 'linear-gradient(135deg, rgba(102,126,234,0.2), rgba(118,75,162,0.2))',
+              border: '1px solid rgba(102,126,234,0.3)'
+            }}>{label}</span>
           ))}
         </div>
       )}
 
       {character.verses && character.verses.length > 0 && (
         <div style={styles.card}>
-          <h4 style={{ marginBottom: 10, fontSize: '0.8rem' }}>📜 주요 구절</h4>
+          <h4 style={{ marginBottom: 12, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span>📜</span> 주요 구절
+          </h4>
           {character.verses.slice(0, 2).map((verse, i) => (
-            <div key={i} style={{ marginBottom: 8, padding: '10px', background: 'rgba(0,0,0,0.3)', borderRadius: 8, borderLeft: '3px solid #ffd700' }}>
-              <strong style={{ color: '#ffd700', fontSize: '0.75rem' }}>{verse.ref}</strong>
-              <p style={{ marginTop: 4, fontStyle: 'italic', opacity: 0.85, fontSize: '0.8rem', lineHeight: 1.4 }}>
+            <div key={i} style={{
+              marginBottom: 10,
+              padding: '12px',
+              background: 'rgba(0,0,0,0.3)',
+              borderRadius: 10,
+              borderLeft: '3px solid #ffd700'
+            }}>
+              <strong style={{ color: '#ffd700', fontSize: '0.8rem' }}>{verse.ref}</strong>
+              <p style={{ marginTop: 6, fontStyle: 'italic', opacity: 0.85, fontSize: '0.85rem', lineHeight: 1.5 }}>
                 "{lang === 'ko' ? verse.text_ko : verse.text_en}"
               </p>
             </div>
@@ -923,14 +1549,25 @@ function CharacterDetail({ character, lang, relatedEvents, relatedHymns, related
 
       {relatedEvents.length > 0 && (
         <div style={styles.card}>
-          <h4 style={{ marginBottom: 10, fontSize: '0.8rem' }}>📌 관련 사건</h4>
-          {relatedEvents.slice(0, 3).map(event => (
+          <h4 style={{ marginBottom: 12, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span>📌</span> 관련 사건 ({relatedEvents.length}개)
+          </h4>
+          {relatedEvents.slice(0, 5).map(event => (
             <div
               key={event.id}
-              style={{ padding: '8px 10px', background: 'rgba(0,0,0,0.3)', borderRadius: 8, marginBottom: 6, cursor: 'pointer', fontSize: '0.8rem' }}
+              style={{
+                padding: '10px 12px',
+                background: 'rgba(0,0,0,0.3)',
+                borderRadius: 10,
+                marginBottom: 8,
+                cursor: 'pointer',
+                fontSize: '0.85rem',
+                border: '1px solid transparent',
+                transition: 'all 0.2s'
+              }}
               onClick={() => onEventClick(event.id)}
             >
-              <span style={{ marginRight: 6 }}>{event.icon}</span>
+              <span style={{ marginRight: 8 }}>{event.icon}</span>
               {lang === 'ko' ? event.name_ko : event.name_en}
             </div>
           ))}
@@ -939,12 +1576,27 @@ function CharacterDetail({ character, lang, relatedEvents, relatedHymns, related
 
       {relatedHymns.length > 0 && (
         <div style={styles.card}>
-          <h4 style={{ marginBottom: 10, fontSize: '0.8rem' }}>🎵 관련 찬송가</h4>
-          {relatedHymns.slice(0, 3).map(hymn => (
-            <div key={hymn.id} style={{ padding: '8px 10px', background: 'rgba(0,0,0,0.3)', borderRadius: 8, marginBottom: 6, fontSize: '0.8rem' }}>
-              <span style={{ background: 'linear-gradient(135deg, #667eea, #764ba2)', padding: '2px 8px', borderRadius: 4, fontSize: '0.7rem', marginRight: 8 }}>
-                {hymn.number}장
-              </span>
+          <h4 style={{ marginBottom: 12, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span>🎵</span> 관련 찬송가
+          </h4>
+          {relatedHymns.slice(0, 4).map(hymn => (
+            <div key={hymn.id} style={{
+              padding: '10px 12px',
+              background: 'rgba(0,0,0,0.3)',
+              borderRadius: 10,
+              marginBottom: 8,
+              fontSize: '0.85rem',
+              display: 'flex',
+              alignItems: 'center'
+            }}>
+              <span style={{
+                background: 'linear-gradient(135deg, #667eea, #764ba2)',
+                padding: '4px 10px',
+                borderRadius: 6,
+                fontSize: '0.75rem',
+                fontWeight: '600',
+                marginRight: 10
+              }}>{hymn.number}장</span>
               {lang === 'ko' ? hymn.title_ko : hymn.title_en}
             </div>
           ))}
@@ -953,14 +1605,24 @@ function CharacterDetail({ character, lang, relatedEvents, relatedHymns, related
 
       {relatedRelationships.length > 0 && (
         <div style={styles.card}>
-          <h4 style={{ marginBottom: 10, fontSize: '0.8rem' }}>👥 관련 인물</h4>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-            {relatedRelationships.slice(0, 8).map((rel, i) => {
+          <h4 style={{ marginBottom: 12, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span>👥</span> 관련 인물 ({relatedRelationships.length}명)
+          </h4>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+            {relatedRelationships.slice(0, 12).map((rel, i) => {
               const otherId = rel.source === selectedCharacter ? rel.target : rel.source;
               const other = getCharacterById(otherId);
               if (!other) return null;
               return (
-                <button key={i} style={{ ...styles.button, fontSize: '0.75rem', padding: '4px 10px' }} onClick={() => onCharacterSelect(otherId)}>
+                <button
+                  key={i}
+                  style={{
+                    ...styles.button,
+                    fontSize: '0.8rem',
+                    padding: '6px 12px'
+                  }}
+                  onClick={() => onCharacterSelect(otherId)}
+                >
                   {lang === 'ko' ? other.name_ko : other.name_en}
                 </button>
               );
@@ -978,50 +1640,64 @@ function EventDetail({ event, lang, eras, onCharacterSelect }) {
 
   return (
     <>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16, paddingBottom: 16, borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 14,
+        marginBottom: 18,
+        paddingBottom: 18,
+        borderBottom: '1px solid rgba(102,126,234,0.2)'
+      }}>
         <div style={{
-          width: 50,
-          height: 50,
+          width: 55,
+          height: 55,
           background: 'linear-gradient(135deg, #667eea, #764ba2)',
-          borderRadius: 12,
+          borderRadius: 14,
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center'
+          justifyContent: 'center',
+          boxShadow: '0 4px 20px rgba(102,126,234,0.4)'
         }}>
-          <span style={{ fontSize: '1.5rem' }}>{event.icon}</span>
+          <span style={{ fontSize: '1.6rem' }}>{event.icon}</span>
         </div>
         <div>
-          <h2 style={{ fontSize: '1.1rem', fontWeight: '700', marginBottom: 4 }}>
+          <h2 style={{ fontSize: '1.15rem', fontWeight: '700', marginBottom: 6 }}>
             {lang === 'ko' ? event.name_ko : event.name_en}
           </h2>
-          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-            <span style={{ ...styles.badge, background: era?.color || '#666', margin: 0 }}>
+          <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+            <span style={{
+              ...styles.badge,
+              background: era?.color || '#666',
+              margin: 0
+            }}>
               {era?.name_ko}
             </span>
-            <span style={{ opacity: 0.6, fontSize: '0.8rem' }}>
+            <span style={{ opacity: 0.6, fontSize: '0.85rem' }}>
               {event.year > 0 ? `AD ${event.year}` : `BC ${Math.abs(event.year)}`}
             </span>
           </div>
         </div>
       </div>
 
-      <p style={{ marginBottom: 16, lineHeight: 1.7, fontSize: '0.9rem', opacity: 0.9 }}>
+      <p style={{ marginBottom: 18, lineHeight: 1.8, fontSize: '0.95rem', opacity: 0.9 }}>
         {lang === 'ko' ? event.description_ko : event.description_en}
       </p>
 
       <div style={styles.card}>
-        <h4 style={{ marginBottom: 10, fontSize: '0.85rem' }}>📜 성경 구절</h4>
-        <p style={{ color: '#ffd700', marginBottom: 6, fontSize: '0.85rem', fontWeight: '500' }}>
+        <h4 style={{ marginBottom: 12, fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span>📜</span> 성경 구절
+        </h4>
+        <p style={{ color: '#ffd700', marginBottom: 8, fontSize: '0.9rem', fontWeight: '500' }}>
           {event.verses.join(', ')}
         </p>
         <p style={{
           fontStyle: 'italic',
           opacity: 0.85,
-          fontSize: '0.85rem',
-          lineHeight: 1.6,
-          padding: '10px',
+          fontSize: '0.9rem',
+          lineHeight: 1.7,
+          padding: '12px',
           background: 'rgba(0,0,0,0.3)',
-          borderRadius: 8,
+          borderRadius: 10,
           borderLeft: '3px solid #ffd700'
         }}>
           "{lang === 'ko' ? event.verse_text_ko : event.verse_text_en}"
@@ -1030,21 +1706,29 @@ function EventDetail({ event, lang, eras, onCharacterSelect }) {
 
       {event.commentary_ko && (
         <div style={styles.card}>
-          <h4 style={{ marginBottom: 10, fontSize: '0.85rem' }}>📝 간략 강해</h4>
-          <p style={{ lineHeight: 1.7, opacity: 0.9, fontSize: '0.85rem' }}>
+          <h4 style={{ marginBottom: 12, fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span>📝</span> 간략 강해
+          </h4>
+          <p style={{ lineHeight: 1.8, opacity: 0.9, fontSize: '0.9rem' }}>
             {event.commentary_ko}
           </p>
         </div>
       )}
 
       <div style={styles.card}>
-        <h4 style={{ marginBottom: 10, fontSize: '0.85rem' }}>👥 관련 인물</h4>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+        <h4 style={{ marginBottom: 12, fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span>👥</span> 관련 인물
+        </h4>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
           {event.characters.map(charId => {
             const char = getCharacterById(charId);
             if (!char) return null;
             return (
-              <button key={charId} style={{ ...styles.button, fontSize: '0.8rem', padding: '6px 12px' }} onClick={() => onCharacterSelect(charId)}>
+              <button
+                key={charId}
+                style={{ ...styles.button, fontSize: '0.85rem', padding: '8px 14px' }}
+                onClick={() => onCharacterSelect(charId)}
+              >
                 {lang === 'ko' ? char.name_ko : char.name_en}
               </button>
             );
@@ -1052,7 +1736,7 @@ function EventDetail({ event, lang, eras, onCharacterSelect }) {
         </div>
       </div>
 
-      <p style={{ opacity: 0.4, fontSize: '0.75rem', marginTop: 12, textAlign: 'center' }}>
+      <p style={{ opacity: 0.4, fontSize: '0.8rem', marginTop: 14, textAlign: 'center' }}>
         📍 {event.location}
       </p>
     </>
