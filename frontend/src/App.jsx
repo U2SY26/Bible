@@ -560,14 +560,16 @@ const styles = {
     padding: '8px 10px',
     borderRadius: '10px',
     border: '1px solid rgba(102,126,234,0.4)',
-    background: 'linear-gradient(135deg, rgba(15,15,40,0.98), rgba(25,25,55,0.98))',
+    background: '#1a1a2e',
     color: '#fff',
     cursor: 'pointer',
     outline: 'none',
     fontSize: '0.75rem',
     width: '100%',
     transition: 'all 0.3s ease',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.3)'
+    boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+    // 드롭다운 옵션 스타일링
+    colorScheme: 'dark'
   },
   button: {
     padding: '8px 12px',
@@ -1231,9 +1233,7 @@ export default function App() {
       // 클릭으로 판정 (이동량 적고 시간 짧음)
       if (totalMove < 15 && duration < 400) {
         setSelectedCharacter(dragTarget);
-        if (isMobile) {
-          setShowPopup('character');
-        }
+        // 모바일에서는 하단 패널이 자동으로 표시됨
       }
     }
 
@@ -1241,7 +1241,7 @@ export default function App() {
     setIsDragging(false);
     dragStartPos.current = null;
     dragStartTime.current = null;
-  }, [dragTarget, isMobile]);
+  }, [dragTarget]);
 
   const handleWheel = useCallback((e) => {
     e.preventDefault();
@@ -1251,10 +1251,8 @@ export default function App() {
 
   const handleCharacterClick = useCallback((characterId) => {
     setSelectedCharacter(characterId);
-    if (isMobile) {
-      setShowPopup('character');
-    }
-  }, [isMobile]);
+    // 모바일에서는 하단 패널이 자동으로 표시됨
+  }, []);
 
   const handleEventClick = useCallback((eventId) => {
     setSelectedEvent(eventId);
@@ -1364,10 +1362,7 @@ export default function App() {
       const connectedIds = [charId, ...getConnectedCharacters(charId)];
       fitToNodes(connectedIds);
     }, 100);
-
-    if (isMobile) {
-      setShowPopup('character');
-    }
+    // 모바일에서는 하단 패널이 자동으로 표시됨 (팝업 사용 안 함)
   };
 
   const getNodeSize = (character) => {
@@ -1997,14 +1992,16 @@ export default function App() {
           )}
         </div>
 
-        {/* 모바일 하단 콘텐츠 영역 (필터 접힘 + 인물 선택) */}
-        {isMobile && !showFilters && selectedCharacterData && (
+        {/* 모바일 하단 콘텐츠 영역 (인물 선택 시 항상 표시) */}
+        {isMobile && selectedCharacterData && (
           <div style={{
-            flex: '0 0 55%',
+            minHeight: '45vh',
+            maxHeight: '60vh',
             background: 'linear-gradient(180deg, rgba(15,15,30,0.98) 0%, rgba(10,10,25,0.98) 100%)',
             borderTop: '1px solid rgba(102,126,234,0.3)',
             overflowY: 'auto',
-            padding: '16px'
+            padding: '16px',
+            WebkitOverflowScrolling: 'touch'
           }}>
             <CharacterDetail
               character={selectedCharacterData}
@@ -2083,8 +2080,8 @@ export default function App() {
         </div>
       )}
 
-      {/* 모바일 인물 팝업 (필터 펼쳐져 있을 때만) - Portal로 분리 */}
-      {showPopup === 'character' && selectedCharacterData && showFilters && createPortal(
+      {/* 모바일 인물 팝업 - 더 이상 사용하지 않음 (하단 패널로 대체) */}
+      {false && showPopup === 'character' && selectedCharacterData && createPortal(
         <>
           <div style={styles.overlay} onClick={() => setShowPopup(null)} />
           <div style={styles.popup}>
