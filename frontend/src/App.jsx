@@ -17,6 +17,8 @@ import {
   locationTypeIcons
 } from './data/index.js';
 import { characterArtwork, eventArtwork } from './data/artwork.js';
+import bibleData from './data/bible.json';
+import { bibleBooks as bibleBooksMeta, findBookByName } from './data/bible-books.js';
 
 // ==================== MBTI 데이터 (확장) ====================
 const mbtiData = {
@@ -599,7 +601,14 @@ export default function App() {
   const [searchFocused, setSearchFocused] = useState(false);
   const [recentSearches, setRecentSearches] = useState(() => getRecentSearches());
   const [activeQuickFilter, setActiveQuickFilter] = useState(null);
-  const [bibleVersePopup, setBibleVersePopup] = useState({ show: false, reference: '', text: '', loading: false });
+  const [bibleViewer, setBibleViewer] = useState({
+    show: false,
+    bookId: null,
+    bookName: '',
+    chapter: 1,
+    highlightVerse: null,
+    totalChapters: 0
+  });
 
   const svgRef = useRef(null);
   const searchInputRef = useRef(null);
@@ -1231,6 +1240,34 @@ export default function App() {
     }, 100);
     // 모바일에서는 하단 패널이 자동으로 표시됨 (팝업 사용 안 함)
   };
+
+  // 성경 구절 클릭 핸들러 - 해당 장 전체를 뷰어로 표시
+  const handleVerseClick = useCallback((verseRef) => {
+    // 구절 참조 파싱 (예: "창세기 1:1", "요한복음 3:16-17")
+    const match = verseRef.match(/^(.+?)\s+(\d+):(\d+)(?:-\d+)?$/);
+    if (!match) {
+      console.warn('Invalid verse reference:', verseRef);
+      return;
+    }
+
+    const [, bookName, chapter, verse] = match;
+
+    // 책 찾기 (한국어 이름으로)
+    const book = bibleData.books.find(b => b.name === bookName);
+    if (!book) {
+      console.warn('Book not found:', bookName);
+      return;
+    }
+
+    setBibleViewer({
+      show: true,
+      bookId: book.id,
+      bookName: book.name,
+      chapter: parseInt(chapter),
+      highlightVerse: parseInt(verse),
+      totalChapters: book.chapters.length
+    });
+  }, []);
 
   const getNodeSize = (character) => {
     // 중요도에 따른 크기 차이를 더 크게 (importance 1: 8, importance 10: 30)
@@ -1999,6 +2036,7 @@ export default function App() {
               selectedCharacter={selectedCharacter}
               onCharacterSelect={setSelectedCharacter}
               onEventClick={handleEventClick}
+              onVerseClick={handleVerseClick}
               artwork={characterArtwork[selectedCharacter]}
               mbtiData={mbtiData[selectedCharacter]}
             />
@@ -2018,6 +2056,7 @@ export default function App() {
               selectedCharacter={selectedCharacter}
               onCharacterSelect={setSelectedCharacter}
               onEventClick={handleEventClick}
+              onVerseClick={handleVerseClick}
               artwork={characterArtwork[selectedCharacter]}
               mbtiData={mbtiData[selectedCharacter]}
             />
@@ -2044,6 +2083,7 @@ export default function App() {
               selectedCharacter={selectedCharacter}
               onCharacterSelect={(id) => { setSelectedCharacter(id); }}
               onEventClick={handleEventClick}
+              onVerseClick={handleVerseClick}
               artwork={characterArtwork[selectedCharacter]}
               mbtiData={mbtiData[selectedCharacter]}
             />
@@ -2074,10 +2114,16 @@ export default function App() {
         document.body
       )}
 
-      <BibleVersePopup
-        popupState={bibleVersePopup}
-        onClose={() => setBibleVersePopup({ show: false, reference: '', text: '', loading: false })}
-      />
+      {/* 성경 뷰어 - Portal로 분리 */}
+      {bibleViewer.show && createPortal(
+        <BibleViewer
+          bibleViewer={bibleViewer}
+          setBibleViewer={setBibleViewer}
+          bibleData={bibleData}
+          isMobile={isMobile}
+        />,
+        document.body
+      )}
 
       {/* MBTI 퀴즈 팝업 - Portal로 분리 */}
       {showPopup === 'mbtiQuiz' && createPortal(
@@ -2154,7 +2200,7 @@ export default function App() {
 }
 
 // ==================== 인물 상세 컴포넌트 ====================
-function CharacterDetail({ character, lang, relatedEvents, relatedHymns, relatedRelationships, relatedLocations, selectedCharacter, onCharacterSelect, onEventClick, artwork, mbtiData }) {
+function CharacterDetail({ character, lang, relatedEvents, relatedHymns, relatedRelationships, relatedLocations, selectedCharacter, onCharacterSelect, onEventClick, onVerseClick, artwork, mbtiData }) {
   const nodeColor = getNodeColor(character, true, true);
 
   // 기본 아트워크 (예술 작품이 없는 경우)
@@ -2330,9 +2376,28 @@ function CharacterDetail({ character, lang, relatedEvents, relatedHymns, related
               padding: '12px',
               background: 'rgba(0,0,0,0.3)',
               borderRadius: 10,
-              borderLeft: '3px solid #ffd700'
-            }}>
-              <strong style={{ color: '#ffd700', fontSize: '0.8rem' }}>{verse.ref}</strong>
+              borderLeft: '3px solid #ffd700',
+              cursor: 'pointer',
+              transition: 'all 0.2s'
+            }}
+            onClick={() => onVerseClick && onVerseClick(verse.ref)}
+            >
+              <strong style={{
+                color: '#ffd700',
+                fontSize: '0.8rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}>
+                {verse.ref}
+                <span style={{
+                  fontSize: '0.7rem',
+                  opacity: 0.6,
+                  background: 'rgba(255,215,0,0.2)',
+                  padding: '2px 6px',
+                  borderRadius: '4px'
+                }}>클릭하여 성경 읽기</span>
+              </strong>
               <p style={{ marginTop: 6, fontStyle: 'italic', opacity: 0.85, fontSize: '0.85rem', lineHeight: 1.5 }}>
                 "{lang === 'ko' ? verse.text_ko : verse.text_en}"
               </p>
@@ -2622,5 +2687,302 @@ function EventDetail({ event, lang, eras, onCharacterSelect, artwork, onVerseCli
         </p>
       )}
     </>
+  );
+}
+
+// ==================== 성경 뷰어 컴포넌트 ====================
+function BibleViewer({ bibleViewer, setBibleViewer, bibleData, isMobile }) {
+  const { bookId, bookName, chapter, highlightVerse, totalChapters } = bibleViewer;
+  const verseRefs = useRef({});
+  const containerRef = useRef(null);
+
+  // 현재 책과 장의 데이터 가져오기
+  const book = useMemo(() => {
+    return bibleData.books.find(b => b.id === bookId);
+  }, [bibleData, bookId]);
+
+  const chapterData = useMemo(() => {
+    if (!book) return null;
+    return book.chapters.find(c => c.chapter === chapter);
+  }, [book, chapter]);
+
+  // 하이라이트된 구절로 스크롤
+  useEffect(() => {
+    if (highlightVerse && verseRefs.current[highlightVerse]) {
+      setTimeout(() => {
+        verseRefs.current[highlightVerse].scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        });
+      }, 100);
+    }
+  }, [chapter, highlightVerse]);
+
+  // ESC 키로 닫기
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        handleClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  const handleChapterChange = (newChapter) => {
+    setBibleViewer(prev => ({
+      ...prev,
+      chapter: newChapter,
+      highlightVerse: null
+    }));
+  };
+
+  const handleClose = () => {
+    setBibleViewer({
+      show: false,
+      bookId: null,
+      bookName: '',
+      chapter: 1,
+      highlightVerse: null,
+      totalChapters: 0
+    });
+  };
+
+  // 책 목록
+  const allBooks = useMemo(() => bibleData.books, [bibleData]);
+
+  const handleBookChange = (newBookId) => {
+    const newBook = allBooks.find(b => b.id === newBookId);
+    if (newBook) {
+      setBibleViewer(prev => ({
+        ...prev,
+        bookId: newBookId,
+        bookName: newBook.name,
+        chapter: 1,
+        highlightVerse: null,
+        totalChapters: newBook.chapters.length
+      }));
+    }
+  };
+
+  if (!book || !chapterData) return null;
+
+  const viewerStyles = {
+    overlay: {
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      background: 'rgba(0,0,0,0.85)',
+      backdropFilter: 'blur(10px)',
+      zIndex: 10000,
+      display: 'flex',
+      flexDirection: 'column'
+    },
+    header: {
+      padding: isMobile ? '12px 16px' : '16px 24px',
+      background: 'linear-gradient(135deg, rgba(26,26,46,0.98), rgba(22,22,40,0.98))',
+      borderBottom: '1px solid rgba(102,126,234,0.3)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      gap: '12px',
+      flexWrap: 'wrap'
+    },
+    titleSection: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '12px',
+      flex: 1,
+      minWidth: '200px'
+    },
+    select: {
+      padding: '8px 12px',
+      borderRadius: '8px',
+      border: '1px solid rgba(102,126,234,0.4)',
+      background: 'rgba(30,30,50,0.9)',
+      color: '#fff',
+      fontSize: '0.9rem',
+      cursor: 'pointer',
+      outline: 'none'
+    },
+    nav: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '8px'
+    },
+    navButton: {
+      padding: '8px 16px',
+      borderRadius: '8px',
+      border: '1px solid rgba(102,126,234,0.4)',
+      background: 'linear-gradient(135deg, rgba(102,126,234,0.2), rgba(118,75,162,0.2))',
+      color: '#fff',
+      cursor: 'pointer',
+      fontSize: '0.9rem',
+      transition: 'all 0.2s'
+    },
+    closeButton: {
+      padding: '8px 16px',
+      borderRadius: '8px',
+      border: 'none',
+      background: 'linear-gradient(135deg, #ff6b6b, #ee5a5a)',
+      color: '#fff',
+      cursor: 'pointer',
+      fontSize: '0.9rem',
+      fontWeight: '600'
+    },
+    content: {
+      flex: 1,
+      overflow: 'auto',
+      padding: isMobile ? '16px' : '24px 48px',
+      background: 'linear-gradient(180deg, rgba(26,26,46,0.95), rgba(18,18,35,0.98))'
+    },
+    chapterTitle: {
+      textAlign: 'center',
+      fontSize: isMobile ? '1.3rem' : '1.5rem',
+      fontWeight: '700',
+      marginBottom: '24px',
+      color: '#ffd700',
+      textShadow: '0 0 20px rgba(255,215,0,0.3)'
+    },
+    verse: {
+      marginBottom: '12px',
+      lineHeight: '1.9',
+      fontSize: isMobile ? '1rem' : '1.1rem',
+      padding: '8px 12px',
+      borderRadius: '8px',
+      transition: 'all 0.3s'
+    },
+    verseNumber: {
+      display: 'inline-block',
+      width: '32px',
+      fontWeight: '700',
+      color: '#667eea',
+      fontSize: '0.85rem'
+    },
+    highlightedVerse: {
+      background: 'linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,183,0,0.15))',
+      border: '1px solid rgba(255,215,0,0.4)',
+      boxShadow: '0 0 20px rgba(255,215,0,0.2)'
+    },
+    chapterNav: {
+      display: 'flex',
+      justifyContent: 'center',
+      gap: '8px',
+      padding: '16px',
+      flexWrap: 'wrap',
+      borderTop: '1px solid rgba(102,126,234,0.2)',
+      background: 'rgba(26,26,46,0.9)'
+    },
+    chapterButton: {
+      width: '36px',
+      height: '36px',
+      borderRadius: '8px',
+      border: '1px solid rgba(102,126,234,0.3)',
+      background: 'rgba(30,30,50,0.8)',
+      color: '#fff',
+      cursor: 'pointer',
+      fontSize: '0.85rem',
+      transition: 'all 0.2s'
+    },
+    activeChapter: {
+      background: 'linear-gradient(135deg, #667eea, #764ba2)',
+      border: '1px solid #667eea',
+      fontWeight: '700'
+    }
+  };
+
+  return (
+    <div style={viewerStyles.overlay}>
+      {/* 헤더 */}
+      <div style={viewerStyles.header}>
+        <div style={viewerStyles.titleSection}>
+          <span style={{ fontSize: '1.5rem' }}>📖</span>
+          <select
+            value={bookId}
+            onChange={(e) => handleBookChange(e.target.value)}
+            style={viewerStyles.select}
+          >
+            <optgroup label="구약 성경">
+              {allBooks.filter(b => b.testament === 'old').map(b => (
+                <option key={b.id} value={b.id}>{b.name}</option>
+              ))}
+            </optgroup>
+            <optgroup label="신약 성경">
+              {allBooks.filter(b => b.testament === 'new').map(b => (
+                <option key={b.id} value={b.id}>{b.name}</option>
+              ))}
+            </optgroup>
+          </select>
+          <span style={{ color: '#ffd700', fontWeight: '600' }}>{chapter}장</span>
+        </div>
+
+        <div style={viewerStyles.nav}>
+          <button
+            style={{
+              ...viewerStyles.navButton,
+              opacity: chapter <= 1 ? 0.4 : 1
+            }}
+            onClick={() => chapter > 1 && handleChapterChange(chapter - 1)}
+            disabled={chapter <= 1}
+          >
+            ◀ 이전
+          </button>
+          <button
+            style={{
+              ...viewerStyles.navButton,
+              opacity: chapter >= totalChapters ? 0.4 : 1
+            }}
+            onClick={() => chapter < totalChapters && handleChapterChange(chapter + 1)}
+            disabled={chapter >= totalChapters}
+          >
+            다음 ▶
+          </button>
+          <button style={viewerStyles.closeButton} onClick={handleClose}>
+            ✕ 닫기
+          </button>
+        </div>
+      </div>
+
+      {/* 본문 */}
+      <div style={viewerStyles.content} ref={containerRef}>
+        <h2 style={viewerStyles.chapterTitle}>
+          {bookName} {chapter}장
+        </h2>
+
+        <div>
+          {chapterData.verses.map((v) => (
+            <p
+              key={v.verse}
+              ref={el => verseRefs.current[v.verse] = el}
+              style={{
+                ...viewerStyles.verse,
+                ...(v.verse === highlightVerse ? viewerStyles.highlightedVerse : {})
+              }}
+            >
+              <span style={viewerStyles.verseNumber}>{v.verse}</span>
+              {v.text}
+            </p>
+          ))}
+        </div>
+      </div>
+
+      {/* 장 네비게이션 */}
+      <div style={viewerStyles.chapterNav}>
+        {Array.from({ length: totalChapters }, (_, i) => i + 1).map(num => (
+          <button
+            key={num}
+            style={{
+              ...viewerStyles.chapterButton,
+              ...(num === chapter ? viewerStyles.activeChapter : {})
+            }}
+            onClick={() => handleChapterChange(num)}
+          >
+            {num}
+          </button>
+        ))}
+      </div>
+    </div>
   );
 }
