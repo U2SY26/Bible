@@ -480,6 +480,18 @@ const styles = {
     flexDirection: 'column',
     position: 'relative'
   },
+  containerMobile: {
+    width: '100vw',
+    minHeight: '100vh',
+    background: '#000',
+    fontFamily: "'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif",
+    color: '#fff',
+    overflowX: 'hidden',
+    overflowY: 'auto',
+    display: 'flex',
+    flexDirection: 'column',
+    position: 'relative'
+  },
   header: {
     padding: '10px 20px',
     background: 'linear-gradient(180deg, rgba(20,20,35,0.98) 0%, rgba(15,15,30,0.95) 100%)',
@@ -576,8 +588,21 @@ const styles = {
     overflow: 'hidden',
     position: 'relative'
   },
+  mainContentMobile: {
+    flex: 'none',
+    display: 'block',
+    overflow: 'visible',
+    position: 'relative'
+  },
   graphContainer: {
     flex: 1,
+    position: 'relative',
+    overflow: 'hidden',
+    background: '#000'
+  },
+  graphContainerMobile: {
+    width: '100%',
+    height: '55vh',
     position: 'relative',
     overflow: 'hidden',
     background: '#000'
@@ -1299,7 +1324,7 @@ export default function App() {
   } : {};
 
   return (
-    <div style={styles.container}>
+    <div style={isMobile ? styles.containerMobile : styles.container}>
       {/* 헤더 */}
       <header style={styles.header}>
         <div style={styles.headerTop}>
@@ -1671,24 +1696,28 @@ export default function App() {
       </header>
 
       {/* 메인 콘텐츠 */}
-      <div style={{ ...styles.mainContent, ...mobileContentStyle }}>
+      <div style={isMobile ? styles.mainContentMobile : { ...styles.mainContent, ...mobileContentStyle }}>
         {/* 그래프 영역 */}
         <div
           ref={containerRef}
-          style={{
+          style={isMobile ? styles.graphContainerMobile : {
             ...styles.graphContainer,
-            flex: isMobile && !showFilters && selectedCharacterData ? '0 0 45%' : 1
+            flex: !showFilters && selectedCharacterData ? '0 0 45%' : 1
           }}
           onMouseDown={(e) => handlePointerDown(e)}
           onMouseMove={handlePointerMove}
           onMouseUp={handlePointerUp}
           onMouseLeave={handlePointerUp}
           onTouchStart={(e) => handlePointerDown(e)}
-          onTouchMove={handlePointerMove}
+          onTouchMove={(e) => {
+            // 세로 스크롤 허용: 드래그 중이 아니면 기본 동작
+            if (!isDragging && !dragTarget) return;
+            handlePointerMove(e);
+          }}
           onTouchEnd={handlePointerUp}
           onWheel={handleWheel}
         >
-          <svg ref={svgRef} width="100%" height="100%" style={{ cursor: isDragging ? 'grabbing' : 'grab', touchAction: 'manipulation' }}>
+          <svg ref={svgRef} width="100%" height="100%" style={{ cursor: isDragging ? 'grabbing' : 'grab', touchAction: isMobile ? 'pan-y pinch-zoom' : 'manipulation' }}>
             <defs>
               <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
                 <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
