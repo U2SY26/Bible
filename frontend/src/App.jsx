@@ -537,10 +537,9 @@ const styles = {
     borderTop: '1px solid rgba(255,255,255,0.08)'
   },
   filterSectionDesktop: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '12px',
-    flexWrap: 'wrap',
+    display: 'grid',
+    gridTemplateColumns: 'repeat(3, 1fr)',
+    gap: '10px',
     marginTop: '12px',
     paddingTop: '12px',
     borderTop: '1px solid rgba(255,255,255,0.08)'
@@ -605,7 +604,10 @@ const styles = {
     height: '55vh',
     position: 'relative',
     overflow: 'hidden',
-    background: '#000'
+    background: '#000',
+    touchAction: 'none',  // 캔버스 내 터치는 직접 처리
+    WebkitUserSelect: 'none',
+    userSelect: 'none'
   },
   sidebar: {
     width: '340px',
@@ -1031,11 +1033,13 @@ export default function App() {
     );
   }, [visibleRelationships, visibleNodeIds]);
 
-  // MBTI 매칭 결과
+  // MBTI 매칭 결과 (삼위일체 제외: 하나님, 예수님, 성령님)
+  const TRINITY_IDS = ['god', 'jesus', 'holy_spirit'];
   const mbtiMatches = useMemo(() => {
     if (!userMBTI || userMBTI.length !== 4) return [];
 
     return Object.entries(mbtiData)
+      .filter(([id]) => !TRINITY_IDS.includes(id)) // 삼위일체 제외
       .map(([id, data]) => ({
         id,
         character: getCharacterById(id),
@@ -1291,19 +1295,76 @@ export default function App() {
     setPan({ x: 0, y: 0 });
   };
 
-  // 검색 제출 핸들러
+  // 화면에 노드들 맞추기 함수
+  const fitToNodes = useCallback((nodeIds) => {
+    if (!nodeIds || nodeIds.length === 0 || !containerRef.current) return;
+
+    const validPositions = nodeIds
+      .map(id => positions[id])
+      .filter(pos => pos);
+
+    if (validPositions.length === 0) return;
+
+    // 바운딩 박스 계산
+    const xs = validPositions.map(p => p.x);
+    const ys = validPositions.map(p => p.y);
+    const minX = Math.min(...xs);
+    const maxX = Math.max(...xs);
+    const minY = Math.min(...ys);
+    const maxY = Math.max(...ys);
+
+    const bbox = {
+      width: maxX - minX + 100,  // 여유 공간
+      height: maxY - minY + 100,
+      centerX: (minX + maxX) / 2,
+      centerY: (minY + maxY) / 2
+    };
+
+    const { width: viewWidth, height: viewHeight } = containerRef.current.getBoundingClientRect();
+
+    // 줌 계산 (여유있게)
+    const scaleX = viewWidth / bbox.width;
+    const scaleY = viewHeight / bbox.height;
+    const newZoom = Math.min(Math.max(Math.min(scaleX, scaleY) * 0.8, 0.3), 2);
+
+    // 중심점 이동
+    const newPanX = viewWidth / 2 - bbox.centerX * newZoom;
+    const newPanY = viewHeight / 2 - bbox.centerY * newZoom;
+
+    setZoom(newZoom);
+    setPan({ x: newPanX, y: newPanY });
+  }, [positions]);
+
+  // 검색 제출 핸들러 (필터 접고 화면 맞춤)
   const handleSearchSubmit = (query) => {
     if (query && query.length >= 2) {
       saveRecentSearch(query);
       setRecentSearches(getRecentSearches());
     }
     setSearchFocused(false);
+    setShowFilters(false);  // 필터 접기
+
+    // 검색 결과에 맞게 화면 조정 (약간 지연)
+    setTimeout(() => {
+      const nodeIds = filteredCharacters.map(c => c.id);
+      if (nodeIds.length > 0 && nodeIds.length <= 50) {
+        fitToNodes(nodeIds);
+      }
+    }, 100);
   };
 
-  // 자동완성 항목 선택
+  // 자동완성 항목 선택 (필터 접고 해당 노드로 이동)
   const handleAutocompleteSelect = (charId) => {
     setSelectedCharacter(charId);
     setSearchFocused(false);
+    setShowFilters(false);  // 필터 접기
+
+    // 선택된 노드와 연결된 노드들 화면에 맞추기
+    setTimeout(() => {
+      const connectedIds = [charId, ...getConnectedCharacters(charId)];
+      fitToNodes(connectedIds);
+    }, 100);
+
     if (isMobile) {
       setShowPopup('character');
     }
@@ -1358,7 +1419,7 @@ export default function App() {
         {showFilters && (
           <div style={isMobile ? styles.filterSection : styles.filterSectionDesktop}>
             {/* 검색 입력 + 자동완성 드롭다운 */}
-            <div style={{ position: 'relative', gridColumn: isMobile ? 'span 3' : 'auto' }}>
+            <div style={{ position: 'relative', gridColumn: 'span 3' }}>
               <input
                 ref={searchInputRef}
                 type="text"
@@ -1708,16 +1769,18 @@ export default function App() {
           onMouseMove={handlePointerMove}
           onMouseUp={handlePointerUp}
           onMouseLeave={handlePointerUp}
-          onTouchStart={(e) => handlePointerDown(e)}
+          onTouchStart={(e) => {
+            e.preventDefault(); // 캔버스 내에서는 기본 동작 방지
+            handlePointerDown(e);
+          }}
           onTouchMove={(e) => {
-            // 세로 스크롤 허용: 드래그 중이 아니면 기본 동작
-            if (!isDragging && !dragTarget) return;
+            e.preventDefault(); // 캔버스 내에서는 스크롤 방지
             handlePointerMove(e);
           }}
           onTouchEnd={handlePointerUp}
           onWheel={handleWheel}
         >
-          <svg ref={svgRef} width="100%" height="100%" style={{ cursor: isDragging ? 'grabbing' : 'grab', touchAction: isMobile ? 'pan-y pinch-zoom' : 'manipulation' }}>
+          <svg ref={svgRef} width="100%" height="100%" style={{ cursor: isDragging ? 'grabbing' : 'grab', touchAction: 'none' }}>
             <defs>
               <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
                 <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
