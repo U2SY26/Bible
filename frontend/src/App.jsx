@@ -1358,42 +1358,38 @@ export default function App() {
           </div>
         )}
 
-        {/* 사건 타임라인 - 빠른필터 아래 */}
+        {/* 사건 타임라인 - 빠른필터 아래, 여러 줄로 표시 */}
         {showFilters && (
           <div style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '6px',
+            gap: '3px',
             marginTop: '6px',
             paddingTop: '6px',
             borderTop: '1px solid rgba(255,255,255,0.03)',
-            overflowX: 'auto',
-            whiteSpace: 'nowrap',
-            paddingBottom: '4px',
-            scrollbarWidth: 'none',
-            msOverflowStyle: 'none'
+            flexWrap: 'wrap'
           }}>
-            <span style={{ fontSize: '0.65rem', opacity: 0.5, flexShrink: 0 }}>사건</span>
+            <span style={{ fontSize: '0.6rem', opacity: 0.5, marginRight: '2px' }}>사건</span>
             {eventsByChronology.slice(0, 50).map(event => (
               <div
                 key={event.id}
                 style={{
-                  padding: '3px 8px',
+                  padding: '2px 5px',
                   background: selectedEvent === event.id
                     ? 'linear-gradient(135deg, rgba(255,215,0,0.3), rgba(255,107,107,0.3))'
                     : 'linear-gradient(135deg, rgba(102,126,234,0.15), rgba(118,75,162,0.1))',
-                  borderRadius: '10px',
+                  borderRadius: '6px',
                   cursor: 'pointer',
-                  fontSize: '0.7rem',
+                  fontSize: '0.6rem',
                   border: selectedEvent === event.id
                     ? '1px solid rgba(255,215,0,0.5)'
-                    : '1px solid rgba(102,126,234,0.25)',
-                  transition: 'all 0.2s ease',
-                  flexShrink: 0
+                    : '1px solid rgba(102,126,234,0.2)',
+                  transition: 'all 0.2s ease'
                 }}
                 onClick={() => handleEventClick(event.id)}
+                title={lang === 'ko' ? event.name_ko : event.name_en}
               >
-                {event.icon} {lang === 'ko' ? event.name_ko : event.name_en}
+                {event.icon}
               </div>
             ))}
           </div>
