@@ -469,13 +469,13 @@ const initializePositions = (characters, width, height, isMobile = false) => {
   const centerX = width / 2;
   const centerY = height / 2;
 
-  // 모바일에서는 더 조밀하게 배치
-  const baseFactor = isMobile ? 0.5 : 1;
-  const nodesPerLayer = isMobile ? 12 : 15;
+  // 더 넓게 배치 (충돌 최소화)
+  const baseFactor = isMobile ? 0.7 : 1;
+  const nodesPerLayer = isMobile ? 8 : 12; // 레이어당 노드 수 줄임
 
   // 삼위일체 중앙 삼각형 배치
-  const trinityRadius = 60 * baseFactor;
-  const trinityAngles = [-Math.PI / 2, Math.PI / 6, Math.PI * 5 / 6]; // 상단, 우하, 좌하
+  const trinityRadius = 80 * baseFactor;
+  const trinityAngles = [-Math.PI / 2, Math.PI / 6, Math.PI * 5 / 6];
 
   positions['god'] = {
     x: centerX + Math.cos(trinityAngles[0]) * trinityRadius,
@@ -493,15 +493,17 @@ const initializePositions = (characters, width, height, isMobile = false) => {
     vx: 0, vy: 0
   };
 
-  // 삼위일체 제외한 나머지 인물 배치
+  // 삼위일체 제외한 나머지 인물 배치 - 더 넓게 펼침
   const otherCharacters = characters.filter(c => !TRINITY_IDS_INIT.includes(c.id));
 
   otherCharacters.forEach((char, index) => {
     const layer = Math.floor(index / nodesPerLayer);
     const indexInLayer = index % nodesPerLayer;
-    const angle = (indexInLayer / nodesPerLayer) * Math.PI * 2 + (layer * 0.4);
-    const baseRadius = (180 + layer * 100) * baseFactor; // 삼위일체 바깥에서 시작
-    const radius = baseRadius + Math.random() * 60 * baseFactor;
+    const nodesInThisLayer = Math.min(nodesPerLayer, otherCharacters.length - layer * nodesPerLayer);
+    const angle = (indexInLayer / nodesInThisLayer) * Math.PI * 2 + (layer * 0.25);
+    // 시작 반지름과 레이어 간격 대폭 증가
+    const baseRadius = (250 + layer * 150) * baseFactor;
+    const radius = baseRadius + (Math.random() - 0.5) * 30 * baseFactor;
 
     positions[char.id] = {
       x: centerX + Math.cos(angle) * radius,
@@ -844,9 +846,10 @@ export default function App() {
     }
   }, [isMobile]);
 
-  // 물리 시뮬레이션 (지속적 - 노드 겹침 방지 & 자연스러운 움직임)
+  // 물리 시뮬레이션 (안정화 후 정지 - 약 2초간 실행)
   const physicsFrameRef = useRef(0);
   const lastPhysicsTime = useRef(Date.now());
+  const maxPhysicsFrames = 120; // 약 2초 후 정지
 
   useEffect(() => {
     if (Object.keys(positions).length === 0 || !physicsEnabled) return;
@@ -854,19 +857,28 @@ export default function App() {
     let animationId;
     const simulate = () => {
       const now = Date.now();
-      const deltaTime = Math.min((now - lastPhysicsTime.current) / 16, 3); // 60fps 기준 정규화
+      const deltaTime = Math.min((now - lastPhysicsTime.current) / 16, 2);
       lastPhysicsTime.current = now;
       physicsFrameRef.current++;
+
+      // 2초 후 물리 비활성화
+      if (physicsFrameRef.current >= maxPhysicsFrames) {
+        setPhysicsEnabled(false);
+        return;
+      }
 
       setPositions(prev => {
         const newPos = { ...prev };
         const charIds = Object.keys(newPos);
+        let totalMovement = 0;
+
+        // 시간에 따라 힘 감소 (안정화)
+        const timeFactor = Math.max(0.1, 1 - physicsFrameRef.current / maxPhysicsFrames);
 
         // 1. 반발력 (충돌 방지) - 공간 분할로 최적화
-        const gridSize = 150;
+        const gridSize = 120;
         const grid = {};
 
-        // 그리드에 노드 배치
         charIds.forEach(id => {
           if (!newPos[id]) return;
           const gx = Math.floor(newPos[id].x / gridSize);
@@ -876,7 +888,6 @@ export default function App() {
           grid[key].push(id);
         });
 
-        // 인접 그리드만 검사
         charIds.forEach(id1 => {
           if (!newPos[id1]) return;
           const gx = Math.floor(newPos[id1].x / gridSize);
@@ -894,12 +905,11 @@ export default function App() {
                 const diffX = newPos[id1].x - newPos[id2].x;
                 const diffY = newPos[id1].y - newPos[id2].y;
                 const dist = Math.sqrt(diffX * diffX + diffY * diffY) || 0.1;
-                const minDist = 70; // 최소 거리
+                const minDist = 60;
 
                 if (dist < minDist) {
-                  // 강한 반발력 - 겹침 방지
                   const overlap = minDist - dist;
-                  const force = overlap * 0.2 * deltaTime;
+                  const force = overlap * 0.15 * deltaTime * timeFactor;
                   const nx = diffX / dist;
                   const ny = diffY / dist;
 
@@ -913,17 +923,18 @@ export default function App() {
           }
         });
 
-        // 2. 연결된 노드 끌어당김 (스프링 효과)
-        relationships.slice(0, 200).forEach(rel => {
+        // 2. 연결된 노드 끌어당김 (약하게, 너무 멀 때만)
+        relationships.slice(0, 100).forEach(rel => {
           if (!newPos[rel.source] || !newPos[rel.target]) return;
 
           const dx = newPos[rel.target].x - newPos[rel.source].x;
           const dy = newPos[rel.target].y - newPos[rel.source].y;
           const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-          const idealDist = 100;
+          const idealDist = 150;
 
-          if (dist !== idealDist) {
-            const force = (dist - idealDist) * 0.002 * deltaTime;
+          // 너무 멀 때만 끌어당김 (가까울 때는 안함)
+          if (dist > idealDist * 1.5) {
+            const force = (dist - idealDist) * 0.001 * deltaTime * timeFactor;
             const nx = dx / dist;
             const ny = dy / dist;
 
@@ -934,45 +945,26 @@ export default function App() {
           }
         });
 
-        // 3. 미세한 랜덤 움직임 (생동감)
-        if (physicsFrameRef.current % 30 === 0) {
-          charIds.forEach(id => {
-            if (dragTarget === id) return;
-            newPos[id].vx += (Math.random() - 0.5) * 0.3;
-            newPos[id].vy += (Math.random() - 0.5) * 0.3;
-          });
-        }
-
-        // 4. 중심으로 약하게 끌어당기기 (화면 밖으로 안나가게)
-        const centerX = viewportSize.width / 2 || 600;
-        const centerY = viewportSize.height / 2 || 400;
-        charIds.forEach(id => {
-          if (!newPos[id] || dragTarget === id) return;
-          const dx = centerX - newPos[id].x;
-          const dy = centerY - newPos[id].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist > 400) {
-            newPos[id].vx += dx * 0.0005 * deltaTime;
-            newPos[id].vy += dy * 0.0005 * deltaTime;
-          }
-        });
-
-        // 5. 위치 업데이트 & 속도 감쇠
+        // 3. 위치 업데이트 & 속도 감쇠
         charIds.forEach(id => {
           if (dragTarget === id || !newPos[id]) return;
 
-          // 속도 적용
           newPos[id].x += newPos[id].vx * deltaTime;
           newPos[id].y += newPos[id].vy * deltaTime;
+          totalMovement += Math.abs(newPos[id].vx) + Math.abs(newPos[id].vy);
 
-          // 속도 감쇠 (부드러운 정지)
-          newPos[id].vx *= 0.92;
-          newPos[id].vy *= 0.92;
+          // 강한 감쇠
+          newPos[id].vx *= 0.85;
+          newPos[id].vy *= 0.85;
 
-          // 최소 속도 이하면 정지
-          if (Math.abs(newPos[id].vx) < 0.01) newPos[id].vx = 0;
-          if (Math.abs(newPos[id].vy) < 0.01) newPos[id].vy = 0;
+          if (Math.abs(newPos[id].vx) < 0.05) newPos[id].vx = 0;
+          if (Math.abs(newPos[id].vy) < 0.05) newPos[id].vy = 0;
         });
+
+        // 움직임이 거의 없으면 조기 종료
+        if (totalMovement < 0.5) {
+          physicsFrameRef.current = maxPhysicsFrames;
+        }
 
         return newPos;
       });
@@ -987,7 +979,7 @@ export default function App() {
         cancelAnimationFrame(animationId);
       }
     };
-  }, [physicsEnabled, dragTarget, viewportSize]);
+  }, [physicsEnabled, dragTarget]);
 
   // 드래그 중 연결된 노드 따라오기 애니메이션
   const dragAnimationRef = useRef(null);
