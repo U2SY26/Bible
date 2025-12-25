@@ -959,37 +959,16 @@ export default function App() {
 
   // 드래그 중 연결된 노드 따라오기 애니메이션 (탄성 물리)
   const dragAnimationRef = useRef(null);
-  const dragStartTimeRef = useRef(null);
-  const afterDragAnimating = useRef(false);
+  const animatingRef = useRef(false);
 
-  useEffect(() => {
-    // 드래그가 끝나면 관성 애니메이션 시작
-    if (!dragTarget && dragAnimationRef.current) {
-      afterDragAnimating.current = true;
-      // 애니메이션은 계속 진행 (관성으로 멈출 때까지)
-      return;
-    }
-
-    if (!dragTarget && !afterDragAnimating.current) {
-      return;
-    }
-
-    if (dragTarget) {
-      afterDragAnimating.current = false;
-      if (!dragStartTimeRef.current) {
-        dragStartTimeRef.current = Date.now();
-      }
-    }
-
-    const animateDrag = () => {
-      const elapsed = dragStartTimeRef.current
-        ? (Date.now() - dragStartTimeRef.current) * 0.001
-        : 0;
-
+  // 애니메이션 루프 (독립적으로 실행)
+  const runAnimation = useCallback(() => {
+    const animate = () => {
       setPositions(prev => {
         const newPos = { ...prev };
         let hasMovement = false;
         const charIds = Object.keys(newPos);
+        const time = Date.now() * 0.001;
 
         // 충돌 방지 (겹치면 살짝 밀어내기)
         const gridSize = 100;
@@ -1005,7 +984,7 @@ export default function App() {
         });
 
         charIds.forEach(id1 => {
-          if (!newPos[id1] || id1 === dragTarget) return;
+          if (!newPos[id1]) return;
           const gx = Math.floor(newPos[id1].x / gridSize);
           const gy = Math.floor(newPos[id1].y / gridSize);
 
@@ -1016,14 +995,13 @@ export default function App() {
               if (!cell) continue;
 
               cell.forEach(id2 => {
-                if (id1 >= id2 || !newPos[id2] || id2 === dragTarget) return;
+                if (id1 >= id2 || !newPos[id2]) return;
                 const diffX = newPos[id1].x - newPos[id2].x;
                 const diffY = newPos[id1].y - newPos[id2].y;
                 const dist = Math.sqrt(diffX * diffX + diffY * diffY) || 0.1;
                 const minDist = 50;
 
                 if (dist < minDist) {
-                  // 아주 부드럽게 밀어내기
                   const overlap = minDist - dist;
                   const force = overlap * 0.02;
                   const nx = diffX / dist;
@@ -1040,69 +1018,66 @@ export default function App() {
 
         // 노드 이동
         charIds.forEach((id, idx) => {
-          if (id === dragTarget) return;
           const node = newPos[id];
           if (!node) return;
 
           const vx = node.vx || 0;
           const vy = node.vy || 0;
 
-          // 스프링 진동 효과 (속도에 따라 흔들림)
+          // 스프링 진동 효과
           const speed = Math.sqrt(vx * vx + vy * vy);
           let perpX = 0, perpY = 0;
 
-          if (speed > 0.5) {
-            const oscillation = Math.sin(elapsed * 10 + idx * 0.5) * speed * 0.1;
+          if (speed > 1) {
+            const oscillation = Math.sin(time * 10 + idx * 0.5) * speed * 0.08;
             perpX = -vy / (speed + 0.01) * oscillation;
             perpY = vx / (speed + 0.01) * oscillation;
           }
 
-          if (Math.abs(vx) > 0.005 || Math.abs(vy) > 0.005) {
+          if (Math.abs(vx) > 0.1 || Math.abs(vy) > 0.1) {
             hasMovement = true;
-
-            // 감쇠 (탄성 느낌)
-            const damping = 0.92;
-
             newPos[id] = {
               ...node,
               x: node.x + vx + perpX,
               y: node.y + vy + perpY,
-              vx: vx * damping,
-              vy: vy * damping
+              vx: vx * 0.92,
+              vy: vy * 0.92
             };
           } else if (Math.abs(vx) > 0 || Math.abs(vy) > 0) {
-            // 완전히 멈춤
             newPos[id] = { ...node, vx: 0, vy: 0 };
           }
         });
 
-        // 움직임이 없으면 애니메이션 종료
-        if (!hasMovement && !dragTarget) {
-          afterDragAnimating.current = false;
-          dragStartTimeRef.current = null;
-          if (dragAnimationRef.current) {
-            cancelAnimationFrame(dragAnimationRef.current);
-            dragAnimationRef.current = null;
-          }
+        if (!hasMovement) {
+          animatingRef.current = false;
         }
 
         return hasMovement ? newPos : prev;
       });
 
-      if (dragTarget || afterDragAnimating.current) {
-        dragAnimationRef.current = requestAnimationFrame(animateDrag);
+      if (animatingRef.current) {
+        dragAnimationRef.current = requestAnimationFrame(animate);
       }
     };
 
-    dragAnimationRef.current = requestAnimationFrame(animateDrag);
-    return () => {
-      if (dragAnimationRef.current && !afterDragAnimating.current) {
-        cancelAnimationFrame(dragAnimationRef.current);
-        dragAnimationRef.current = null;
-        dragStartTimeRef.current = null;
+    if (!animatingRef.current) {
+      animatingRef.current = true;
+      dragAnimationRef.current = requestAnimationFrame(animate);
+    }
+  }, []);
+
+  // 드래그 끝나면 관성 애니메이션 시작
+  useEffect(() => {
+    if (!dragTarget && animatingRef.current === false) {
+      // 드래그 끝났는데 아직 움직이는 노드가 있으면 애니메이션 시작
+      const hasMovingNodes = Object.values(positions).some(
+        p => p && (Math.abs(p.vx || 0) > 0.1 || Math.abs(p.vy || 0) > 0.1)
+      );
+      if (hasMovingNodes) {
+        runAnimation();
       }
-    };
-  }, [dragTarget]);
+    }
+  }, [dragTarget, positions, runAnimation]);
 
   // 핀치 줌 상태
   const lastTouchDistance = useRef(null);
@@ -1204,12 +1179,15 @@ export default function App() {
 
         return newPos;
       });
+
+      // 연결된 노드 애니메이션 시작
+      runAnimation();
     } else if (isDragging) {
       setPan(prev => ({ x: prev.x + dx, y: prev.y + dy }));
     }
 
     setLastMouse({ x: clientX, y: clientY });
-  }, [dragTarget, isDragging, lastMouse, zoom, positions]);
+  }, [dragTarget, isDragging, lastMouse, zoom, positions, runAnimation]);
 
   const handlePointerUp = useCallback((e) => {
     // 핀치 줌 종료
@@ -1271,7 +1249,15 @@ export default function App() {
   const handleEventClick = useCallback((eventId) => {
     setSelectedEvent(eventId);
     setShowPopup('event');
-  }, []);
+
+    // 사건의 인물들 화면에 맞추기
+    setTimeout(() => {
+      const eventData = events.find(e => e.id === eventId);
+      if (eventData && eventData.characters && eventData.characters.length > 0) {
+        fitToNodes(eventData.characters);
+      }
+    }, 100);
+  }, [fitToNodes]);
 
   // ESC 키로 선택 해제 (PC)
   useEffect(() => {
