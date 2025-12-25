@@ -662,6 +662,419 @@ export const characterArtwork = {
     title: 'Zacchaeus',
     artist: 'Niels Larsen Stevns',
     year: '1913'
+  },
+
+  // ==================== 추가 인물 (확장) ====================
+  // 구약 추가
+  lot: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Lucas_van_Leyden_-_Lot_and_his_Daughters_-_WGA12943.jpg/400px-Lucas_van_Leyden_-_Lot_and_his_Daughters_-_WGA12943.jpg',
+    title: 'Lot and his Daughters',
+    artist: 'Lucas van Leyden',
+    year: '1520'
+  },
+  melchizedek: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Dieric_Bouts_-_The_Meeting_of_Abraham_and_Melchizedek.jpg/400px-Dieric_Bouts_-_The_Meeting_of_Abraham_and_Melchizedek.jpg',
+    title: 'Meeting of Abraham and Melchizedek',
+    artist: 'Dieric Bouts',
+    year: '1467'
+  },
+  hagar: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Peter_Paul_Rubens_-_Hagar_and_Ishmael_Banished_by_Abraham.jpg/400px-Peter_Paul_Rubens_-_Hagar_and_Ishmael_Banished_by_Abraham.jpg',
+    title: 'Hagar and Ishmael Banished',
+    artist: 'Peter Paul Rubens',
+    year: '1616'
+  },
+  ishmael: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Francesco_Cozza_-_Hagar_and_Ishmael_in_the_Wilderness.jpg/400px-Francesco_Cozza_-_Hagar_and_Ishmael_in_the_Wilderness.jpg',
+    title: 'Hagar and Ishmael in Wilderness',
+    artist: 'Francesco Cozza',
+    year: '1665'
+  },
+  esau: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Gioacchino_Assereto_-_Esau_Selling_His_Birthright.jpg/400px-Gioacchino_Assereto_-_Esau_Selling_His_Birthright.jpg',
+    title: 'Esau Selling His Birthright',
+    artist: 'Gioacchino Assereto',
+    year: '1640'
+  },
+  laban: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Hendrick_ter_Brugghen_-_Jacob_and_Laban.jpg/400px-Hendrick_ter_Brugghen_-_Jacob_and_Laban.jpg',
+    title: 'Jacob and Laban',
+    artist: 'Hendrick ter Brugghen',
+    year: '1627'
+  },
+  leah: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Leah_by_Francesco_Hayez.jpg/400px-Leah_by_Francesco_Hayez.jpg',
+    title: 'Leah',
+    artist: 'Francesco Hayez',
+    year: '1853'
+  },
+  rachel: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Laban_Searching_for_the_Idols.jpg/400px-Laban_Searching_for_the_Idols.jpg',
+    title: 'Rachel Hiding the Idols',
+    artist: 'Giovanni Battista Tiepolo',
+    year: '1726'
+  },
+  reuben: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Tissot_Reuben.jpg/400px-Tissot_Reuben.jpg',
+    title: 'Reuben',
+    artist: 'James Tissot',
+    year: '1902'
+  },
+  simeon: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Tissot_Simeon.jpg/400px-Tissot_Simeon.jpg',
+    title: 'Simeon',
+    artist: 'James Tissot',
+    year: '1902'
+  },
+  levi: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Tissot_Levi.jpg/400px-Tissot_Levi.jpg',
+    title: 'Levi',
+    artist: 'James Tissot',
+    year: '1902'
+  },
+  dinah: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Giuliano_Bugiardini_-_The_Rape_of_Dinah.jpg/400px-Giuliano_Bugiardini_-_The_Rape_of_Dinah.jpg',
+    title: 'The Rape of Dinah',
+    artist: 'Giuliano Bugiardini',
+    year: '1531'
+  },
+  benjamin: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Bourdon_Joseph_recognizing_Benjamin.jpg/400px-Bourdon_Joseph_recognizing_Benjamin.jpg',
+    title: 'Joseph Recognizing Benjamin',
+    artist: 'Sébastien Bourdon',
+    year: '1644'
+  },
+  potiphar_wife: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Guido_Reni_-_Joseph_and_Potiphar%27s_Wife.jpg/400px-Guido_Reni_-_Joseph_and_Potiphar%27s_Wife.jpg',
+    title: "Joseph and Potiphar's Wife",
+    artist: 'Guido Reni',
+    year: '1631'
+  },
+  pharaoh_exodus: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Edward_Poynter_-_Israel_in_Egypt.jpg/400px-Edward_Poynter_-_Israel_in_Egypt.jpg',
+    title: 'Israel in Egypt',
+    artist: 'Edward Poynter',
+    year: '1867'
+  },
+  miriam: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Anselm_Feuerbach_-_Miriam.jpg/400px-Anselm_Feuerbach_-_Miriam.jpg',
+    title: 'Miriam',
+    artist: 'Anselm Feuerbach',
+    year: '1862'
+  },
+  aaron: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Aaron_%28Kirillo-Belozersk%29.jpg/400px-Aaron_%28Kirillo-Belozersk%29.jpg',
+    title: 'Aaron',
+    artist: 'Russian Icon',
+    year: '1600'
+  },
+  korah: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Punishment_of_Korah_Botticelli.jpg/400px-Punishment_of_Korah_Botticelli.jpg',
+    title: 'Punishment of Korah',
+    artist: 'Sandro Botticelli',
+    year: '1482'
+  },
+  balaam: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/Rembrandt_-_Balaam_and_the_Ass.jpg/400px-Rembrandt_-_Balaam_and_the_Ass.jpg',
+    title: 'Balaam and the Ass',
+    artist: 'Rembrandt',
+    year: '1626'
+  },
+  rahab: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Frederick_Richard_Pickersgill_-_The_Burial_of_Harold_the_Saxon_King.jpg/400px-Frederick_Richard_Pickersgill_-_The_Burial_of_Harold_the_Saxon_King.jpg',
+    title: 'Rahab and the Spies',
+    artist: 'James Tissot',
+    year: '1902'
+  },
+  achan: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Stoning_of_Achan.jpg/400px-Stoning_of_Achan.jpg',
+    title: 'Stoning of Achan',
+    artist: 'Gustave Doré',
+    year: '1866'
+  },
+  deborah: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Deborah_Beneath_the_Palm_Tree_%28Bible_Card%29.jpg/400px-Deborah_Beneath_the_Palm_Tree_%28Bible_Card%29.jpg',
+    title: 'Deborah Beneath Palm Tree',
+    artist: 'Providence Lithograph',
+    year: '1901'
+  },
+  barak: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Barak_and_Deborah_%28Bible_Card%29.jpg/400px-Barak_and_Deborah_%28Bible_Card%29.jpg',
+    title: 'Barak and Deborah',
+    artist: 'Providence Lithograph',
+    year: '1901'
+  },
+  jael: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Artemisia_Gentileschi_-_Jael_and_Sisera.jpg/400px-Artemisia_Gentileschi_-_Jael_and_Sisera.jpg',
+    title: 'Jael and Sisera',
+    artist: 'Artemisia Gentileschi',
+    year: '1620'
+  },
+  gideon: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Gideon_and_the_fleece.jpg/400px-Gideon_and_the_fleece.jpg',
+    title: 'Gideon and the Fleece',
+    artist: 'Maarten van Heemskerck',
+    year: '1550'
+  },
+  jephthah: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Giovanni_Antonio_Pellegrini_-_Jephthah%27s_Sacrifice.jpg/400px-Giovanni_Antonio_Pellegrini_-_Jephthah%27s_Sacrifice.jpg',
+    title: "Jephthah's Sacrifice",
+    artist: 'Giovanni Antonio Pellegrini',
+    year: '1700'
+  },
+  naomi: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/William_Blake_-_Naomi_entreating_Ruth_and_Orpah_to_return_to_the_land_of_Moab.jpg/400px-William_Blake_-_Naomi_entreating_Ruth_and_Orpah_to_return_to_the_land_of_Moab.jpg',
+    title: 'Naomi Entreating Ruth',
+    artist: 'William Blake',
+    year: '1795'
+  },
+  boaz: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Julius_Schnorr_von_Carolsfeld_-_Ruth_in_Boaz%27s_Field.jpg/400px-Julius_Schnorr_von_Carolsfeld_-_Ruth_in_Boaz%27s_Field.jpg',
+    title: "Ruth in Boaz's Field",
+    artist: 'Julius Schnorr von Carolsfeld',
+    year: '1828'
+  },
+  eli: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/Gerbrand_van_den_Eeckhout_-_Hannah_presenting_her_son_Samuel_to_the_priest_Eli.jpg/400px-Gerbrand_van_den_Eeckhout_-_Hannah_presenting_her_son_Samuel_to_the_priest_Eli.jpg',
+    title: 'Hannah Presenting Samuel to Eli',
+    artist: 'Gerbrand van den Eeckhout',
+    year: '1665'
+  },
+  hannah: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Hannah_praying_1.jpg/400px-Hannah_praying_1.jpg',
+    title: "Hannah's Prayer",
+    artist: 'Jan Victors',
+    year: '1645'
+  },
+  goliath: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Osmar_Schindler_David_und_Goliath.jpg/400px-Osmar_Schindler_David_und_Goliath.jpg',
+    title: 'David and Goliath',
+    artist: 'Osmar Schindler',
+    year: '1888'
+  },
+  jonathan: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Cima_da_Conegliano_-_David_and_Jonathan.jpg/400px-Cima_da_Conegliano_-_David_and_Jonathan.jpg',
+    title: 'David and Jonathan',
+    artist: 'Cima da Conegliano',
+    year: '1505'
+  },
+  michal: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Francesco_Hayez_-_David_Playing_the_Harp_before_Saul.jpg/400px-Francesco_Hayez_-_David_Playing_the_Harp_before_Saul.jpg',
+    title: 'David and Michal',
+    artist: 'Francesco Hayez',
+    year: '1832'
+  },
+  abigail: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Rubens_-_The_Meeting_of_David_and_Abigail.jpg/400px-Rubens_-_The_Meeting_of_David_and_Abigail.jpg',
+    title: 'David and Abigail',
+    artist: 'Peter Paul Rubens',
+    year: '1630'
+  },
+  uriah: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Pieter_Lastman_-_David_Giving_Uriah_a_Letter_for_Joab.jpg/400px-Pieter_Lastman_-_David_Giving_Uriah_a_Letter_for_Joab.jpg',
+    title: 'David Giving Uriah a Letter',
+    artist: 'Pieter Lastman',
+    year: '1619'
+  },
+  absalom: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Absalom%27s_Tomb.jpg/400px-Absalom%27s_Tomb.jpg',
+    title: 'Death of Absalom',
+    artist: 'Gustave Doré',
+    year: '1866'
+  },
+  queen_sheba: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Piero_della_Francesca_-_Legend_of_the_True_Cross_-_the_Queen_of_Sheba_Meeting_with_Solomon_-_WGA17499.jpg/400px-Piero_della_Francesca_-_Legend_of_the_True_Cross_-_the_Queen_of_Sheba_Meeting_with_Solomon_-_WGA17499.jpg',
+    title: 'Queen of Sheba Meeting Solomon',
+    artist: 'Piero della Francesca',
+    year: '1466'
+  },
+  jeroboam: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Jean-Honor%C3%A9_Fragonard_-_Jeroboam_Sacrificing_to_Idols.jpg/400px-Jean-Honor%C3%A9_Fragonard_-_Jeroboam_Sacrificing_to_Idols.jpg',
+    title: 'Jeroboam Sacrificing to Idols',
+    artist: 'Jean-Honoré Fragonard',
+    year: '1752'
+  },
+  rehoboam: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Hans_Holbein_d._J._-_Rehoboam%27s_Insolence.jpg/400px-Hans_Holbein_d._J._-_Rehoboam%27s_Insolence.jpg',
+    title: "Rehoboam's Insolence",
+    artist: 'Hans Holbein',
+    year: '1530'
+  },
+  ahab: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Sir_Frank_Dicksee_-_Jezebel_and_Ahab.jpg/400px-Sir_Frank_Dicksee_-_Jezebel_and_Ahab.jpg',
+    title: 'Ahab and Jezebel',
+    artist: 'Frank Dicksee',
+    year: '1896'
+  },
+  jezebel: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Jezabel_and_Ahab_Meeting_Elijah_in_Naboth%27s_Vineyard_Giclee_Print_C12175639.jpg/400px-Jezabel_and_Ahab_Meeting_Elijah_in_Naboth%27s_Vineyard_Giclee_Print_C12175639.jpg',
+    title: 'Jezebel Meeting Elijah',
+    artist: 'Sir Frank Dicksee',
+    year: '1896'
+  },
+  elisha: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Elijah_taken_up_in_a_chariot_of_fire.jpg/400px-Elijah_taken_up_in_a_chariot_of_fire.jpg',
+    title: 'Elijah Taken Up',
+    artist: 'Giuseppe Angeli',
+    year: '1740'
+  },
+  naaman: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Cornelis_Engelbrechtsz._-_Naaman_Cleansed_of_Leprosy.jpg/400px-Cornelis_Engelbrechtsz._-_Naaman_Cleansed_of_Leprosy.jpg',
+    title: 'Naaman Cleansed',
+    artist: 'Cornelis Engelbrechtsz',
+    year: '1520'
+  },
+  hezekiah: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Hezekiah%27s_Prayer_%28Bible_card%29.jpg/400px-Hezekiah%27s_Prayer_%28Bible_card%29.jpg',
+    title: "Hezekiah's Prayer",
+    artist: 'Providence Lithograph',
+    year: '1901'
+  },
+  manasseh: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Manasseh_by_Tissot.jpg/400px-Manasseh_by_Tissot.jpg',
+    title: 'Manasseh',
+    artist: 'James Tissot',
+    year: '1902'
+  },
+  josiah: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Josiah_Orders_the_Book_of_the_Law_to_be_Read.jpg/400px-Josiah_Orders_the_Book_of_the_Law_to_be_Read.jpg',
+    title: 'Josiah and the Book of Law',
+    artist: 'Julius Schnorr von Carolsfeld',
+    year: '1860'
+  },
+  nebuchadnezzar: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/William_Blake_-_Nebuchadnezzar_%28Tate_Britain%29.jpg/400px-William_Blake_-_Nebuchadnezzar_%28Tate_Britain%29.jpg',
+    title: 'Nebuchadnezzar',
+    artist: 'William Blake',
+    year: '1795'
+  },
+  ezra: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Gustave_Dor%C3%A9_-_Ezra_in_Prayer.jpg/400px-Gustave_Dor%C3%A9_-_Ezra_in_Prayer.jpg',
+    title: 'Ezra in Prayer',
+    artist: 'Gustave Doré',
+    year: '1866'
+  },
+  nehemiah: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Nehemiah_Views_the_Ruins_of_Jerusalem%27s_Walls.jpg/400px-Nehemiah_Views_the_Ruins_of_Jerusalem%27s_Walls.jpg',
+    title: 'Nehemiah Views Jerusalem Walls',
+    artist: 'Gustave Doré',
+    year: '1866'
+  },
+  malachi: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Duccio_di_Buoninsegna_-_Malachi.jpg/400px-Duccio_di_Buoninsegna_-_Malachi.jpg',
+    title: 'Prophet Malachi',
+    artist: 'Duccio di Buoninsegna',
+    year: '1311'
+  },
+
+  // ==================== 신약 추가 ====================
+  zechariah_priest: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Domenico_Ghirlandaio_-_Angel_appearing_to_Zechariah.jpg/400px-Domenico_Ghirlandaio_-_Angel_appearing_to_Zechariah.jpg',
+    title: 'Angel Appearing to Zechariah',
+    artist: 'Domenico Ghirlandaio',
+    year: '1490'
+  },
+  simeon_temple: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Rembrandt_-_Simeon_in_the_Temple_-_Mauritshuis.jpg/400px-Rembrandt_-_Simeon_in_the_Temple_-_Mauritshuis.jpg',
+    title: 'Simeon in the Temple',
+    artist: 'Rembrandt',
+    year: '1669'
+  },
+  anna_prophetess: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Rembrandt_Harmensz_van_Rijn_-_Prophetess_Anna.jpg/400px-Rembrandt_Harmensz_van_Rijn_-_Prophetess_Anna.jpg',
+    title: 'Prophetess Anna',
+    artist: 'Rembrandt',
+    year: '1631'
+  },
+  herod_antipas: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Beheading-of-Saint-John-the-Baptist-Caravaggio_%281608%29.jpg/400px-Beheading-of-Saint-John-the-Baptist-Caravaggio_%281608%29.jpg',
+    title: 'Beheading of John the Baptist',
+    artist: 'Caravaggio',
+    year: '1608'
+  },
+  herodias: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Paul_Delaroche_-_Herodias.jpg/400px-Paul_Delaroche_-_Herodias.jpg',
+    title: 'Herodias',
+    artist: 'Paul Delaroche',
+    year: '1843'
+  },
+  salome_herodias: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Benozzo_Gozzoli_-_Dance_of_Salome.jpg/400px-Benozzo_Gozzoli_-_Dance_of_Salome.jpg',
+    title: 'Dance of Salome',
+    artist: 'Benozzo Gozzoli',
+    year: '1461'
+  },
+  pilate: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Ecce_homo_by_Antonio_Ciseri_%281%29.jpg/400px-Ecce_homo_by_Antonio_Ciseri_%281%29.jpg',
+    title: 'Ecce Homo',
+    artist: 'Antonio Ciseri',
+    year: '1871'
+  },
+  barabbas: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Munkacsy_-_Christ_before_Pilate.jpg/400px-Munkacsy_-_Christ_before_Pilate.jpg',
+    title: 'Christ Before Pilate',
+    artist: 'Mihály Munkácsy',
+    year: '1881'
+  },
+  simon_cyrene: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/V%C3%A9ronique_par_le_Ma%C3%AEtre_de_Saint-Barth%C3%A9lemy.jpg/400px-V%C3%A9ronique_par_le_Ma%C3%AEtre_de_Saint-Barth%C3%A9lemy.jpg',
+    title: 'Simon of Cyrene Helps Jesus',
+    artist: 'Master of Saint Bartholomew',
+    year: '1500'
+  },
+  joseph_arimathea: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Carlo_Crivelli_-_Saint_Joseph_of_Arimathea.jpg/400px-Carlo_Crivelli_-_Saint_Joseph_of_Arimathea.jpg',
+    title: 'Joseph of Arimathea',
+    artist: 'Carlo Crivelli',
+    year: '1480'
+  },
+  cornelius: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Gerbrand_van_den_Eeckhout_-_Peter_and_Cornelius.jpg/400px-Gerbrand_van_den_Eeckhout_-_Peter_and_Cornelius.jpg',
+    title: 'Peter and Cornelius',
+    artist: 'Gerbrand van den Eeckhout',
+    year: '1664'
+  },
+  ananias_damascus: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Pietro_da_Cortona_-_Ananias_Restoring_Sight_to_St._Paul.jpg/400px-Pietro_da_Cortona_-_Ananias_Restoring_Sight_to_St._Paul.jpg',
+    title: 'Ananias Restoring Sight to Paul',
+    artist: 'Pietro da Cortona',
+    year: '1631'
+  },
+  lydia: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/St._Paul_preaching_to_Lydia.jpg/400px-St._Paul_preaching_to_Lydia.jpg',
+    title: 'Paul Preaching to Lydia',
+    artist: 'Harold Copping',
+    year: '1910'
+  },
+  priscilla: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Aquila_prisca_san_paolo.jpg/400px-Aquila_prisca_san_paolo.jpg',
+    title: 'Aquila, Priscilla and Paul',
+    artist: 'Louis Comfort Tiffany',
+    year: '1900'
+  },
+  aquila: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Paulus_predigt_in_Athen.jpg/400px-Paulus_predigt_in_Athen.jpg',
+    title: 'Paul Preaching in Athens',
+    artist: 'Raphael',
+    year: '1515'
+  },
+  apollos: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Apollos_teaching.jpg/400px-Apollos_teaching.jpg',
+    title: 'Apollos Teaching',
+    artist: 'Anonymous',
+    year: '1900'
+  },
+  felix: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/St._Paul_Before_Felix.jpg/400px-St._Paul_Before_Felix.jpg',
+    title: 'Paul Before Felix',
+    artist: 'William Hogarth',
+    year: '1752'
+  },
+  agrippa: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Paul_before_agrippa.jpg/400px-Paul_before_agrippa.jpg',
+    title: 'Paul Before Agrippa',
+    artist: 'Nikolai Bodarevsky',
+    year: '1875'
   }
 };
 

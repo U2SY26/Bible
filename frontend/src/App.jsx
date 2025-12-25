@@ -544,7 +544,33 @@ const multiFieldSearch = (character, query, lang) => {
   return { match: false, priority: 0 };
 };
 
-// ==================== 메인 App 컴포넌트 ====================
+function BibleVersePopup({ popupState, onClose }) {
+  if (!popupState.show) return null;
+
+  return createPortal(
+    <>
+      <div style={styles.overlay} onClick={onClose} />
+      <div style={{ ...styles.popup, maxWidth: '450px', zIndex: 1001 }}>
+        <button
+          style={{ position: 'absolute', top: 14, right: 14, ...styles.button, padding: '8px 12px' }}
+          onClick={onClose}
+        >✕</button>
+        <h3 style={{ fontSize: '1.1rem', marginBottom: '20px', color: '#ffd700' }}>
+          {popupState.reference}
+        </h3>
+        {popupState.loading ? (
+          <p>로딩 중...</p>
+        ) : (
+          <p style={{ lineHeight: 1.8, fontSize: '1rem', opacity: 0.95, whiteSpace: 'pre-wrap' }}>
+            {popupState.text}
+          </p>
+        )}
+      </div>
+    </>,
+    document.body
+  );
+}
+
 export default function App() {
   const isMobile = useIsMobile();
   const [lang, setLang] = useState('ko');
@@ -574,6 +600,7 @@ export default function App() {
   const [searchFocused, setSearchFocused] = useState(false);
   const [recentSearches, setRecentSearches] = useState(() => getRecentSearches());
   const [activeQuickFilter, setActiveQuickFilter] = useState(null);
+  const [bibleVersePopup, setBibleVersePopup] = useState({ show: false, reference: '', text: '', loading: false });
 
   const svgRef = useRef(null);
   const searchInputRef = useRef(null);
@@ -583,9 +610,35 @@ export default function App() {
   const dragStartPos = useRef(null);
   const dragStartTime = useRef(null);
 
+  const handleVerseClick = useCallback(async (verseRef) => {
+    setBibleVersePopup({ show: true, reference: verseRef, text: '', loading: true });
+
+    // 구절 파싱 (예: "창세기 1:1")
+    const parts = verseRef.match(/(\S+)\s(\d+):(\d+)/);
+    if (!parts) {
+      setBibleVersePopup({ show: true, reference: verseRef, text: '잘못된 구절 형식입니다.', loading: false });
+      return;
+    }
+    const [, book, chapter, verse] = parts;
+
+    try {
+      const response = await fetch(`/api/bible?book=${encodeURIComponent(book)}&chapter=${chapter}&verse=${verse}`);
+      if (!response.ok) {
+        throw new Error('네트워크 오류');
+      }
+      const data = await response.json();
+      if (data.error) {
+        setBibleVersePopup({ show: true, reference: verseRef, text: data.error, loading: false });
+      } else {
+        setBibleVersePopup({ show: true, reference: verseRef, text: data.text, loading: false });
+      }
+    } catch (error) {
+      setBibleVersePopup({ show: true, reference: verseRef, text: '구절을 불러오는 데 실패했습니다.', loading: false });
+    }
+  }, [setBibleVersePopup]);
+  
   // 펄스 애니메이션 (throttled for mobile)
-  useEffect(() => {
-    let lastTime = 0;
+  useEffect(() => {    let lastTime = 0;
     const throttleMs = isMobile ? PERFORMANCE_CONFIG.ANIMATION_THROTTLE_MS : 16;
 
     const animate = (currentTime) => {
@@ -707,6 +760,13 @@ export default function App() {
     });
     return map;
   }, []);
+
+  // 두 인물간 공통 사건 찾기
+  const getCommonEvents = useCallback((charId1, charId2) => {
+    const events1 = characterEventsMap.get(charId1) || [];
+    const events2Set = new Set((characterEventsMap.get(charId2) || []).map(e => e.id));
+    return events1.filter(e => events2Set.has(e.id));
+  }, [characterEventsMap]);
 
   const visibleRelationships = useMemo(() => {
     return relationships.filter(rel =>
@@ -1362,22 +1422,22 @@ export default function App() {
                 key={filter.id}
                 onClick={() => setActiveQuickFilter(activeQuickFilter === filter.id ? null : filter.id)}
                 style={{
-                  padding: '2px 6px',
-                  borderRadius: '8px',
+                  padding: '8px 12px',
+                  borderRadius: '10px',
                   border: activeQuickFilter === filter.id
                     ? '2px solid rgba(255,215,0,0.8)'
-                    : '1px solid rgba(102,126,234,0.3)',
+                    : '1px solid rgba(102,126,234,0.4)',
                   background: activeQuickFilter === filter.id
                     ? 'linear-gradient(135deg, rgba(255,215,0,0.3), rgba(255,107,107,0.3))'
-                    : 'rgba(102,126,234,0.1)',
+                    : 'linear-gradient(135deg, rgba(102,126,234,0.2), rgba(118,75,162,0.2))',
                   color: '#fff',
                   cursor: 'pointer',
-                  fontSize: '0.65rem',
-                  fontWeight: activeQuickFilter === filter.id ? '600' : '400',
+                  fontSize: '0.75rem',
+                  fontWeight: activeQuickFilter === filter.id ? '600' : '500',
                   transition: 'all 0.2s ease',
                   boxShadow: activeQuickFilter === filter.id
                     ? '0 0 10px rgba(255,215,0,0.6), 0 0 20px rgba(255,215,0,0.3)'
-                    : 'none'
+                    : '0 2px 8px rgba(0,0,0,0.2)'
                 }}
               >
                 {filter.label}
@@ -1396,12 +1456,12 @@ export default function App() {
           <div style={{
             display: 'flex',
             alignItems: 'flex-start',
-            gap: '4px',
-            marginTop: '6px',
-            paddingTop: '6px',
-            borderTop: '1px solid rgba(255,255,255,0.03)',
+            gap: '6px',
+            marginTop: '8px',
+            paddingTop: '8px',
+            borderTop: '1px solid rgba(255,255,255,0.05)',
             flexWrap: 'wrap',
-            maxHeight: isMobile ? '110px' : '90px',
+            maxHeight: isMobile ? '160px' : '140px',
             overflowY: 'auto',
             scrollbarWidth: 'thin'
           }}>
@@ -1410,21 +1470,21 @@ export default function App() {
               <div
                 key={event.id}
                 style={{
-                  padding: '3px 8px',
+                  padding: '8px 12px',
                   background: selectedEvent === event.id
                     ? 'linear-gradient(135deg, rgba(255,215,0,0.4), rgba(255,107,107,0.4))'
-                    : 'linear-gradient(135deg, rgba(102,126,234,0.15), rgba(118,75,162,0.1))',
-                  borderRadius: '8px',
+                    : 'linear-gradient(135deg, rgba(102,126,234,0.2), rgba(118,75,162,0.2))',
+                  borderRadius: '10px',
                   cursor: 'pointer',
-                  fontSize: '0.65rem',
+                  fontSize: '0.75rem',
                   whiteSpace: 'nowrap',
                   border: selectedEvent === event.id
                     ? '2px solid rgba(255,215,0,0.8)'
-                    : '1px solid rgba(102,126,234,0.2)',
+                    : '1px solid rgba(102,126,234,0.4)',
                   transition: 'all 0.2s ease',
                   boxShadow: selectedEvent === event.id
                     ? '0 0 10px rgba(255,215,0,0.6), 0 0 20px rgba(255,215,0,0.3)'
-                    : 'none'
+                    : '0 2px 8px rgba(0,0,0,0.2)'
                 }}
                 onClick={() => {
                   // 토글: 같은 사건 클릭시 선택 해제
@@ -1590,9 +1650,16 @@ export default function App() {
                 const relColor = relationshipColors[rel.type]?.color || '#666';
                 const bothHighlighted = highlightedIds.has(rel.source) && highlightedIds.has(rel.target);
                 // 선택된 인물이나 사건이 있으면 관련 와이어만 보이게 (포커스 모드)
-                const opacity = (selectedCharacter || selectedEvent)
+                const isFocusMode = selectedCharacter || selectedEvent;
+                const opacity = isFocusMode
                   ? (isActive ? 1 : (bothHighlighted ? 0.6 : 0))
                   : (bothHighlighted ? (isMobile ? 0.5 : 0.4) : (isMobile ? 0.15 : 0.1));
+
+                // 두 인물 사이 공통 사건
+                const commonEvents = getCommonEvents(rel.source, rel.target);
+                const midX = (sourcePos.x + targetPos.x) / 2;
+                const midY = (sourcePos.y + targetPos.y) / 2;
+                const showEventLabel = (isActive || (isFocusMode && bothHighlighted)) && commonEvents.length > 0 && !isMobile;
 
                 // 데이터 흐름 애니메이션 (활성화된 관계만 - 모바일에서는 간소화)
                 const showFlowAnimation = isActive && !isMobile;
@@ -1623,6 +1690,31 @@ export default function App() {
                         strokeLinecap="round"
                         markerEnd="url(#arrowFlow)"
                       />
+                    )}
+                    {/* 관계선 위 사건 라벨 */}
+                    {showEventLabel && (
+                      <g transform={`translate(${midX}, ${midY})`}>
+                        <rect
+                          x={-commonEvents.length * 6 - 4}
+                          y={-10}
+                          width={commonEvents.length * 12 + 8}
+                          height={20}
+                          rx={10}
+                          fill="rgba(0,0,0,0.8)"
+                          stroke="rgba(255,215,0,0.5)"
+                          strokeWidth={1}
+                        />
+                        <text
+                          textAnchor="middle"
+                          dominantBaseline="middle"
+                          fill="#ffd700"
+                          fontSize={10}
+                          style={{ textShadow: '0 0 4px rgba(255,215,0,0.5)' }}
+                        >
+                          {commonEvents.slice(0, 3).map(e => e.icon).join('')}
+                          {commonEvents.length > 3 ? `+${commonEvents.length - 3}` : ''}
+                        </text>
+                      </g>
                     )}
                   </g>
                 );
@@ -1892,12 +1984,18 @@ export default function App() {
               lang={lang}
               eras={eras}
               onCharacterSelect={(id) => { setSelectedCharacter(id); setShowPopup(isMobile ? 'character' : null); }}
+              onVerseClick={handleVerseClick}
               artwork={eventArtwork[selectedEvent]}
             />
           </div>
         </>,
         document.body
       )}
+
+      <BibleVersePopup
+        popupState={bibleVersePopup}
+        onClose={() => setBibleVersePopup({ show: false, reference: '', text: '', loading: false })}
+      />
 
       {/* MBTI 퀴즈 팝업 - Portal로 분리 */}
       {showPopup === 'mbtiQuiz' && createPortal(
@@ -2254,7 +2352,7 @@ function CharacterDetail({ character, lang, relatedEvents, relatedHymns, related
 }
 
 // ==================== 이벤트 상세 컴포넌트 ====================
-function EventDetail({ event, lang, eras, onCharacterSelect, artwork }) {
+function EventDetail({ event, lang, eras, onCharacterSelect, artwork, onVerseClick }) {
   const era = eras.find(e => e.id === event.era);
 
   return (
@@ -2341,23 +2439,27 @@ function EventDetail({ event, lang, eras, onCharacterSelect, artwork }) {
           <h4 style={{ marginBottom: 12, fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: 8 }}>
             <span>📜</span> 성경 구절
           </h4>
-          <p style={{ color: '#ffd700', marginBottom: 8, fontSize: '0.9rem', fontWeight: '500' }}>
-            {event.verses.join(', ')}
-          </p>
-          {(event.verse_text_ko || event.verse_text_en) && (
-            <p style={{
-              fontStyle: 'italic',
-              opacity: 0.85,
-              fontSize: '0.9rem',
-              lineHeight: 1.7,
-              padding: '12px',
-              background: 'rgba(0,0,0,0.3)',
-              borderRadius: 10,
-              borderLeft: '3px solid #ffd700'
-            }}>
-              "{lang === 'ko' ? event.verse_text_ko : event.verse_text_en}"
-            </p>
-          )}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+            {event.verses.map((verse, index) => (
+              <span
+                key={index}
+                onClick={() => onVerseClick(verse)}
+                style={{
+                  color: '#ffd700',
+                  fontSize: '0.9rem',
+                  fontWeight: '500',
+                  cursor: 'pointer',
+                  padding: '4px 8px',
+                  borderRadius: '6px',
+                  background: 'rgba(255, 215, 0, 0.1)',
+                  border: '1px solid rgba(255, 215, 0, 0.2)',
+                  transition: 'all 0.2s'
+                }}
+              >
+                {verse}
+              </span>
+            ))}
+          </div>
         </div>
       )}
 
