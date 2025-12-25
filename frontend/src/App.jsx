@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import {
   allCharacters,
   getCharacterById,
@@ -339,7 +340,12 @@ const styles = {
     overflowY: 'auto',
     zIndex: 1000,
     border: '1px solid rgba(102,126,234,0.3)',
-    boxShadow: '0 20px 60px rgba(0,0,0,0.6), 0 0 40px rgba(102,126,234,0.1)'
+    boxShadow: '0 20px 60px rgba(0,0,0,0.6), 0 0 40px rgba(102,126,234,0.1)',
+    // 캔버스 줌과 분리
+    isolation: 'isolate',
+    zoom: 1,
+    fontSize: '16px',
+    WebkitTextSizeAdjust: '100%'
   },
   overlay: {
     position: 'fixed',
@@ -349,7 +355,10 @@ const styles = {
     bottom: 0,
     background: 'rgba(0,0,0,0.85)',
     backdropFilter: 'blur(4px)',
-    zIndex: 999
+    zIndex: 999,
+    // 캔버스 줌과 분리
+    isolation: 'isolate',
+    zoom: 1
   },
   badge: {
     display: 'inline-block',
@@ -1265,8 +1274,8 @@ export default function App() {
         </div>
       )}
 
-      {/* 모바일 인물 팝업 (필터 펼쳐져 있을 때만) */}
-      {showPopup === 'character' && selectedCharacterData && showFilters && (
+      {/* 모바일 인물 팝업 (필터 펼쳐져 있을 때만) - Portal로 분리 */}
+      {showPopup === 'character' && selectedCharacterData && showFilters && createPortal(
         <>
           <div style={styles.overlay} onClick={() => setShowPopup(null)} />
           <div style={styles.popup}>
@@ -1287,11 +1296,12 @@ export default function App() {
               mbtiData={mbtiData[selectedCharacter]}
             />
           </div>
-        </>
+        </>,
+        document.body
       )}
 
-      {/* 이벤트 팝업 */}
-      {showPopup === 'event' && selectedEventData && (
+      {/* 이벤트 팝업 - Portal로 분리 */}
+      {showPopup === 'event' && selectedEventData && createPortal(
         <>
           <div style={styles.overlay} onClick={() => setShowPopup(null)} />
           <div style={styles.popup}>
@@ -1306,11 +1316,12 @@ export default function App() {
               onCharacterSelect={(id) => { setSelectedCharacter(id); setShowPopup(isMobile ? 'character' : null); }}
             />
           </div>
-        </>
+        </>,
+        document.body
       )}
 
-      {/* MBTI 퀴즈 팝업 */}
-      {showPopup === 'mbtiQuiz' && (
+      {/* MBTI 퀴즈 팝업 - Portal로 분리 */}
+      {showPopup === 'mbtiQuiz' && createPortal(
         <>
           <div style={styles.overlay} onClick={() => setShowPopup(null)} />
           <div style={{...styles.popup, maxWidth: '400px'}}>
@@ -1376,7 +1387,8 @@ export default function App() {
               ))}
             </div>
           </div>
-        </>
+        </>,
+        document.body
       )}
     </div>
   );
