@@ -16,6 +16,7 @@ import {
   getLocationsByCharacter,
   locationTypeIcons
 } from './data/index.js';
+import { characterArtwork, eventArtwork } from './data/artwork.js';
 
 // ==================== MBTI 데이터 (확장) ====================
 const mbtiData = {
@@ -146,315 +147,6 @@ const mbtiQuestions = [
   { q: '결정할 때 감정보다 논리를 우선하나요?', e: 'T', i: 'F' },
   { q: '계획을 세우고 따르는 것을 선호하나요?', e: 'J', i: 'P' }
 ];
-
-// 주요 인물 미술 작품 (퍼블릭 도메인 - 확장)
-const characterArtwork = {
-  // 삼위일체
-  god: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Andrej_Rubl%C3%ABv_-_Trinity_-_Google_Art_Project.jpg/400px-Andrej_Rubl%C3%ABv_-_Trinity_-_Google_Art_Project.jpg',
-    title: 'Trinity',
-    artist: 'Andrei Rublev',
-    year: '1425'
-  },
-  jesus: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Christ_as_Salvator_Mundi%2C_by_Leonardo_da_Vinci%2C_1499-1500.jpg/400px-Christ_as_Salvator_Mundi%2C_by_Leonardo_da_Vinci%2C_1499-1500.jpg',
-    title: 'Salvator Mundi',
-    artist: 'Leonardo da Vinci',
-    year: '1500'
-  },
-
-  // 구약 족장
-  adam: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Michelangelo_-_Creation_of_Adam_%28cropped%29.jpg/400px-Michelangelo_-_Creation_of_Adam_%28cropped%29.jpg',
-    title: 'Creation of Adam',
-    artist: 'Michelangelo',
-    year: '1512'
-  },
-  eve: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Lucas_Cranach_d._%C3%84._-_Adam_und_Eva_%28Courtauld_Institute_of_Art%29.jpg/400px-Lucas_Cranach_d._%C3%84._-_Adam_und_Eva_%28Courtauld_Institute_of_Art%29.jpg',
-    title: 'Adam and Eve',
-    artist: 'Lucas Cranach',
-    year: '1526'
-  },
-  noah: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Edward_Hicks_-_Noah%27s_Ark.jpg/400px-Edward_Hicks_-_Noah%27s_Ark.jpg',
-    title: "Noah's Ark",
-    artist: 'Edward Hicks',
-    year: '1846'
-  },
-  abraham: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Rembrandt_-_Sacrifice_of_Isaac_-_WGA19079.jpg/400px-Rembrandt_-_Sacrifice_of_Isaac_-_WGA19079.jpg',
-    title: 'Sacrifice of Isaac',
-    artist: 'Rembrandt',
-    year: '1635'
-  },
-  sarah: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/James_Tissot_-_Hagar_and_the_Angel_in_the_Desert.jpg/400px-James_Tissot_-_Hagar_and_the_Angel_in_the_Desert.jpg',
-    title: 'Sarah and Hagar',
-    artist: 'James Tissot',
-    year: '1900'
-  },
-  isaac: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Govert_Flinck_-_Isaac_Blessing_Jacob_-_WGA7928.jpg/400px-Govert_Flinck_-_Isaac_Blessing_Jacob_-_WGA7928.jpg',
-    title: 'Isaac Blessing Jacob',
-    artist: 'Govert Flinck',
-    year: '1638'
-  },
-  jacob: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Rembrandt_-_Jacob_Wrestling_with_the_Angel_-_Google_Art_Project.jpg/400px-Rembrandt_-_Jacob_Wrestling_with_the_Angel_-_Google_Art_Project.jpg',
-    title: 'Jacob Wrestling with the Angel',
-    artist: 'Rembrandt',
-    year: '1659'
-  },
-  joseph: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Pontormo_-_Joseph_in_Egypt_-_WGA18106.jpg/400px-Pontormo_-_Joseph_in_Egypt_-_WGA18106.jpg',
-    title: 'Joseph in Egypt',
-    artist: 'Pontormo',
-    year: '1518'
-  },
-
-  // 출애굽/사사
-  moses: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/%27Moses%27_by_Michelangelo_JBU160.jpg/400px-%27Moses%27_by_Michelangelo_JBU160.jpg',
-    title: 'Moses',
-    artist: 'Michelangelo',
-    year: '1515'
-  },
-  miriam: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/James_Tissot_-_Song_of_Miriam.jpg/400px-James_Tissot_-_Song_of_Miriam.jpg',
-    title: 'Song of Miriam',
-    artist: 'James Tissot',
-    year: '1900'
-  },
-  joshua: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Joshua_at_the_walls_of_Jericho.jpg/400px-Joshua_at_the_walls_of_Jericho.jpg',
-    title: 'Joshua at Jericho',
-    artist: 'James Tissot',
-    year: '1900'
-  },
-  deborah: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Gustave_Dor%C3%A9_-_Deborah.jpg/400px-Gustave_Dor%C3%A9_-_Deborah.jpg',
-    title: 'Deborah',
-    artist: 'Gustave Doré',
-    year: '1866'
-  },
-  samson: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Samson_and_Delilah_by_Rubens.jpg/400px-Samson_and_Delilah_by_Rubens.jpg',
-    title: 'Samson and Delilah',
-    artist: 'Peter Paul Rubens',
-    year: '1610'
-  },
-  ruth: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Julius_Schnorr_von_Carolsfeld-_Ruth_im_Feld_des_Boaz.jpg/400px-Julius_Schnorr_von_Carolsfeld-_Ruth_im_Feld_des_Boaz.jpg',
-    title: 'Ruth in the Field of Boaz',
-    artist: 'Julius Schnorr',
-    year: '1828'
-  },
-  hannah: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Jan_Victors_-_Hannah_giving_her_son_Samuel_to_the_priest.jpg/400px-Jan_Victors_-_Hannah_giving_her_son_Samuel_to_the_priest.jpg',
-    title: 'Hannah Presenting Samuel',
-    artist: 'Jan Victors',
-    year: '1645'
-  },
-  samuel: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Samuel_Anointing_Saul.jpg/400px-Samuel_Anointing_Saul.jpg',
-    title: 'Samuel Anointing Saul',
-    artist: 'Ernst Josephson',
-    year: '1878'
-  },
-
-  // 왕정 시대
-  saul: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Rembrandt_Harmensz._van_Rijn_-_Saul_en_David_-_Google_Art_Project.jpg/400px-Rembrandt_Harmensz._van_Rijn_-_Saul_en_David_-_Google_Art_Project.jpg',
-    title: 'Saul and David',
-    artist: 'Rembrandt',
-    year: '1658'
-  },
-  david: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Rembrandt_Harmensz._van_Rijn_-_David_Playing_the_Harp_-_WGA19215.jpg/400px-Rembrandt_Harmensz._van_Rijn_-_David_Playing_the_Harp_-_WGA19215.jpg',
-    title: 'David Playing the Harp',
-    artist: 'Rembrandt',
-    year: '1656'
-  },
-  jonathan: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Cima_da_Conegliano_-_David_and_Jonathan_-_Google_Art_Project.jpg/400px-Cima_da_Conegliano_-_David_and_Jonathan_-_Google_Art_Project.jpg',
-    title: 'David and Jonathan',
-    artist: 'Cima da Conegliano',
-    year: '1505'
-  },
-  bathsheba: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Rembrandt_Harmensz._van_Rijn_-_Bathsheba_at_Her_Bath_%28Louvre%29_-_WGA19082.jpg/400px-Rembrandt_Harmensz._van_Rijn_-_Bathsheba_at_Her_Bath_%28Louvre%29_-_WGA19082.jpg',
-    title: 'Bathsheba at Her Bath',
-    artist: 'Rembrandt',
-    year: '1654'
-  },
-  solomon: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Judgment_of_Solomon.jpg/400px-Judgment_of_Solomon.jpg',
-    title: 'Judgment of Solomon',
-    artist: 'Nicolas Poussin',
-    year: '1649'
-  },
-  elijah: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Washington_Allston_-_Elijah_in_the_Desert_-_13.107_-_Museum_of_Fine_Arts.jpg/400px-Washington_Allston_-_Elijah_in_the_Desert_-_13.107_-_Museum_of_Fine_Arts.jpg',
-    title: 'Elijah in the Desert',
-    artist: 'Washington Allston',
-    year: '1818'
-  },
-  elisha: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Naaman_Is_Cleansed.jpg/400px-Naaman_Is_Cleansed.jpg',
-    title: 'Elisha and Naaman',
-    artist: 'Cornelis Engelbrechtsz',
-    year: '1520'
-  },
-  jezebel: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ee/Gustave_Dor%C3%A9_-_Death_of_Jezebel.jpg/400px-Gustave_Dor%C3%A9_-_Death_of_Jezebel.jpg',
-    title: 'Death of Jezebel',
-    artist: 'Gustave Doré',
-    year: '1866'
-  },
-
-  // 선지자
-  isaiah: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Michelangelo%2C_profeti%2C_Isaiah_01.jpg/400px-Michelangelo%2C_profeti%2C_Isaiah_01.jpg',
-    title: 'Prophet Isaiah',
-    artist: 'Michelangelo',
-    year: '1509'
-  },
-  jeremiah: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Michelangelo%2C_profeti%2C_Jeremiah_02.jpg/400px-Michelangelo%2C_profeti%2C_Jeremiah_02.jpg',
-    title: 'Prophet Jeremiah',
-    artist: 'Michelangelo',
-    year: '1512'
-  },
-  ezekiel: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Michelangelo%2C_profeti%2C_Ezekiel_02.jpg/400px-Michelangelo%2C_profeti%2C_Ezekiel_02.jpg',
-    title: 'Prophet Ezekiel',
-    artist: 'Michelangelo',
-    year: '1510'
-  },
-  daniel: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Peter_Paul_Rubens_-_Daniel_in_the_Lion%27s_Den_-_Google_Art_Project.jpg/400px-Peter_Paul_Rubens_-_Daniel_in_the_Lion%27s_Den_-_Google_Art_Project.jpg',
-    title: "Daniel in the Lion's Den",
-    artist: 'Peter Paul Rubens',
-    year: '1615'
-  },
-  jonah: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Michelangelo%2C_profeti%2C_Jonah_01.jpg/400px-Michelangelo%2C_profeti%2C_Jonah_01.jpg',
-    title: 'Prophet Jonah',
-    artist: 'Michelangelo',
-    year: '1512'
-  },
-
-  // 포로기
-  esther: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Artemisia_Gentileschi_-_Esther_before_Ahasuerus.JPG/400px-Artemisia_Gentileschi_-_Esther_before_Ahasuerus.JPG',
-    title: 'Esther before Ahasuerus',
-    artist: 'Artemisia Gentileschi',
-    year: '1628'
-  },
-  mordecai: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Pieter_Lastman_-_The_Triumph_of_Mordecai.jpg/400px-Pieter_Lastman_-_The_Triumph_of_Mordecai.jpg',
-    title: 'Triumph of Mordecai',
-    artist: 'Pieter Lastman',
-    year: '1617'
-  },
-  job: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/William_Blake_-_Job_Confessing_his_Presumption_to_God_who_Answers_from_the_Whirlwind.jpg/400px-William_Blake_-_Job_Confessing_his_Presumption_to_God_who_Answers_from_the_Whirlwind.jpg',
-    title: 'Job',
-    artist: 'William Blake',
-    year: '1826'
-  },
-
-  // 신약 인물
-  mary: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Sassoferrato_-_Madonna_col_Bambino.jpg/400px-Sassoferrato_-_Madonna_col_Bambino.jpg',
-    title: 'Madonna and Child',
-    artist: 'Sassoferrato',
-    year: '1640'
-  },
-  john_baptist: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Caravaggio_-_San_Giovanni_Battista_%28Galleria_Nazionale_d%27Arte_Antica%29.jpg/400px-Caravaggio_-_San_Giovanni_Battista_%28Galleria_Nazionale_d%27Arte_Antica%29.jpg',
-    title: 'John the Baptist',
-    artist: 'Caravaggio',
-    year: '1604'
-  },
-  mary_magdalene: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Mary_Magdalene_%28Titian%2C_c.1533%29.jpg/400px-Mary_Magdalene_%28Titian%2C_c.1533%29.jpg',
-    title: 'Mary Magdalene',
-    artist: 'Titian',
-    year: '1533'
-  },
-  martha: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Johannes_Vermeer_-_Christ_in_the_House_of_Martha_and_Mary_-_Google_Art_Project.jpg/400px-Johannes_Vermeer_-_Christ_in_the_House_of_Martha_and_Mary_-_Google_Art_Project.jpg',
-    title: 'Christ with Martha and Mary',
-    artist: 'Johannes Vermeer',
-    year: '1655'
-  },
-  lazarus: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Duccio_-_The_Raising_of_Lazarus_-_Google_Art_Project.jpg/400px-Duccio_-_The_Raising_of_Lazarus_-_Google_Art_Project.jpg',
-    title: 'Raising of Lazarus',
-    artist: 'Duccio',
-    year: '1311'
-  },
-
-  // 12제자
-  peter: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Pope-peter_pprubens.jpg/400px-Pope-peter_pprubens.jpg',
-    title: 'Saint Peter',
-    artist: 'Peter Paul Rubens',
-    year: '1611'
-  },
-  john_apostle: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Domenichino_-_Saint_John_the_Evangelist.jpg/400px-Domenichino_-_Saint_John_the_Evangelist.jpg',
-    title: 'Saint John the Evangelist',
-    artist: 'Domenichino',
-    year: '1625'
-  },
-  matthew: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/The_Calling_of_Saint_Matthew-Caravaggo_%281599-1600%29.jpg/400px-The_Calling_of_Saint_Matthew-Caravaggo_%281599-1600%29.jpg',
-    title: 'Calling of Saint Matthew',
-    artist: 'Caravaggio',
-    year: '1600'
-  },
-  thomas: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Caravaggio_-_The_Incredulity_of_Saint_Thomas.jpg/400px-Caravaggio_-_The_Incredulity_of_Saint_Thomas.jpg',
-    title: 'Incredulity of Saint Thomas',
-    artist: 'Caravaggio',
-    year: '1602'
-  },
-  judas_iscariot: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Giotto_di_Bondone_-_Kiss_of_Judas_-_WGA09199.jpg/400px-Giotto_di_Bondone_-_Kiss_of_Judas_-_WGA09199.jpg',
-    title: 'Kiss of Judas',
-    artist: 'Giotto',
-    year: '1305'
-  },
-
-  // 바울과 동역자들
-  paul: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Saint_Paul%2C_Rembrandt_van_Rijn_%28and_Workshop%3F%29%2C_c._1657.jpg/400px-Saint_Paul%2C_Rembrandt_van_Rijn_%28and_Workshop%3F%29%2C_c._1657.jpg',
-    title: 'Saint Paul',
-    artist: 'Rembrandt',
-    year: '1657'
-  },
-  stephen: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Rembrandt_-_The_Stoning_of_Saint_Stephen_-_Google_Art_Project.jpg/400px-Rembrandt_-_The_Stoning_of_Saint_Stephen_-_Google_Art_Project.jpg',
-    title: 'Stoning of Saint Stephen',
-    artist: 'Rembrandt',
-    year: '1625'
-  },
-  timothy: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Saint_Timothy.jpg/400px-Saint_Timothy.jpg',
-    title: 'Saint Timothy',
-    artist: 'Juan de Juanes',
-    year: '1555'
-  },
-  barnabas: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Saint_Barnabas.jpg/400px-Saint_Barnabas.jpg',
-    title: 'Saint Barnabas',
-    artist: 'Guido Reni',
-    year: '1620'
-  }
-};
 
 // ==================== 모바일 감지 ====================
 const useIsMobile = () => {
@@ -1621,8 +1313,8 @@ export default function App() {
           </div>
         )}
 
-        {/* 빠른 필터 버튼 - 데스크탑만 */}
-        {showFilters && !isMobile && (
+        {/* 빠른 필터 버튼 - 가로 스크롤 */}
+        {showFilters && (
           <div style={{
             display: 'flex',
             alignItems: 'center',
@@ -1630,9 +1322,13 @@ export default function App() {
             marginTop: '10px',
             paddingTop: '10px',
             borderTop: '1px solid rgba(255,255,255,0.05)',
-            flexWrap: 'wrap'
+            overflowX: 'auto',
+            whiteSpace: 'nowrap',
+            paddingBottom: '6px',
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none'
           }}>
-            <span style={{ fontSize: '0.75rem', opacity: 0.5, marginRight: '4px' }}>빠른필터:</span>
+            <span style={{ fontSize: '0.75rem', opacity: 0.5, flexShrink: 0 }}>빠른필터:</span>
             {QUICK_FILTERS.map(filter => (
               <button
                 key={filter.id}
@@ -1653,7 +1349,8 @@ export default function App() {
                   transition: 'all 0.2s ease',
                   boxShadow: activeQuickFilter === filter.id
                     ? '0 2px 12px rgba(255,215,0,0.2)'
-                    : 'none'
+                    : 'none',
+                  flexShrink: 0
                 }}
               >
                 {filter.label}
@@ -1663,10 +1360,53 @@ export default function App() {
               </button>
             ))}
             {activeQuickFilter && (
-              <span style={{ fontSize: '0.75rem', opacity: 0.6, marginLeft: '8px' }}>
+              <span style={{ fontSize: '0.75rem', opacity: 0.6, flexShrink: 0 }}>
                 ({filteredCharacters.length}명)
               </span>
             )}
+          </div>
+        )}
+
+        {/* 사건 타임라인 - 빠른필터 아래 */}
+        {showFilters && (
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            marginTop: '10px',
+            paddingTop: '10px',
+            borderTop: '1px solid rgba(255,255,255,0.05)',
+            overflowX: 'auto',
+            whiteSpace: 'nowrap',
+            paddingBottom: '6px',
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none'
+          }}>
+            <span style={{ fontSize: '0.75rem', opacity: 0.5, flexShrink: 0 }}>사건:</span>
+            {eventsByChronology.slice(0, 50).map(event => (
+              <div
+                key={event.id}
+                style={{
+                  padding: '6px 12px',
+                  background: selectedEvent === event.id
+                    ? 'linear-gradient(135deg, rgba(255,215,0,0.3), rgba(255,107,107,0.3))'
+                    : 'linear-gradient(135deg, rgba(102,126,234,0.15), rgba(118,75,162,0.1))',
+                  borderRadius: '16px',
+                  cursor: 'pointer',
+                  fontSize: '0.8rem',
+                  border: selectedEvent === event.id
+                    ? '1px solid rgba(255,215,0,0.5)'
+                    : '1px solid rgba(102,126,234,0.25)',
+                  transition: 'all 0.2s ease',
+                  boxShadow: selectedEvent === event.id ? '0 2px 12px rgba(255,215,0,0.2)' : 'none',
+                  flexShrink: 0
+                }}
+                onClick={() => handleEventClick(event.id)}
+              >
+                <span style={{ marginRight: 4 }}>{event.icon}</span>
+                {lang === 'ko' ? event.name_ko : event.name_en}
+              </div>
+            ))}
           </div>
         )}
 
@@ -2039,47 +1779,6 @@ export default function App() {
         )}
       </div>
 
-      {/* 타임라인 - 데스크탑만 */}
-      {!isMobile && (
-        <div style={{
-          height: '60px',
-          background: 'linear-gradient(180deg, rgba(15,15,30,0.98) 0%, rgba(10,10,25,0.98) 100%)',
-          borderTop: '1px solid rgba(102,126,234,0.2)',
-          display: 'flex',
-          alignItems: 'center',
-          padding: '0 20px',
-          overflowX: 'auto',
-          boxShadow: '0 -4px 20px rgba(0,0,0,0.4)'
-        }}>
-          <div style={{ display: 'flex', gap: 8, minWidth: '100%' }}>
-            {eventsByChronology.slice(0, 50).map(event => (
-              <div
-                key={event.id}
-                style={{
-                  padding: '8px 14px',
-                  background: selectedEvent === event.id
-                    ? 'linear-gradient(135deg, rgba(255,215,0,0.3), rgba(255,107,107,0.3))'
-                    : 'linear-gradient(135deg, rgba(102,126,234,0.15), rgba(118,75,162,0.1))',
-                  borderRadius: 10,
-                  cursor: 'pointer',
-                  whiteSpace: 'nowrap',
-                  fontSize: '0.8rem',
-                  border: selectedEvent === event.id
-                    ? '1px solid rgba(255,215,0,0.5)'
-                    : '1px solid rgba(102,126,234,0.25)',
-                  transition: 'all 0.2s ease',
-                  boxShadow: selectedEvent === event.id ? '0 2px 12px rgba(255,215,0,0.2)' : 'none'
-                }}
-                onClick={() => handleEventClick(event.id)}
-              >
-                <span style={{ marginRight: 6 }}>{event.icon}</span>
-                {lang === 'ko' ? event.name_ko : event.name_en}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
       {/* 모바일 인물 팝업 - 더 이상 사용하지 않음 (하단 패널로 대체) */}
       {false && showPopup === 'character' && selectedCharacterData && createPortal(
         <>
@@ -2121,6 +1820,7 @@ export default function App() {
               lang={lang}
               eras={eras}
               onCharacterSelect={(id) => { setSelectedCharacter(id); setShowPopup(isMobile ? 'character' : null); }}
+              artwork={eventArtwork[selectedEvent]}
             />
           </div>
         </>,
@@ -2482,11 +2182,45 @@ function CharacterDetail({ character, lang, relatedEvents, relatedHymns, related
 }
 
 // ==================== 이벤트 상세 컴포넌트 ====================
-function EventDetail({ event, lang, eras, onCharacterSelect }) {
+function EventDetail({ event, lang, eras, onCharacterSelect, artwork }) {
   const era = eras.find(e => e.id === event.era);
 
   return (
     <>
+      {/* 미술 작품 (있는 경우) */}
+      {artwork && (
+        <div style={{
+          marginBottom: '16px',
+          borderRadius: '14px',
+          overflow: 'hidden',
+          border: '1px solid rgba(102,126,234,0.3)',
+          position: 'relative'
+        }}>
+          <img
+            src={artwork.url}
+            alt={artwork.title}
+            style={{
+              width: '100%',
+              height: '160px',
+              objectFit: 'cover'
+            }}
+            onError={(e) => { e.target.style.display = 'none'; }}
+          />
+          <div style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            padding: '8px 12px',
+            background: 'linear-gradient(transparent, rgba(0,0,0,0.9))',
+            fontSize: '0.75rem'
+          }}>
+            <div style={{ fontWeight: '600' }}>{artwork.title}</div>
+            <div style={{ opacity: 0.7 }}>{artwork.artist}, {artwork.year}</div>
+          </div>
+        </div>
+      )}
+
       <div style={{
         display: 'flex',
         alignItems: 'center',

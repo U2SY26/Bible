@@ -9,6 +9,7 @@ import { prophetCharacters } from './characters-prophets.js';
 import { charactersNTExpanded } from './characters-nt-expanded.js';
 import { charactersOTSupplemental } from './characters-ot-supplemental.js';
 import { relationships as baseRelationships, relationshipColors, getRelationshipsByCharacter } from './relationships.js';
+import { relationshipsExpanded as additionalRelationships } from './relationships-expanded.js';
 import { events as baseEvents, eras, getEventsByCharacter, getEventsByEra, eventsByChronology as baseChronology } from './events.js';
 import { eventsExpanded } from './events-expanded.js';
 import { eventsPhase2 } from './events-phase2.js';
@@ -59,6 +60,7 @@ export const eventsByChronology = [...events].sort((a, b) => a.year - b.year);
 // 확장된 관계 데이터
 const expandedRelationships = [
   ...baseRelationships,
+  ...additionalRelationships,
   // 족장 시대 관계
   { source: 'seth', target: 'adam', type: 'child' },
   { source: 'enosh', target: 'seth', type: 'child' },
