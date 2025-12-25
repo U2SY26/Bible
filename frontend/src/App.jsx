@@ -17,28 +17,106 @@ import {
   locationTypeIcons
 } from './data/index.js';
 
-// ==================== MBTI 데이터 ====================
+// ==================== MBTI 데이터 (확장) ====================
 const mbtiData = {
+  // 삼위일체 & 영적 존재
   god: { mbti: 'INFJ', traits: ['직관적', '이상주의적', '심오한 통찰'] },
   jesus: { mbti: 'INFJ', traits: ['공감능력', '희생정신', '지혜로움'] },
-  moses: { mbti: 'ISTJ', traits: ['책임감', '원칙주의', '인내심'] },
-  david: { mbti: 'ENFP', traits: ['열정적', '창의적', '감성적'] },
-  paul: { mbti: 'ENTJ', traits: ['리더십', '논리적', '목표지향적'] },
-  peter: { mbti: 'ESFP', traits: ['충동적', '열정적', '행동파'] },
+  holy_spirit: { mbti: 'INFP', traits: ['인도자', '위로자', '영적 감화'] },
+
+  // 족장 시대
+  adam: { mbti: 'ISFP', traits: ['순수함', '자연친화', '호기심'] },
+  eve: { mbti: 'ENFP', traits: ['호기심', '감성적', '탐구적'] },
+  noah: { mbti: 'ISTJ', traits: ['순종', '인내', '신실함'] },
   abraham: { mbti: 'ISFJ', traits: ['충실함', '인내', '순종'] },
+  sarah: { mbti: 'ESFJ', traits: ['현실적', '보호본능', '웃음'] },
+  isaac: { mbti: 'ISFJ', traits: ['온순함', '평화추구', '중재자'] },
+  rebekah: { mbti: 'ENTJ', traits: ['결단력', '전략적', '주도적'] },
+  jacob: { mbti: 'ENTP', traits: ['영리함', '야망', '적응력'] },
+  esau: { mbti: 'ESTP', traits: ['충동적', '야외활동', '솔직함'] },
+  joseph: { mbti: 'INFJ', traits: ['꿈꾸는자', '인내', '용서'] },
+  judah: { mbti: 'ESTJ', traits: ['리더십', '책임감', '변화'] },
+
+  // 출애굽/사사 시대
+  moses: { mbti: 'ISTJ', traits: ['책임감', '원칙주의', '인내심'] },
+  aaron: { mbti: 'ESFJ', traits: ['대변인', '협조적', '유화적'] },
+  miriam: { mbti: 'ENFJ', traits: ['리더십', '예언', '찬양'] },
+  joshua: { mbti: 'ESTJ', traits: ['군사전략', '용맹', '충성'] },
+  caleb: { mbti: 'ESTP', traits: ['용감함', '낙관적', '도전정신'] },
+  deborah: { mbti: 'ENTJ', traits: ['지도력', '예언', '지혜'] },
+  gideon: { mbti: 'ISFJ', traits: ['겸손', '신중함', '순종'] },
+  samson: { mbti: 'ESTP', traits: ['힘', '충동적', '열정적'] },
+  ruth: { mbti: 'ISFJ', traits: ['헌신적', '충성스러움', '겸손'] },
+  naomi: { mbti: 'ISFJ', traits: ['인내', '지혜', '사랑'] },
+  hannah: { mbti: 'INFP', traits: ['기도', '헌신', '믿음'] },
+  samuel: { mbti: 'INFJ', traits: ['예언자', '분별력', '헌신'] },
+
+  // 왕정 시대
+  saul: { mbti: 'ESFP', traits: ['카리스마', '불안정', '질투'] },
+  david: { mbti: 'ENFP', traits: ['열정적', '창의적', '감성적'] },
+  jonathan: { mbti: 'ENFJ', traits: ['충성', '우정', '고결함'] },
   solomon: { mbti: 'INTP', traits: ['지혜로움', '분석적', '호기심'] },
   elijah: { mbti: 'INTJ', traits: ['비전가', '결단력', '독립적'] },
-  ruth: { mbti: 'ISFJ', traits: ['헌신적', '충성스러움', '겸손'] },
-  esther: { mbti: 'ENFJ', traits: ['용감함', '리더십', '카리스마'] },
-  joseph: { mbti: 'INFJ', traits: ['꿈꾸는자', '인내', '용서'] },
+  elisha: { mbti: 'INFJ', traits: ['섬김', '기적', '인내'] },
+  ahab: { mbti: 'ESFP', traits: ['우유부단', '탐욕', '유혹에 약함'] },
+  jezebel: { mbti: 'ENTJ', traits: ['지배욕', '잔인함', '계략'] },
+  hezekiah: { mbti: 'ISFJ', traits: ['경건', '개혁', '겸손'] },
+  josiah: { mbti: 'ISTJ', traits: ['율법준수', '개혁', '신실함'] },
+
+  // 선지자
+  isaiah: { mbti: 'INFJ', traits: ['비전', '시적표현', '메시아예언'] },
+  jeremiah: { mbti: 'INFP', traits: ['민감함', '눈물', '신실함'] },
+  ezekiel: { mbti: 'INTJ', traits: ['환상', '상징', '경고'] },
   daniel: { mbti: 'INTJ', traits: ['지혜', '원칙주의', '신실함'] },
+  hosea: { mbti: 'INFP', traits: ['사랑', '용서', '은유적'] },
+  amos: { mbti: 'ISTJ', traits: ['정의', '직설적', '평민'] },
+  jonah: { mbti: 'ISFP', traits: ['감정적', '내향적', '성장'] },
+  micah: { mbti: 'INFJ', traits: ['정의', '겸손', '예언'] },
+
+  // 포로기/귀환기
+  esther: { mbti: 'ENFJ', traits: ['용감함', '리더십', '카리스마'] },
+  mordecai: { mbti: 'ISTJ', traits: ['충성', '지혜', '인내'] },
+  nehemiah: { mbti: 'ESTJ', traits: ['조직력', '리더십', '기도'] },
+  ezra: { mbti: 'ISTJ', traits: ['율법학자', '교육자', '헌신'] },
+  job: { mbti: 'ISTJ', traits: ['인내', '정직', '경건'] },
+
+  // 신약 - 예수님 주변
   mary: { mbti: 'ISFP', traits: ['겸손', '순종', '묵상적'] },
-  john_apostle: { mbti: 'INFP', traits: ['사랑', '이상주의', '영적'] },
+  joseph_carpenter: { mbti: 'ISTJ', traits: ['의로움', '순종', '보호자'] },
+  john_baptist: { mbti: 'INTJ', traits: ['선구자', '회개촉구', '고독'] },
+  mary_magdalene: { mbti: 'ENFP', traits: ['열정', '헌신', '증인'] },
+  lazarus: { mbti: 'ISFP', traits: ['조용함', '친구', '믿음'] },
   martha: { mbti: 'ESTJ', traits: ['실용적', '조직력', '봉사'] },
-  noah: { mbti: 'ISTJ', traits: ['순종', '인내', '신실함'] },
-  jacob: { mbti: 'ENTP', traits: ['영리함', '야망', '적응력'] },
-  samuel: { mbti: 'INFJ', traits: ['예언자', '분별력', '헌신'] },
-  jonah: { mbti: 'ISFP', traits: ['감정적', '내향적', '성장'] }
+  mary_bethany: { mbti: 'INFP', traits: ['묵상', '헌신', '경배'] },
+
+  // 12제자
+  peter: { mbti: 'ESFP', traits: ['충동적', '열정적', '행동파'] },
+  andrew: { mbti: 'ISFJ', traits: ['소개자', '겸손', '실용적'] },
+  james: { mbti: 'ESTP', traits: ['열심', '행동파', '야망'] },
+  john_apostle: { mbti: 'INFP', traits: ['사랑', '이상주의', '영적'] },
+  philip: { mbti: 'INTP', traits: ['분석적', '질문', '실용적'] },
+  bartholomew: { mbti: 'INFJ', traits: ['정직', '묵상', '진실'] },
+  matthew: { mbti: 'ISTJ', traits: ['세심함', '기록', '헌신'] },
+  thomas: { mbti: 'INTP', traits: ['의심', '탐구', '신실'] },
+  james_alphaeus: { mbti: 'ISFJ', traits: ['겸손', '충성', '조용함'] },
+  thaddaeus: { mbti: 'ISFP', traits: ['열심', '충성', '겸손'] },
+  simon_zealot: { mbti: 'ESTP', traits: ['열심당', '열정', '행동'] },
+  judas_iscariot: { mbti: 'ESTJ', traits: ['실용적', '야망', '배신'] },
+
+  // 바울과 동역자들
+  paul: { mbti: 'ENTJ', traits: ['리더십', '논리적', '목표지향적'] },
+  barnabas: { mbti: 'ENFJ', traits: ['격려', '중재', '관대'] },
+  silas: { mbti: 'ISFJ', traits: ['충성', '동역', '찬양'] },
+  timothy: { mbti: 'INFJ', traits: ['겸손', '신실', '두려움극복'] },
+  luke: { mbti: 'INTP', traits: ['기록자', '의사', '역사가'] },
+  priscilla: { mbti: 'ENFJ', traits: ['가르침', '환대', '동역'] },
+  aquila: { mbti: 'ISFJ', traits: ['장인정신', '환대', '신실'] },
+  apollos: { mbti: 'ENTP', traits: ['웅변', '열정', '학구적'] },
+  titus: { mbti: 'ESTJ', traits: ['조직력', '리더십', '신실'] },
+  philemon: { mbti: 'ESFJ', traits: ['환대', '용서', '관대'] },
+  onesimus: { mbti: 'ISFP', traits: ['변화', '충성', '유용'] },
+  lydia: { mbti: 'ESTJ', traits: ['사업가', '환대', '리더십'] },
+  stephen: { mbti: 'ENFJ', traits: ['믿음', '용기', '순교'] }
 };
 
 // MBTI 유형별 설명
@@ -69,38 +147,23 @@ const mbtiQuestions = [
   { q: '계획을 세우고 따르는 것을 선호하나요?', e: 'J', i: 'P' }
 ];
 
-// 주요 인물 미술 작품 (퍼블릭 도메인)
+// 주요 인물 미술 작품 (퍼블릭 도메인 - 확장)
 const characterArtwork = {
+  // 삼위일체
+  god: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Andrej_Rubl%C3%ABv_-_Trinity_-_Google_Art_Project.jpg/400px-Andrej_Rubl%C3%ABv_-_Trinity_-_Google_Art_Project.jpg',
+    title: 'Trinity',
+    artist: 'Andrei Rublev',
+    year: '1425'
+  },
   jesus: {
     url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Christ_as_Salvator_Mundi%2C_by_Leonardo_da_Vinci%2C_1499-1500.jpg/400px-Christ_as_Salvator_Mundi%2C_by_Leonardo_da_Vinci%2C_1499-1500.jpg',
     title: 'Salvator Mundi',
     artist: 'Leonardo da Vinci',
     year: '1500'
   },
-  moses: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/%27Moses%27_by_Michelangelo_JBU160.jpg/400px-%27Moses%27_by_Michelangelo_JBU160.jpg',
-    title: 'Moses',
-    artist: 'Michelangelo',
-    year: '1515'
-  },
-  david: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Rembrandt_Harmensz._van_Rijn_-_David_Playing_the_Harp_-_WGA19215.jpg/400px-Rembrandt_Harmensz._van_Rijn_-_David_Playing_the_Harp_-_WGA19215.jpg',
-    title: 'David Playing the Harp',
-    artist: 'Rembrandt',
-    year: '1656'
-  },
-  abraham: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Rembrandt_-_Sacrifice_of_Isaac_-_WGA19079.jpg/400px-Rembrandt_-_Sacrifice_of_Isaac_-_WGA19079.jpg',
-    title: 'Sacrifice of Isaac',
-    artist: 'Rembrandt',
-    year: '1635'
-  },
-  mary: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Sassoferrato_-_Madonna_col_Bambino.jpg/400px-Sassoferrato_-_Madonna_col_Bambino.jpg',
-    title: 'Madonna and Child',
-    artist: 'Sassoferrato',
-    year: '1640'
-  },
+
+  // 구약 족장
   adam: {
     url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Michelangelo_-_Creation_of_Adam_%28cropped%29.jpg/400px-Michelangelo_-_Creation_of_Adam_%28cropped%29.jpg',
     title: 'Creation of Adam',
@@ -119,47 +182,61 @@ const characterArtwork = {
     artist: 'Edward Hicks',
     year: '1846'
   },
+  abraham: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Rembrandt_-_Sacrifice_of_Isaac_-_WGA19079.jpg/400px-Rembrandt_-_Sacrifice_of_Isaac_-_WGA19079.jpg',
+    title: 'Sacrifice of Isaac',
+    artist: 'Rembrandt',
+    year: '1635'
+  },
+  sarah: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/James_Tissot_-_Hagar_and_the_Angel_in_the_Desert.jpg/400px-James_Tissot_-_Hagar_and_the_Angel_in_the_Desert.jpg',
+    title: 'Sarah and Hagar',
+    artist: 'James Tissot',
+    year: '1900'
+  },
+  isaac: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Govert_Flinck_-_Isaac_Blessing_Jacob_-_WGA7928.jpg/400px-Govert_Flinck_-_Isaac_Blessing_Jacob_-_WGA7928.jpg',
+    title: 'Isaac Blessing Jacob',
+    artist: 'Govert Flinck',
+    year: '1638'
+  },
+  jacob: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Rembrandt_-_Jacob_Wrestling_with_the_Angel_-_Google_Art_Project.jpg/400px-Rembrandt_-_Jacob_Wrestling_with_the_Angel_-_Google_Art_Project.jpg',
+    title: 'Jacob Wrestling with the Angel',
+    artist: 'Rembrandt',
+    year: '1659'
+  },
   joseph: {
     url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Pontormo_-_Joseph_in_Egypt_-_WGA18106.jpg/400px-Pontormo_-_Joseph_in_Egypt_-_WGA18106.jpg',
     title: 'Joseph in Egypt',
     artist: 'Pontormo',
     year: '1518'
   },
-  solomon: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Judgment_of_Solomon.jpg/400px-Judgment_of_Solomon.jpg',
-    title: 'Judgment of Solomon',
-    artist: 'Nicolas Poussin',
-    year: '1649'
+
+  // 출애굽/사사
+  moses: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/%27Moses%27_by_Michelangelo_JBU160.jpg/400px-%27Moses%27_by_Michelangelo_JBU160.jpg',
+    title: 'Moses',
+    artist: 'Michelangelo',
+    year: '1515'
   },
-  daniel: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Peter_Paul_Rubens_-_Daniel_in_the_Lion%27s_Den_-_Google_Art_Project.jpg/400px-Peter_Paul_Rubens_-_Daniel_in_the_Lion%27s_Den_-_Google_Art_Project.jpg',
-    title: "Daniel in the Lion's Den",
-    artist: 'Peter Paul Rubens',
-    year: '1615'
+  miriam: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/James_Tissot_-_Song_of_Miriam.jpg/400px-James_Tissot_-_Song_of_Miriam.jpg',
+    title: 'Song of Miriam',
+    artist: 'James Tissot',
+    year: '1900'
   },
-  elijah: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Washington_Allston_-_Elijah_in_the_Desert_-_13.107_-_Museum_of_Fine_Arts.jpg/400px-Washington_Allston_-_Elijah_in_the_Desert_-_13.107_-_Museum_of_Fine_Arts.jpg',
-    title: 'Elijah in the Desert',
-    artist: 'Washington Allston',
-    year: '1818'
+  joshua: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Joshua_at_the_walls_of_Jericho.jpg/400px-Joshua_at_the_walls_of_Jericho.jpg',
+    title: 'Joshua at Jericho',
+    artist: 'James Tissot',
+    year: '1900'
   },
-  paul: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Saint_Paul%2C_Rembrandt_van_Rijn_%28and_Workshop%3F%29%2C_c._1657.jpg/400px-Saint_Paul%2C_Rembrandt_van_Rijn_%28and_Workshop%3F%29%2C_c._1657.jpg',
-    title: 'Saint Paul',
-    artist: 'Rembrandt',
-    year: '1657'
-  },
-  peter: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Pope-peter_pprubens.jpg/400px-Pope-peter_pprubens.jpg',
-    title: 'Saint Peter',
-    artist: 'Peter Paul Rubens',
-    year: '1611'
-  },
-  john_baptist: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Caravaggio_-_San_Giovanni_Battista_%28Galleria_Nazionale_d%27Arte_Antica%29.jpg/400px-Caravaggio_-_San_Giovanni_Battista_%28Galleria_Nazionale_d%27Arte_Antica%29.jpg',
-    title: 'John the Baptist',
-    artist: 'Caravaggio',
-    year: '1604'
+  deborah: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Gustave_Dor%C3%A9_-_Deborah.jpg/400px-Gustave_Dor%C3%A9_-_Deborah.jpg',
+    title: 'Deborah',
+    artist: 'Gustave Doré',
+    year: '1866'
   },
   samson: {
     url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Samson_and_Delilah_by_Rubens.jpg/400px-Samson_and_Delilah_by_Rubens.jpg',
@@ -167,17 +244,215 @@ const characterArtwork = {
     artist: 'Peter Paul Rubens',
     year: '1610'
   },
+  ruth: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Julius_Schnorr_von_Carolsfeld-_Ruth_im_Feld_des_Boaz.jpg/400px-Julius_Schnorr_von_Carolsfeld-_Ruth_im_Feld_des_Boaz.jpg',
+    title: 'Ruth in the Field of Boaz',
+    artist: 'Julius Schnorr',
+    year: '1828'
+  },
+  hannah: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Jan_Victors_-_Hannah_giving_her_son_Samuel_to_the_priest.jpg/400px-Jan_Victors_-_Hannah_giving_her_son_Samuel_to_the_priest.jpg',
+    title: 'Hannah Presenting Samuel',
+    artist: 'Jan Victors',
+    year: '1645'
+  },
+  samuel: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Samuel_Anointing_Saul.jpg/400px-Samuel_Anointing_Saul.jpg',
+    title: 'Samuel Anointing Saul',
+    artist: 'Ernst Josephson',
+    year: '1878'
+  },
+
+  // 왕정 시대
+  saul: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Rembrandt_Harmensz._van_Rijn_-_Saul_en_David_-_Google_Art_Project.jpg/400px-Rembrandt_Harmensz._van_Rijn_-_Saul_en_David_-_Google_Art_Project.jpg',
+    title: 'Saul and David',
+    artist: 'Rembrandt',
+    year: '1658'
+  },
+  david: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Rembrandt_Harmensz._van_Rijn_-_David_Playing_the_Harp_-_WGA19215.jpg/400px-Rembrandt_Harmensz._van_Rijn_-_David_Playing_the_Harp_-_WGA19215.jpg',
+    title: 'David Playing the Harp',
+    artist: 'Rembrandt',
+    year: '1656'
+  },
+  jonathan: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Cima_da_Conegliano_-_David_and_Jonathan_-_Google_Art_Project.jpg/400px-Cima_da_Conegliano_-_David_and_Jonathan_-_Google_Art_Project.jpg',
+    title: 'David and Jonathan',
+    artist: 'Cima da Conegliano',
+    year: '1505'
+  },
+  bathsheba: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Rembrandt_Harmensz._van_Rijn_-_Bathsheba_at_Her_Bath_%28Louvre%29_-_WGA19082.jpg/400px-Rembrandt_Harmensz._van_Rijn_-_Bathsheba_at_Her_Bath_%28Louvre%29_-_WGA19082.jpg',
+    title: 'Bathsheba at Her Bath',
+    artist: 'Rembrandt',
+    year: '1654'
+  },
+  solomon: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Judgment_of_Solomon.jpg/400px-Judgment_of_Solomon.jpg',
+    title: 'Judgment of Solomon',
+    artist: 'Nicolas Poussin',
+    year: '1649'
+  },
+  elijah: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Washington_Allston_-_Elijah_in_the_Desert_-_13.107_-_Museum_of_Fine_Arts.jpg/400px-Washington_Allston_-_Elijah_in_the_Desert_-_13.107_-_Museum_of_Fine_Arts.jpg',
+    title: 'Elijah in the Desert',
+    artist: 'Washington Allston',
+    year: '1818'
+  },
+  elisha: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Naaman_Is_Cleansed.jpg/400px-Naaman_Is_Cleansed.jpg',
+    title: 'Elisha and Naaman',
+    artist: 'Cornelis Engelbrechtsz',
+    year: '1520'
+  },
+  jezebel: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ee/Gustave_Dor%C3%A9_-_Death_of_Jezebel.jpg/400px-Gustave_Dor%C3%A9_-_Death_of_Jezebel.jpg',
+    title: 'Death of Jezebel',
+    artist: 'Gustave Doré',
+    year: '1866'
+  },
+
+  // 선지자
+  isaiah: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Michelangelo%2C_profeti%2C_Isaiah_01.jpg/400px-Michelangelo%2C_profeti%2C_Isaiah_01.jpg',
+    title: 'Prophet Isaiah',
+    artist: 'Michelangelo',
+    year: '1509'
+  },
+  jeremiah: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Michelangelo%2C_profeti%2C_Jeremiah_02.jpg/400px-Michelangelo%2C_profeti%2C_Jeremiah_02.jpg',
+    title: 'Prophet Jeremiah',
+    artist: 'Michelangelo',
+    year: '1512'
+  },
+  ezekiel: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Michelangelo%2C_profeti%2C_Ezekiel_02.jpg/400px-Michelangelo%2C_profeti%2C_Ezekiel_02.jpg',
+    title: 'Prophet Ezekiel',
+    artist: 'Michelangelo',
+    year: '1510'
+  },
+  daniel: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Peter_Paul_Rubens_-_Daniel_in_the_Lion%27s_Den_-_Google_Art_Project.jpg/400px-Peter_Paul_Rubens_-_Daniel_in_the_Lion%27s_Den_-_Google_Art_Project.jpg',
+    title: "Daniel in the Lion's Den",
+    artist: 'Peter Paul Rubens',
+    year: '1615'
+  },
+  jonah: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Michelangelo%2C_profeti%2C_Jonah_01.jpg/400px-Michelangelo%2C_profeti%2C_Jonah_01.jpg',
+    title: 'Prophet Jonah',
+    artist: 'Michelangelo',
+    year: '1512'
+  },
+
+  // 포로기
   esther: {
     url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Artemisia_Gentileschi_-_Esther_before_Ahasuerus.JPG/400px-Artemisia_Gentileschi_-_Esther_before_Ahasuerus.JPG',
     title: 'Esther before Ahasuerus',
     artist: 'Artemisia Gentileschi',
     year: '1628'
   },
-  ruth: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Julius_Schnorr_von_Carolsfeld-_Ruth_im_Feld_des_Boaz.jpg/400px-Julius_Schnorr_von_Carolsfeld-_Ruth_im_Feld_des_Boaz.jpg',
-    title: 'Ruth in the Field of Boaz',
-    artist: 'Julius Schnorr',
-    year: '1828'
+  mordecai: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Pieter_Lastman_-_The_Triumph_of_Mordecai.jpg/400px-Pieter_Lastman_-_The_Triumph_of_Mordecai.jpg',
+    title: 'Triumph of Mordecai',
+    artist: 'Pieter Lastman',
+    year: '1617'
+  },
+  job: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/William_Blake_-_Job_Confessing_his_Presumption_to_God_who_Answers_from_the_Whirlwind.jpg/400px-William_Blake_-_Job_Confessing_his_Presumption_to_God_who_Answers_from_the_Whirlwind.jpg',
+    title: 'Job',
+    artist: 'William Blake',
+    year: '1826'
+  },
+
+  // 신약 인물
+  mary: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Sassoferrato_-_Madonna_col_Bambino.jpg/400px-Sassoferrato_-_Madonna_col_Bambino.jpg',
+    title: 'Madonna and Child',
+    artist: 'Sassoferrato',
+    year: '1640'
+  },
+  john_baptist: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Caravaggio_-_San_Giovanni_Battista_%28Galleria_Nazionale_d%27Arte_Antica%29.jpg/400px-Caravaggio_-_San_Giovanni_Battista_%28Galleria_Nazionale_d%27Arte_Antica%29.jpg',
+    title: 'John the Baptist',
+    artist: 'Caravaggio',
+    year: '1604'
+  },
+  mary_magdalene: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Mary_Magdalene_%28Titian%2C_c.1533%29.jpg/400px-Mary_Magdalene_%28Titian%2C_c.1533%29.jpg',
+    title: 'Mary Magdalene',
+    artist: 'Titian',
+    year: '1533'
+  },
+  martha: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Johannes_Vermeer_-_Christ_in_the_House_of_Martha_and_Mary_-_Google_Art_Project.jpg/400px-Johannes_Vermeer_-_Christ_in_the_House_of_Martha_and_Mary_-_Google_Art_Project.jpg',
+    title: 'Christ with Martha and Mary',
+    artist: 'Johannes Vermeer',
+    year: '1655'
+  },
+  lazarus: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Duccio_-_The_Raising_of_Lazarus_-_Google_Art_Project.jpg/400px-Duccio_-_The_Raising_of_Lazarus_-_Google_Art_Project.jpg',
+    title: 'Raising of Lazarus',
+    artist: 'Duccio',
+    year: '1311'
+  },
+
+  // 12제자
+  peter: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Pope-peter_pprubens.jpg/400px-Pope-peter_pprubens.jpg',
+    title: 'Saint Peter',
+    artist: 'Peter Paul Rubens',
+    year: '1611'
+  },
+  john_apostle: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Domenichino_-_Saint_John_the_Evangelist.jpg/400px-Domenichino_-_Saint_John_the_Evangelist.jpg',
+    title: 'Saint John the Evangelist',
+    artist: 'Domenichino',
+    year: '1625'
+  },
+  matthew: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/The_Calling_of_Saint_Matthew-Caravaggo_%281599-1600%29.jpg/400px-The_Calling_of_Saint_Matthew-Caravaggo_%281599-1600%29.jpg',
+    title: 'Calling of Saint Matthew',
+    artist: 'Caravaggio',
+    year: '1600'
+  },
+  thomas: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Caravaggio_-_The_Incredulity_of_Saint_Thomas.jpg/400px-Caravaggio_-_The_Incredulity_of_Saint_Thomas.jpg',
+    title: 'Incredulity of Saint Thomas',
+    artist: 'Caravaggio',
+    year: '1602'
+  },
+  judas_iscariot: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Giotto_di_Bondone_-_Kiss_of_Judas_-_WGA09199.jpg/400px-Giotto_di_Bondone_-_Kiss_of_Judas_-_WGA09199.jpg',
+    title: 'Kiss of Judas',
+    artist: 'Giotto',
+    year: '1305'
+  },
+
+  // 바울과 동역자들
+  paul: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Saint_Paul%2C_Rembrandt_van_Rijn_%28and_Workshop%3F%29%2C_c._1657.jpg/400px-Saint_Paul%2C_Rembrandt_van_Rijn_%28and_Workshop%3F%29%2C_c._1657.jpg',
+    title: 'Saint Paul',
+    artist: 'Rembrandt',
+    year: '1657'
+  },
+  stephen: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Rembrandt_-_The_Stoning_of_Saint_Stephen_-_Google_Art_Project.jpg/400px-Rembrandt_-_The_Stoning_of_Saint_Stephen_-_Google_Art_Project.jpg',
+    title: 'Stoning of Saint Stephen',
+    artist: 'Rembrandt',
+    year: '1625'
+  },
+  timothy: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Saint_Timothy.jpg/400px-Saint_Timothy.jpg',
+    title: 'Saint Timothy',
+    artist: 'Juan de Juanes',
+    year: '1555'
+  },
+  barnabas: {
+    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Saint_Barnabas.jpg/400px-Saint_Barnabas.jpg',
+    title: 'Saint Barnabas',
+    artist: 'Guido Reni',
+    year: '1620'
   }
 };
 
