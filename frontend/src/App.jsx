@@ -232,11 +232,12 @@ const styles = {
   },
   filterSectionDesktop: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(3, 1fr)',
-    gap: '10px',
+    gridTemplateColumns: '1fr 1fr 1fr 1fr',
+    gap: '12px',
     marginTop: '12px',
     paddingTop: '12px',
-    borderTop: '1px solid rgba(255,255,255,0.08)'
+    borderTop: '1px solid rgba(255,255,255,0.08)',
+    alignItems: 'center'
   },
   searchInput: {
     padding: '10px 18px',
@@ -306,9 +307,9 @@ const styles = {
     userSelect: 'none'
   },
   sidebar: {
-    width: '30%',
-    minWidth: '320px',
-    maxWidth: '450px',
+    width: '38%',
+    minWidth: '400px',
+    maxWidth: '580px',
     background: 'linear-gradient(180deg, rgba(15,15,30,0.98) 0%, rgba(10,10,25,0.98) 100%)',
     borderLeft: '1px solid rgba(102,126,234,0.2)',
     overflowY: 'auto',
@@ -1543,16 +1544,6 @@ export default function App() {
           <h1 style={styles.title}>성경 인물 관계도</h1>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{
-              fontSize: '0.75rem',
-              padding: '4px 10px',
-              background: 'linear-gradient(135deg, rgba(102,126,234,0.25), rgba(118,75,162,0.25))',
-              borderRadius: '12px',
-              border: '1px solid rgba(102,126,234,0.35)'
-            }}>
-              {visibleNodes.length} / {allCharacters.length}명
-              {!physicsEnabled && <span style={{ marginLeft: '4px', opacity: 0.6 }}>⚡</span>}
-            </span>
             <button
               style={{
                 ...styles.filterToggle,
@@ -1587,7 +1578,7 @@ export default function App() {
         {showFilters && (
           <div style={isMobile ? styles.filterSection : styles.filterSectionDesktop}>
             {/* 검색 입력 + 자동완성 드롭다운 */}
-            <div style={{ position: 'relative', gridColumn: 'span 3' }}>
+            <div style={{ position: 'relative' }}>
               <input
                 ref={searchInputRef}
                 type="text"
@@ -1605,7 +1596,7 @@ export default function App() {
                 }}
                 style={{
                   ...styles.searchInput,
-                  width: isMobile ? '100%' : '200px'
+                  width: '100%'
                 }}
               />
 
@@ -1744,50 +1735,73 @@ export default function App() {
               ))}
             </select>
 
-            {/* 크기 슬라이더 - 데스크탑만 */}
+            {/* 두 번째 행: 크기, MBTI, 언어, 초기화 */}
             {!isMobile && (
-              <div style={styles.sliderContainer}>
-                <span>크기</span>
-                <input
-                  type="range"
-                  min="0.4"
-                  max="2.5"
-                  step="0.1"
-                  value={nodeScale}
-                  onChange={(e) => setNodeScale(parseFloat(e.target.value))}
-                  style={styles.slider}
-                />
-                <span style={{ minWidth: '35px' }}>{Math.round(nodeScale * 100)}%</span>
+              <div style={{
+                gridColumn: 'span 4',
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr 1fr 1fr',
+                gap: '12px',
+                alignItems: 'center'
+              }}>
+                <div style={styles.sliderContainer}>
+                  <span>크기</span>
+                  <input
+                    type="range"
+                    min="0.4"
+                    max="2.5"
+                    step="0.1"
+                    value={nodeScale}
+                    onChange={(e) => setNodeScale(parseFloat(e.target.value))}
+                    style={styles.slider}
+                  />
+                  <span style={{ minWidth: '35px' }}>{Math.round(nodeScale * 100)}%</span>
+                </div>
+
+                <button
+                  style={{
+                    ...styles.button,
+                    width: '100%',
+                    background: showMBTI
+                      ? 'linear-gradient(135deg, rgba(255,215,0,0.4), rgba(255,107,107,0.4))'
+                      : styles.button.background,
+                    border: showMBTI ? '2px solid rgba(255,215,0,0.5)' : styles.button.border
+                  }}
+                  onClick={() => setShowMBTI(!showMBTI)}
+                >
+                  🧠 MBTI
+                </button>
+
+                <button
+                  style={{
+                    ...styles.button,
+                    width: '100%',
+                    background: lang === 'en' ? 'linear-gradient(135deg, rgba(102,126,234,0.4), rgba(118,75,162,0.4))' : styles.button.background
+                  }}
+                  onClick={() => setLang(lang === 'ko' ? 'en' : 'ko')}
+                >
+                  {lang === 'ko' ? 'EN' : 'KO'}
+                </button>
+
+                <button style={{ ...styles.button, width: '100%' }} onClick={handleReset}>초기화</button>
               </div>
             )}
 
-            {/* MBTI 버튼 - 데스크탑만 */}
-            {!isMobile && (
-              <button
-                style={{
-                  ...styles.button,
-                  background: showMBTI
-                    ? 'linear-gradient(135deg, rgba(255,215,0,0.4), rgba(255,107,107,0.4))'
-                    : styles.button.background,
-                  border: showMBTI ? '2px solid rgba(255,215,0,0.5)' : styles.button.border
-                }}
-                onClick={() => setShowMBTI(!showMBTI)}
-              >
-                🧠 MBTI
-              </button>
+            {/* 모바일용 버튼들 */}
+            {isMobile && (
+              <>
+                <button
+                  style={{
+                    ...styles.button,
+                    background: lang === 'en' ? 'linear-gradient(135deg, rgba(102,126,234,0.4), rgba(118,75,162,0.4))' : styles.button.background
+                  }}
+                  onClick={() => setLang(lang === 'ko' ? 'en' : 'ko')}
+                >
+                  {lang === 'ko' ? 'EN' : 'KO'}
+                </button>
+                <button style={styles.button} onClick={handleReset}>초기화</button>
+              </>
             )}
-
-            <button
-              style={{
-                ...styles.button,
-                background: lang === 'en' ? 'linear-gradient(135deg, rgba(102,126,234,0.4), rgba(118,75,162,0.4))' : styles.button.background
-              }}
-              onClick={() => setLang(lang === 'ko' ? 'en' : 'ko')}
-            >
-              {lang === 'ko' ? 'EN' : 'KO'}
-            </button>
-
-            <button style={styles.button} onClick={handleReset}>초기화</button>
           </div>
         )}
 
