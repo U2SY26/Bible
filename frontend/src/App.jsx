@@ -1548,7 +1548,8 @@ export default function App() {
               style={{
                 ...styles.filterToggle,
                 background: 'linear-gradient(135deg, rgba(255,215,0,0.3), rgba(255,140,0,0.3))',
-                borderColor: 'rgba(255,215,0,0.5)'
+                borderColor: 'rgba(255,215,0,0.5)',
+                whiteSpace: 'nowrap'
               }}
               onClick={() => setBibleViewer({
                 show: true,
@@ -1559,7 +1560,7 @@ export default function App() {
                 totalChapters: 50
               })}
             >
-              📖 성경
+              📖 개역개정
             </button>
             <button
               style={{
