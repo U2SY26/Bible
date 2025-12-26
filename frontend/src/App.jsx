@@ -1115,6 +1115,9 @@ export default function App() {
   // 핀치 줌 상태
   const lastTouchDistance = useRef(null);
 
+  // 드래그 대상을 ref로도 추적 (이벤트 타이밍 문제 해결)
+  const dragTargetRef = useRef(null);
+
   const handlePointerDown = useCallback((e, characterId = null) => {
     // 두 손가락 터치는 핀치 줌으로 처리
     if (e.touches && e.touches.length === 2) {
@@ -1133,6 +1136,7 @@ export default function App() {
       e.preventDefault();
       e.stopPropagation();
       setDragTarget(characterId);
+      dragTargetRef.current = characterId; // ref에도 저장
       dragStartPos.current = { x: clientX, y: clientY };
       dragStartTime.current = Date.now();
     } else {
@@ -1194,7 +1198,10 @@ export default function App() {
     // 핀치 줌 종료
     lastTouchDistance.current = null;
 
-    if (dragTarget && dragStartPos.current && dragStartTime.current) {
+    // ref를 사용해서 드래그 대상 확인 (상태 업데이트 타이밍 문제 해결)
+    const currentDragTarget = dragTargetRef.current;
+
+    if (currentDragTarget && dragStartPos.current && dragStartTime.current) {
       const clientX = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
       const clientY = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
       const totalMove = Math.abs(clientX - dragStartPos.current.x) + Math.abs(clientY - dragStartPos.current.y);
@@ -1203,13 +1210,13 @@ export default function App() {
       // 클릭으로 판정 (이동량 적고 시간 짧음)
       if (totalMove < 15 && duration < 400) {
         // 토글: 같은 인물 클릭시 선택 해제
-        if (selectedCharacter === dragTarget) {
+        if (selectedCharacter === currentDragTarget) {
           setSelectedCharacter(null);
         } else {
-          setSelectedCharacter(dragTarget);
+          setSelectedCharacter(currentDragTarget);
         }
       }
-    } else if (isDragging && dragStartPos.current) {
+    } else if (isDragging) {
       // 빈 공간 클릭시 선택 해제
       const clientX = e.changedTouches ? e.changedTouches[0]?.clientX : e.clientX;
       const clientY = e.changedTouches ? e.changedTouches[0]?.clientY : e.clientY;
@@ -1226,10 +1233,11 @@ export default function App() {
     }
 
     setDragTarget(null);
+    dragTargetRef.current = null; // ref도 초기화
     setIsDragging(false);
     dragStartPos.current = null;
     dragStartTime.current = null;
-  }, [dragTarget, isDragging, selectedCharacter, lastMouse, showPopup]);
+  }, [isDragging, selectedCharacter, lastMouse, showPopup]);
 
   const handleWheel = useCallback((e) => {
     e.preventDefault();
