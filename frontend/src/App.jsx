@@ -625,6 +625,13 @@ export default function App() {
   const [searchFocused, setSearchFocused] = useState(false);
   const [recentSearches, setRecentSearches] = useState(() => getRecentSearches());
   const [activeQuickFilter, setActiveQuickFilter] = useState(null);
+
+  // Bottom Sheet 상태 (모바일 상세 패널)
+  const [bottomSheetHeight, setBottomSheetHeight] = useState(0); // 0=닫힘, 40=작게, 70=중간, 90=크게
+  const bottomSheetRef = useRef(null);
+  const bottomSheetDragStart = useRef(null);
+  const bottomSheetStartHeight = useRef(0);
+
   const [bibleViewer, setBibleViewer] = useState({
     show: false,
     bookId: null,
@@ -1304,6 +1311,8 @@ export default function App() {
       if (e.key === 'Escape') {
         if (showPopup) {
           setShowPopup(null);
+        } else if (bottomSheetHeight > 0) {
+          setBottomSheetHeight(0);
         } else if (selectedCharacter) {
           setSelectedCharacter(null);
         } else if (selectedEvent) {
@@ -1313,7 +1322,67 @@ export default function App() {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [showPopup, selectedCharacter, selectedEvent]);
+  }, [showPopup, selectedCharacter, selectedEvent, bottomSheetHeight]);
+
+  // 모바일에서 인물 선택시 Bottom Sheet 자동 열기
+  useEffect(() => {
+    if (isMobile && selectedCharacter) {
+      setBottomSheetHeight(40); // 기본 40% 높이로 열기
+    } else if (isMobile && !selectedCharacter) {
+      setBottomSheetHeight(0); // 선택 해제시 닫기
+    }
+  }, [isMobile, selectedCharacter]);
+
+  // Bottom Sheet 터치 핸들러
+  const handleBottomSheetTouchStart = useCallback((e) => {
+    if (e.touches.length !== 1) return;
+    bottomSheetDragStart.current = e.touches[0].clientY;
+    bottomSheetStartHeight.current = bottomSheetHeight;
+  }, [bottomSheetHeight]);
+
+  const handleBottomSheetTouchMove = useCallback((e) => {
+    if (!bottomSheetDragStart.current) return;
+
+    const currentY = e.touches[0].clientY;
+    const deltaY = bottomSheetDragStart.current - currentY;
+    const windowHeight = window.innerHeight;
+    const deltaPercent = (deltaY / windowHeight) * 100;
+
+    const newHeight = Math.max(0, Math.min(90, bottomSheetStartHeight.current + deltaPercent));
+    setBottomSheetHeight(newHeight);
+  }, []);
+
+  const handleBottomSheetTouchEnd = useCallback(() => {
+    if (!bottomSheetDragStart.current) return;
+
+    // 스냅 포인트로 이동 (0, 40, 70, 90)
+    const snapPoints = [0, 40, 70, 90];
+    let closestSnap = snapPoints[0];
+    let minDist = Math.abs(bottomSheetHeight - closestSnap);
+
+    snapPoints.forEach(snap => {
+      const dist = Math.abs(bottomSheetHeight - snap);
+      if (dist < minDist) {
+        minDist = dist;
+        closestSnap = snap;
+      }
+    });
+
+    // 빠르게 아래로 스와이프하면 닫기
+    if (bottomSheetHeight < 20) {
+      closestSnap = 0;
+      setSelectedCharacter(null);
+    }
+
+    setBottomSheetHeight(closestSnap);
+    bottomSheetDragStart.current = null;
+  }, [bottomSheetHeight]);
+
+  // Bottom Sheet 닫기
+  const handleBottomSheetClose = useCallback(() => {
+    setBottomSheetHeight(0);
+    setSelectedCharacter(null);
+  }, []);
 
   // MBTI 퀴즈 처리
   const handleMBTIQuizAnswer = (answer) => {
@@ -2195,31 +2264,120 @@ export default function App() {
           )}
         </div>
 
-        {/* 모바일 하단 콘텐츠 영역 (인물 선택 시 항상 표시) */}
-        {isMobile && selectedCharacterData && (
-          <div style={{
-            minHeight: '45vh',
-            maxHeight: '60vh',
-            background: 'linear-gradient(180deg, rgba(15,15,30,0.98) 0%, rgba(10,10,25,0.98) 100%)',
-            borderTop: '1px solid rgba(102,126,234,0.3)',
-            overflowY: 'auto',
-            padding: '16px',
-            WebkitOverflowScrolling: 'touch'
-          }}>
-            <CharacterDetail
-              character={selectedCharacterData}
-              lang={lang}
-              relatedEvents={relatedEvents}
-              relatedHymns={relatedHymns}
-              relatedRelationships={relatedRelationships}
-              relatedLocations={relatedLocations}
-              selectedCharacter={selectedCharacter}
-              onCharacterSelect={setSelectedCharacter}
-              onEventClick={handleEventClick}
-              onVerseClick={handleVerseClick}
-              artwork={characterArtwork[selectedCharacter]}
-              mbtiData={mbtiData[selectedCharacter]}
-            />
+        {/* 모바일 Bottom Sheet (드래그 가능한 상세 패널) */}
+        {isMobile && bottomSheetHeight > 0 && selectedCharacterData && (
+          <div
+            ref={bottomSheetRef}
+            style={{
+              position: 'fixed',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              height: `${bottomSheetHeight}vh`,
+              background: 'linear-gradient(180deg, rgba(20,20,40,0.98) 0%, rgba(12,12,28,0.99) 100%)',
+              borderTopLeftRadius: '24px',
+              borderTopRightRadius: '24px',
+              boxShadow: '0 -8px 32px rgba(0,0,0,0.6), 0 -2px 12px rgba(102,126,234,0.2)',
+              zIndex: 500,
+              display: 'flex',
+              flexDirection: 'column',
+              transition: bottomSheetDragStart.current ? 'none' : 'height 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+              overflow: 'hidden'
+            }}
+          >
+            {/* 드래그 핸들 */}
+            <div
+              onTouchStart={handleBottomSheetTouchStart}
+              onTouchMove={handleBottomSheetTouchMove}
+              onTouchEnd={handleBottomSheetTouchEnd}
+              style={{
+                padding: '12px 16px 8px',
+                cursor: 'grab',
+                touchAction: 'none',
+                flexShrink: 0
+              }}
+            >
+              {/* 핸들 바 */}
+              <div style={{
+                width: '48px',
+                height: '5px',
+                background: 'rgba(255,255,255,0.4)',
+                borderRadius: '3px',
+                margin: '0 auto 12px'
+              }} />
+
+              {/* 헤더: 인물 이름 + 닫기 버튼 */}
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center'
+              }}>
+                <h2 style={{
+                  margin: 0,
+                  fontSize: '1.3rem',
+                  fontWeight: '700',
+                  background: 'linear-gradient(135deg, #ffd700 0%, #ff6b6b 50%, #a855f7 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent'
+                }}>
+                  {lang === 'ko' ? selectedCharacterData.name : selectedCharacterData.nameEn}
+                </h2>
+                <button
+                  onClick={handleBottomSheetClose}
+                  style={{
+                    background: 'rgba(255,255,255,0.1)',
+                    border: '1px solid rgba(255,255,255,0.2)',
+                    borderRadius: '50%',
+                    width: '36px',
+                    height: '36px',
+                    color: '#fff',
+                    fontSize: '1.2rem',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* 높이 조절 힌트 */}
+              <p style={{
+                margin: '8px 0 0',
+                fontSize: '0.75rem',
+                color: 'rgba(255,255,255,0.5)',
+                textAlign: 'center'
+              }}>
+                위아래로 드래그하여 크기 조절
+              </p>
+            </div>
+
+            {/* 컨텐츠 영역 */}
+            <div style={{
+              flex: 1,
+              overflowY: 'auto',
+              padding: '0 16px 24px',
+              WebkitOverflowScrolling: 'touch'
+            }}>
+              <CharacterDetail
+                character={selectedCharacterData}
+                lang={lang}
+                relatedEvents={relatedEvents}
+                relatedHymns={relatedHymns}
+                relatedRelationships={relatedRelationships}
+                relatedLocations={relatedLocations}
+                selectedCharacter={selectedCharacter}
+                onCharacterSelect={(charId) => {
+                  setSelectedCharacter(charId);
+                  setBottomSheetHeight(40);
+                }}
+                onEventClick={handleEventClick}
+                onVerseClick={handleVerseClick}
+                artwork={characterArtwork[selectedCharacter]}
+                mbtiData={mbtiData[selectedCharacter]}
+              />
+            </div>
           </div>
         )}
 
