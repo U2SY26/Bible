@@ -1542,7 +1542,7 @@ export default function App() {
         <div style={styles.headerTop}>
           <h1 style={styles.title}>성경 인물 관계도</h1>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span style={{
               fontSize: '0.75rem',
               padding: '4px 10px',
@@ -1553,6 +1553,23 @@ export default function App() {
               {visibleNodes.length} / {allCharacters.length}명
               {!physicsEnabled && <span style={{ marginLeft: '4px', opacity: 0.6 }}>⚡</span>}
             </span>
+            <button
+              style={{
+                ...styles.filterToggle,
+                background: 'linear-gradient(135deg, rgba(255,215,0,0.3), rgba(255,140,0,0.3))',
+                borderColor: 'rgba(255,215,0,0.5)'
+              }}
+              onClick={() => setBibleViewer({
+                show: true,
+                bookId: 'gen',
+                bookName: '창세기',
+                chapter: 1,
+                highlightVerse: null,
+                totalChapters: 50
+              })}
+            >
+              📖 성경
+            </button>
             <button
               style={{
                 ...styles.filterToggle,
