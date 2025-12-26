@@ -1560,7 +1560,7 @@ export default function App() {
                 totalChapters: 50
               })}
             >
-              📖 개역개정
+              📖 개역한글
             </button>
             <button
               style={{
