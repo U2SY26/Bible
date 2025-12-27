@@ -1,13 +1,228 @@
 # robots.txt for Bible Character Graph
 # https://bible-psi-nine.vercel.app/
+# 70+ crawlers explicitly allowed
 
-# Allow all crawlers access to everything
+# ==================== DEFAULT ====================
 User-agent: *
 Allow: /
 
-# Sitemaps
+# ==================== GOOGLE (6) ====================
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Googlebot-News
+Allow: /
+
+User-agent: Googlebot-Video
+Allow: /
+
+User-agent: Storebot-Google
+Allow: /
+
+User-agent: Google-InspectionTool
+Allow: /
+
+# ==================== GOOGLE ADS (3) ====================
+User-agent: Mediapartners-Google
+Allow: /
+
+User-agent: AdsBot-Google
+Allow: /
+
+User-agent: AdsBot-Google-Mobile
+Allow: /
+
+# ==================== BING/MICROSOFT (4) ====================
+User-agent: Bingbot
+Allow: /
+
+User-agent: MSNBot
+Allow: /
+
+User-agent: BingPreview
+Allow: /
+
+User-agent: MicrosoftPreview
+Allow: /
+
+# ==================== NAVER (2) ====================
+User-agent: Yeti
+Allow: /
+
+User-agent: NaverBot
+Allow: /
+
+# ==================== DAUM/KAKAO (3) ====================
+User-agent: Daumoa
+Allow: /
+
+User-agent: kakao
+Allow: /
+
+User-agent: kakaotalk-scrap
+Allow: /
+
+# ==================== BAIDU (4) ====================
+User-agent: Baiduspider
+Allow: /
+
+User-agent: Baiduspider-image
+Allow: /
+
+User-agent: Baiduspider-video
+Allow: /
+
+User-agent: Baiduspider-news
+Allow: /
+
+# ==================== YANDEX (5) ====================
+User-agent: YandexBot
+Allow: /
+
+User-agent: YandexImages
+Allow: /
+
+User-agent: YandexVideo
+Allow: /
+
+User-agent: YandexMedia
+Allow: /
+
+User-agent: YandexNews
+Allow: /
+
+# ==================== CHINA (2) ====================
+User-agent: Sogou
+Allow: /
+
+User-agent: 360Spider
+Allow: /
+
+# ==================== YAHOO (1) ====================
+User-agent: Slurp
+Allow: /
+
+# ==================== DUCKDUCKGO (1) ====================
+User-agent: DuckDuckBot
+Allow: /
+
+# ==================== APPLE (1) ====================
+User-agent: Applebot
+Allow: /
+
+# ==================== SOCIAL MEDIA (12) ====================
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Facebot
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: Pinterest
+Allow: /
+
+User-agent: TelegramBot
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
+User-agent: Slackbot
+Allow: /
+
+User-agent: Discordbot
+Allow: /
+
+User-agent: redditbot
+Allow: /
+
+User-agent: vkShare
+Allow: /
+
+User-agent: Embedly
+Allow: /
+
+# ==================== AI/LLM CRAWLERS (10) ====================
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+# ==================== SEO TOOLS (5) ====================
+User-agent: AhrefsBot
+Allow: /
+
+User-agent: SemrushBot
+Allow: /
+
+User-agent: MJ12bot
+Allow: /
+
+User-agent: DotBot
+Allow: /
+
+User-agent: rogerbot
+Allow: /
+
+# ==================== ARCHIVE (2) ====================
+User-agent: ia_archiver
+Allow: /
+
+User-agent: archive.org_bot
+Allow: /
+
+# ==================== OTHER (5) ====================
+User-agent: Screaming Frog SEO Spider
+Allow: /
+
+User-agent: Yahoo! Slurp
+Allow: /
+
+User-agent: Qwantify
+Allow: /
+
+User-agent: PetalBot
+Allow: /
+
+User-agent: Sogou web spider
+Allow: /
+
+# ==================== SITEMAPS ====================
 Sitemap: https://bible-psi-nine.vercel.app/sitemap.xml
 Sitemap: https://bible-psi-nine.vercel.app/sitemap-index.xml
 
-# Host
+# ==================== HOST ====================
 Host: https://bible-psi-nine.vercel.app
