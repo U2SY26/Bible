@@ -10,6 +10,7 @@ Disallow: /*?debug=*
 
 # Sitemaps
 Sitemap: https://bible-psi-nine.vercel.app/sitemap.xml
+Sitemap: https://bible-psi-nine.vercel.app/sitemap-index.xml
 
 # Google
 User-agent: Googlebot
