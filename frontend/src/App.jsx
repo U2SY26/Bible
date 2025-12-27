@@ -2235,6 +2235,9 @@ export default function App() {
                     }}
                     onMouseDown={(e) => { e.stopPropagation(); handlePointerDown(e, char.id); }}
                     onTouchStart={(e) => { e.stopPropagation(); handlePointerDown(e, char.id); }}
+                    onTouchEnd={(e) => { e.stopPropagation(); handlePointerUp(e); }}
+                    onMouseUp={(e) => { e.stopPropagation(); handlePointerUp(e); }}
+                    onClick={(e) => { e.stopPropagation(); handleCharacterClick(char.id); }}
                     onMouseEnter={() => setHoveredNode(char.id)}
                     onMouseLeave={() => setHoveredNode(null)}
                     opacity={nodeOpacity}
