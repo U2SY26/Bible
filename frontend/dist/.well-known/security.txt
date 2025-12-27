@@ -1,0 +1,10 @@
+# Security Policy for 성경 인물 관계도 (Bible Character Graph)
+# https://bible-psi-nine.vercel.app/
+
+Contact: https://github.com/U2SY26/Bible/issues
+Expires: 2026-12-31T23:59:59.000Z
+Preferred-Languages: ko, en
+Canonical: https://bible-psi-nine.vercel.app/.well-known/security.txt
+
+# This is an open-source educational project about Bible characters.
+# Please report any security issues via GitHub Issues.

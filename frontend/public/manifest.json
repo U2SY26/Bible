@@ -1,0 +1,129 @@
+{
+  "name": "성경 인물 관계도 - Bible Character Graph",
+  "short_name": "성경 관계도",
+  "description": "성경 인물들의 관계를 시각화한 인터랙티브 웹 앱. 100명 이상의 인물, 150개 이상의 관계, 개역한글 성경 66권 전체 수록.",
+  "lang": "ko",
+  "dir": "ltr",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0a0a0f",
+  "theme_color": "#d4af37",
+  "categories": ["education", "books", "reference"],
+  "iarc_rating_id": "",
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/icon-72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshot-desktop.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "성경 인물 관계도 데스크톱 화면"
+    },
+    {
+      "src": "/screenshot-mobile.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "성경 인물 관계도 모바일 화면"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "성경 읽기",
+      "short_name": "성경",
+      "description": "개역한글 성경 66권 읽기",
+      "url": "/?bible=true",
+      "icons": [{"src": "/icon-bible.png", "sizes": "96x96"}]
+    },
+    {
+      "name": "구약 인물",
+      "short_name": "구약",
+      "description": "구약성경 인물 관계도",
+      "url": "/?testament=old",
+      "icons": [{"src": "/icon-old.png", "sizes": "96x96"}]
+    },
+    {
+      "name": "신약 인물",
+      "short_name": "신약",
+      "description": "신약성경 인물 관계도",
+      "url": "/?testament=new",
+      "icons": [{"src": "/icon-new.png", "sizes": "96x96"}]
+    }
+  ],
+  "related_applications": [],
+  "handle_links": "preferred",
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  },
+  "edge_side_panel": {
+    "preferred_width": 480
+  },
+  "display_override": ["window-controls-overlay", "standalone", "browser"],
+  "protocol_handlers": [],
+  "share_target": {
+    "action": "/",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  }
+}

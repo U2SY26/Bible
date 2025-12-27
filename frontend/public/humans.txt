@@ -1,0 +1,24 @@
+/* TEAM */
+Developer: U2SY26
+Contact: https://github.com/U2SY26
+From: South Korea
+
+AI Assistant: Claude (Anthropic)
+Site: https://claude.com/claude-code
+
+/* SITE */
+Name: 성경 인물 관계도 (Bible Character Graph)
+URL: https://bible-psi-nine.vercel.app/
+Description: Interactive visualization of relationships between Bible characters
+Language: Korean, English
+Technology: React, Vite, Vercel
+
+/* DATA */
+Bible Version: 개역한글 (Korean Revised Version, Public Domain, 1961)
+Characters: 100+ Bible characters
+Relationships: 150+ connections
+Books: 66 Bible books (30,929 verses)
+
+Last update: 2025-12-27
+Standards: HTML5, CSS3, ES6+
+Components: React Hooks, Canvas API
