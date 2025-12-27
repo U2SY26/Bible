@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="ko">
+  <title>성경 인물 관계도 | Bible Character Graph</title>
+  <subtitle>성경 인물들의 관계를 시각화한 인터랙티브 웹 앱</subtitle>
+  <link href="https://bible-psi-nine.vercel.app/" rel="alternate" type="text/html"/>
+  <link href="https://bible-psi-nine.vercel.app/feed.xml" rel="self" type="application/atom+xml"/>
+  <id>https://bible-psi-nine.vercel.app/</id>
+  <updated>2025-12-27T00:00:00+09:00</updated>
+  <author>
+    <name>SY U2</name>
+  </author>
+  <rights>2024-2025 SY U2. Bible content is Public Domain.</rights>
+  <generator>Bible Character Graph Atom Generator</generator>
+  <icon>https://bible-psi-nine.vercel.app/favicon.ico</icon>
+  <logo>https://bible-psi-nine.vercel.app/og-image.png</logo>
+  <category term="Religion"/>
+  <category term="Christianity"/>
+  <category term="Bible"/>
+
+  <entry>
+    <title>성경 인물 관계도 - 인터랙티브 시각화</title>
+    <link href="https://bible-psi-nine.vercel.app/" rel="alternate" type="text/html"/>
+    <id>https://bible-psi-nine.vercel.app/</id>
+    <updated>2025-12-27T00:00:00+09:00</updated>
+    <summary>100명 이상의 성경 인물들과 150개 이상의 관계를 인터랙티브 그래프로 탐색하세요.</summary>
+    <content type="html"><![CDATA[
+      <h2>성경 인물 관계도</h2>
+      <p>100명 이상의 성경 인물들과 150개 이상의 관계를 인터랙티브 그래프로 탐색하세요.</p>
+      <ul>
+        <li>드래그로 노드 이동</li>
+        <li>클릭으로 상세 정보 확인</li>
+        <li>시대별, 성경별 필터링</li>
+        <li>관련 성경 구절 바로 읽기</li>
+      </ul>
+    ]]></content>
+    <author><name>SY U2</name></author>
+    <category term="Feature"/>
+  </entry>
+
+  <entry>
+    <title>개역한글 성경 66권</title>
+    <link href="https://bible-psi-nine.vercel.app/?bible=true" rel="alternate" type="text/html"/>
+    <id>https://bible-psi-nine.vercel.app/?bible=true</id>
+    <updated>2025-12-27T00:00:00+09:00</updated>
+    <summary>개역한글 성경 66권, 30,929절 전체를 무료로 읽을 수 있습니다.</summary>
+    <author><name>SY U2</name></author>
+    <category term="Bible"/>
+  </entry>
+
+  <entry>
+    <title>구약 성경 인물</title>
+    <link href="https://bible-psi-nine.vercel.app/?testament=old" rel="alternate" type="text/html"/>
+    <id>https://bible-psi-nine.vercel.app/?testament=old</id>
+    <updated>2025-12-27T00:00:00+09:00</updated>
+    <summary>아담, 노아, 아브라함, 모세, 다윗 등 구약 인물들의 관계</summary>
+    <author><name>SY U2</name></author>
+    <category term="Old Testament"/>
+  </entry>
+
+  <entry>
+    <title>신약 성경 인물</title>
+    <link href="https://bible-psi-nine.vercel.app/?testament=new" rel="alternate" type="text/html"/>
+    <id>https://bible-psi-nine.vercel.app/?testament=new</id>
+    <updated>2025-12-27T00:00:00+09:00</updated>
+    <summary>예수 그리스도, 12제자, 사도 바울 등 신약 인물들의 관계</summary>
+    <author><name>SY U2</name></author>
+    <category term="New Testament"/>
+  </entry>
+
+</feed>

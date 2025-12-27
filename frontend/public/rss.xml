@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+     xmlns:atom="http://www.w3.org/2005/Atom"
+     xmlns:dc="http://purl.org/dc/elements/1.1/"
+     xmlns:content="http://purl.org/rss/1.0/modules/content/"
+     xmlns:media="http://search.yahoo.com/mrss/">
+  <channel>
+    <title>성경 인물 관계도 | Bible Character Graph</title>
+    <link>https://bible-psi-nine.vercel.app/</link>
+    <description>성경에 등장하는 100명 이상의 인물들과 그들의 관계를 인터랙티브 그래프로 시각화합니다. 아담부터 바울까지, 가족 관계, 사건 참여, 시대별 분류를 한눈에 확인하세요. 개역한글 성경 66권 전체 포함.</description>
+    <language>ko</language>
+    <copyright>2024-2025 SY U2. Bible content is Public Domain.</copyright>
+    <managingEditor>contact@bible-psi-nine.vercel.app</managingEditor>
+    <webMaster>contact@bible-psi-nine.vercel.app</webMaster>
+    <pubDate>Fri, 27 Dec 2025 00:00:00 +0900</pubDate>
+    <lastBuildDate>Fri, 27 Dec 2025 00:00:00 +0900</lastBuildDate>
+    <category>Religion</category>
+    <category>Christianity</category>
+    <category>Bible Study</category>
+    <category>Education</category>
+    <generator>Bible Character Graph RSS Generator</generator>
+    <docs>https://www.rssboard.org/rss-specification</docs>
+    <ttl>1440</ttl>
+    <image>
+      <url>https://bible-psi-nine.vercel.app/og-image.png</url>
+      <title>성경 인물 관계도</title>
+      <link>https://bible-psi-nine.vercel.app/</link>
+      <width>144</width>
+      <height>144</height>
+    </image>
+    <atom:link href="https://bible-psi-nine.vercel.app/rss.xml" rel="self" type="application/rss+xml"/>
+
+    <!-- Main Feature -->
+    <item>
+      <title>성경 인물 관계도 - 인터랙티브 시각화 도구</title>
+      <link>https://bible-psi-nine.vercel.app/</link>
+      <description>100명 이상의 성경 인물들과 150개 이상의 관계를 인터랙티브 그래프로 탐색하세요. 드래그, 줌, 클릭으로 성경 인물들의 관계를 직관적으로 이해할 수 있습니다.</description>
+      <content:encoded><![CDATA[
+        <h2>성경 인물 관계도</h2>
+        <p>100명 이상의 성경 인물들과 150개 이상의 관계를 인터랙티브 그래프로 탐색하세요.</p>
+        <ul>
+          <li>드래그로 노드 이동</li>
+          <li>클릭으로 상세 정보 확인</li>
+          <li>시대별, 성경별 필터링</li>
+          <li>관련 성경 구절 바로 읽기</li>
+        </ul>
+      ]]></content:encoded>
+      <author>contact@bible-psi-nine.vercel.app (SY U2)</author>
+      <category>Feature</category>
+      <guid isPermaLink="true">https://bible-psi-nine.vercel.app/</guid>
+      <pubDate>Fri, 27 Dec 2025 00:00:00 +0900</pubDate>
+    </item>
+
+    <!-- Korean Bible -->
+    <item>
+      <title>개역한글 성경 66권 전체 수록</title>
+      <link>https://bible-psi-nine.vercel.app/?bible=true</link>
+      <description>개역한글 성경 66권, 30,929절 전체를 무료로 읽을 수 있습니다. TTS 음성 읽기 기능도 지원합니다.</description>
+      <content:encoded><![CDATA[
+        <h2>개역한글 성경</h2>
+        <p>구약 39권, 신약 27권, 총 30,929절의 성경을 무료로 읽으세요.</p>
+        <ul>
+          <li>창세기부터 요한계시록까지</li>
+          <li>TTS 음성 읽기 지원</li>
+          <li>인물 클릭 시 관련 구절 연결</li>
+        </ul>
+      ]]></content:encoded>
+      <author>contact@bible-psi-nine.vercel.app (SY U2)</author>
+      <category>Bible</category>
+      <guid isPermaLink="true">https://bible-psi-nine.vercel.app/?bible=true</guid>
+      <pubDate>Fri, 27 Dec 2025 00:00:00 +0900</pubDate>
+    </item>
+
+    <!-- Old Testament -->
+    <item>
+      <title>구약 성경 인물 - 아담부터 말라기까지</title>
+      <link>https://bible-psi-nine.vercel.app/?testament=old</link>
+      <description>창조부터 포로기까지, 구약성경에 등장하는 주요 인물들의 관계를 탐색하세요. 아담, 노아, 아브라함, 모세, 다윗 등 50명 이상의 인물.</description>
+      <content:encoded><![CDATA[
+        <h2>구약 성경 인물</h2>
+        <p>창조시대, 족장시대, 출애굽, 사사시대, 왕국시대, 포로기의 인물들</p>
+        <ul>
+          <li>아담, 하와, 가인, 아벨, 셋</li>
+          <li>노아, 셈, 함, 야벳</li>
+          <li>아브라함, 사라, 이삭, 리브가, 야곱</li>
+          <li>모세, 아론, 미리암, 여호수아</li>
+          <li>다윗, 솔로몬, 엘리야, 이사야, 다니엘</li>
+        </ul>
+      ]]></content:encoded>
+      <author>contact@bible-psi-nine.vercel.app (SY U2)</author>
+      <category>Old Testament</category>
+      <guid isPermaLink="true">https://bible-psi-nine.vercel.app/?testament=old</guid>
+      <pubDate>Fri, 27 Dec 2025 00:00:00 +0900</pubDate>
+    </item>
+
+    <!-- New Testament -->
+    <item>
+      <title>신약 성경 인물 - 예수님과 초대교회</title>
+      <link>https://bible-psi-nine.vercel.app/?testament=new</link>
+      <description>예수 그리스도, 12제자, 사도 바울과 초대교회 인물들의 관계를 탐색하세요. 복음서부터 요한계시록까지.</description>
+      <content:encoded><![CDATA[
+        <h2>신약 성경 인물</h2>
+        <p>예수님의 생애와 초대교회 시대의 인물들</p>
+        <ul>
+          <li>예수 그리스도, 마리아, 요셉</li>
+          <li>베드로, 요한, 야고보, 안드레</li>
+          <li>마태, 마가, 누가</li>
+          <li>사도 바울, 바나바, 디모데</li>
+          <li>막달라 마리아, 마르다, 라자로</li>
+        </ul>
+      ]]></content:encoded>
+      <author>contact@bible-psi-nine.vercel.app (SY U2)</author>
+      <category>New Testament</category>
+      <guid isPermaLink="true">https://bible-psi-nine.vercel.app/?testament=new</guid>
+      <pubDate>Fri, 27 Dec 2025 00:00:00 +0900</pubDate>
+    </item>
+
+    <!-- Trinity -->
+    <item>
+      <title>삼위일체 - 하나님, 예수 그리스도, 성령</title>
+      <link>https://bible-psi-nine.vercel.app/?character=god</link>
+      <description>성경의 중심이 되시는 삼위일체 하나님에 대해 알아보세요. 창조주 하나님, 구세주 예수 그리스도, 보혜사 성령.</description>
+      <author>contact@bible-psi-nine.vercel.app (SY U2)</author>
+      <category>Trinity</category>
+      <guid isPermaLink="true">https://bible-psi-nine.vercel.app/?character=god</guid>
+      <pubDate>Fri, 27 Dec 2025 00:00:00 +0900</pubDate>
+    </item>
+
+    <!-- Major Events -->
+    <item>
+      <title>성경의 주요 사건들</title>
+      <link>https://bible-psi-nine.vercel.app/?event=creation</link>
+      <description>천지창조, 대홍수, 출애굽, 십자가, 부활, 오순절 등 성경의 주요 사건들과 참여 인물들을 탐색하세요.</description>
+      <content:encoded><![CDATA[
+        <h2>성경의 주요 사건</h2>
+        <ul>
+          <li>천지창조 - 하나님, 아담, 하와</li>
+          <li>대홍수 - 노아와 가족</li>
+          <li>출애굽 - 모세, 아론, 바로</li>
+          <li>십자가 - 예수, 빌라도, 제자들</li>
+          <li>부활 - 예수, 막달라 마리아</li>
+          <li>오순절 - 베드로, 120명의 제자들</li>
+        </ul>
+      ]]></content:encoded>
+      <author>contact@bible-psi-nine.vercel.app (SY U2)</author>
+      <category>Events</category>
+      <guid isPermaLink="true">https://bible-psi-nine.vercel.app/?event=creation</guid>
+      <pubDate>Fri, 27 Dec 2025 00:00:00 +0900</pubDate>
+    </item>
+
+  </channel>
+</rss>
