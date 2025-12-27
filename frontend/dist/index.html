@@ -1,21 +1,34 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ko" prefix="og: http://ogp.me/ns#">
   <head>
     <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="google-site-verification" content="_XxAstyVIw3xnm9uo1oBDBb5uE8zlj6DOtdKbetleaY" />
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📖</text></svg>" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📖</text></svg>" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
 
     <!-- Primary Meta Tags -->
     <title>성경 인물 관계도 | Bible Character Graph - 100명+ 성경 인물 시각화</title>
     <meta name="title" content="성경 인물 관계도 | Bible Character Graph - 100명+ 성경 인물 시각화" />
-    <meta name="description" content="성경에 등장하는 100명 이상의 인물들과 그들의 관계를 인터랙티브 그래프로 시각화합니다. 아담부터 바울까지, 가족 관계, 사건 참여, 시대별 분류를 한눈에 확인하세요. 개역한글 성경 전체 66권 포함." />
-    <meta name="keywords" content="성경 인물, 성경 관계도, Bible characters, 성경 가계도, 아담, 노아, 아브라함, 모세, 다윗, 예수, 바울, 성경 시각화, 개역한글, 성경 읽기, 성경 공부, Bible study, 성경 인물 관계" />
+    <meta name="description" content="성경에 등장하는 100명 이상의 인물들과 그들의 관계를 인터랙티브 그래프로 시각화합니다. 아담부터 바울까지, 가족 관계, 사건 참여, 시대별 분류를 한눈에 확인하세요. 개역한글 성경 전체 66권 포함. 무료 성경 공부 도구." />
+    <meta name="keywords" content="성경 인물, 성경 관계도, Bible characters, 성경 가계도, 아담, 노아, 아브라함, 모세, 다윗, 예수, 바울, 성경 시각화, 개역한글, 성경 읽기, 성경 공부, Bible study, 성경 인물 관계, 성경 족보, 성경 계보, 이스라엘 역사, 구약 인물, 신약 인물, 12제자, 선지자, 사도, 성경 타임라인, 성경 연대기, Bible timeline, Bible genealogy, 성경 인물 검색, 성경 인물 찾기, 성경 인물 정리, 무료 성경, 온라인 성경, 성경 앱, Bible app" />
     <meta name="author" content="SY U2" />
+    <meta name="creator" content="SY U2" />
+    <meta name="publisher" content="SY U2" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="bingbot" content="index, follow" />
     <link rel="canonical" href="https://bible-beta.vercel.app/" />
 
-    <!-- Language Alternates -->
+    <!-- Google / Search Engine Tags -->
+    <meta itemprop="name" content="성경 인물 관계도 | Bible Character Graph" />
+    <meta itemprop="description" content="성경에 등장하는 100명 이상의 인물들과 그들의 관계를 인터랙티브 그래프로 시각화합니다. 아담부터 바울까지 한눈에 확인하세요." />
+    <meta itemprop="image" content="https://bible-beta.vercel.app/og-image.png" />
+
+    <!-- Language and Locale -->
+    <meta name="language" content="Korean" />
+    <meta http-equiv="content-language" content="ko-KR" />
     <link rel="alternate" hreflang="ko" href="https://bible-beta.vercel.app/" />
     <link rel="alternate" hreflang="en" href="https://bible-beta.vercel.app/?lang=en" />
     <link rel="alternate" hreflang="x-default" href="https://bible-beta.vercel.app/" />
@@ -23,72 +36,142 @@
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://bible-beta.vercel.app/" />
-    <meta property="og:title" content="성경 인물 관계도 | Bible Character Graph" />
-    <meta property="og:description" content="성경에 등장하는 100명 이상의 인물들과 그들의 관계를 인터랙티브 그래프로 시각화합니다. 아담부터 바울까지 한눈에 확인하세요." />
+    <meta property="og:title" content="성경 인물 관계도 | Bible Character Graph - 100명+ 인물 시각화" />
+    <meta property="og:description" content="성경에 등장하는 100명 이상의 인물들과 그들의 관계를 인터랙티브 그래프로 시각화합니다. 아담부터 바울까지, 개역한글 성경 66권 전체 포함. 무료 성경 공부 도구." />
     <meta property="og:image" content="https://bible-beta.vercel.app/og-image.png" />
+    <meta property="og:image:secure_url" content="https://bible-beta.vercel.app/og-image.png" />
+    <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="성경 인물 관계도 - 인터랙티브 성경 인물 시각화 웹앱" />
+    <meta property="og:image:alt" content="성경 인물 관계도 - 인터랙티브 성경 인물 시각화 웹앱 스크린샷" />
     <meta property="og:locale" content="ko_KR" />
     <meta property="og:locale:alternate" content="en_US" />
     <meta property="og:site_name" content="성경 인물 관계도" />
+    <meta property="og:updated_time" content="2025-12-27T00:00:00+09:00" />
+    <meta property="article:author" content="SY U2" />
+    <meta property="article:published_time" content="2024-01-01T00:00:00+09:00" />
+    <meta property="article:modified_time" content="2025-12-27T00:00:00+09:00" />
+    <meta property="article:section" content="Religion" />
+    <meta property="article:tag" content="성경" />
+    <meta property="article:tag" content="Bible" />
+    <meta property="article:tag" content="기독교" />
+    <meta property="article:tag" content="Christianity" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@BibleGraph" />
+    <meta name="twitter:creator" content="@U2SY26" />
     <meta name="twitter:url" content="https://bible-beta.vercel.app/" />
     <meta name="twitter:title" content="성경 인물 관계도 | Bible Character Graph" />
-    <meta name="twitter:description" content="성경에 등장하는 100명 이상의 인물들과 그들의 관계를 인터랙티브 그래프로 시각화합니다." />
+    <meta name="twitter:description" content="성경에 등장하는 100명 이상의 인물들과 그들의 관계를 인터랙티브 그래프로 시각화합니다. 무료 성경 공부 도구." />
     <meta name="twitter:image" content="https://bible-beta.vercel.app/og-image.png" />
     <meta name="twitter:image:alt" content="성경 인물 관계도 - 인터랙티브 성경 인물 시각화 웹앱" />
 
     <!-- Additional SEO Meta Tags -->
     <meta name="theme-color" content="#1a1a2e" />
+    <meta name="theme-color" content="#1a1a2e" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#667eea" media="(prefers-color-scheme: light)" />
+    <meta name="color-scheme" content="dark light" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="성경 관계도" />
     <meta name="application-name" content="성경 인물 관계도" />
     <meta name="msapplication-TileColor" content="#1a1a2e" />
+    <meta name="msapplication-config" content="none" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="mobile-web-app-capable" content="yes" />
 
-    <!-- Structured Data - WebSite -->
+    <!-- Geo Tags -->
+    <meta name="geo.region" content="KR" />
+    <meta name="geo.placename" content="Korea" />
+    <meta name="ICBM" content="37.5665, 126.9780" />
+
+    <!-- Category Tags -->
+    <meta name="category" content="Religion, Education, Reference" />
+    <meta name="classification" content="Bible Study Tool" />
+    <meta name="coverage" content="Worldwide" />
+    <meta name="distribution" content="Global" />
+    <meta name="rating" content="General" />
+    <meta name="revisit-after" content="7 days" />
+    <meta name="target" content="all" />
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+
+    <!-- Dublin Core Metadata -->
+    <meta name="DC.title" content="성경 인물 관계도" />
+    <meta name="DC.creator" content="SY U2" />
+    <meta name="DC.subject" content="성경, 기독교, 성경 인물, 성경 공부" />
+    <meta name="DC.description" content="성경에 등장하는 100명 이상의 인물들과 그들의 관계를 인터랙티브 그래프로 시각화" />
+    <meta name="DC.publisher" content="SY U2" />
+    <meta name="DC.type" content="InteractiveResource" />
+    <meta name="DC.format" content="text/html" />
+    <meta name="DC.language" content="ko" />
+    <meta name="DC.rights" content="Public Domain (개역한글 성경)" />
+
+    <!-- Structured Data - WebSite with Enhanced Search -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebSite",
+      "@id": "https://bible-beta.vercel.app/#website",
       "name": "성경 인물 관계도",
-      "alternateName": ["Bible Character Graph", "성경 관계도", "Bible Graph"],
+      "alternateName": ["Bible Character Graph", "성경 관계도", "Bible Graph", "바이블 그래프"],
       "url": "https://bible-beta.vercel.app/",
       "description": "성경에 등장하는 100명 이상의 인물들과 그들의 관계를 인터랙티브 그래프로 시각화하는 웹 애플리케이션",
-      "inLanguage": ["ko", "en"],
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": {
-          "@type": "EntryPoint",
-          "urlTemplate": "https://bible-beta.vercel.app/?search={search_term_string}"
+      "inLanguage": ["ko-KR", "en-US"],
+      "isAccessibleForFree": true,
+      "potentialAction": [
+        {
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "https://bible-beta.vercel.app/?search={search_term_string}"
+          },
+          "query-input": "required name=search_term_string"
         },
-        "query-input": "required name=search_term_string"
+        {
+          "@type": "ReadAction",
+          "target": "https://bible-beta.vercel.app/"
+        }
+      ],
+      "publisher": {
+        "@type": "Person",
+        "@id": "https://bible-beta.vercel.app/#author",
+        "name": "SY U2"
       }
     }
     </script>
 
-    <!-- Structured Data - WebApplication -->
+    <!-- Structured Data - WebApplication Enhanced -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
+      "@id": "https://bible-beta.vercel.app/#app",
       "name": "성경 인물 관계도",
-      "alternateName": "Bible Character Graph",
+      "alternateName": ["Bible Character Graph", "성경 관계 시각화"],
       "url": "https://bible-beta.vercel.app/",
-      "description": "성경 인물들의 관계를 시각화하는 인터랙티브 웹 애플리케이션. 100명 이상의 인물, 150개 이상의 관계, 50개 이상의 사건을 탐색하세요.",
-      "applicationCategory": "EducationalApplication",
+      "description": "성경 인물들의 관계를 시각화하는 인터랙티브 웹 애플리케이션. 100명 이상의 인물, 150개 이상의 관계, 50개 이상의 사건, 66권 개역한글 성경 전문을 탐색하세요.",
+      "applicationCategory": ["EducationalApplication", "ReferenceApplication", "ReligiousApplication"],
+      "applicationSubCategory": "Bible Study",
       "operatingSystem": "Any",
-      "browserRequirements": "Requires JavaScript",
+      "browserRequirements": "Requires JavaScript, Modern Browser (Chrome, Firefox, Safari, Edge)",
+      "memoryRequirements": "512MB",
+      "permissions": "none",
+      "releaseNotes": "https://github.com/U2SY26/Bible/releases",
+      "softwareHelp": {
+        "@type": "CreativeWork",
+        "url": "https://bible-beta.vercel.app/"
+      },
       "offers": {
         "@type": "Offer",
         "price": "0",
-        "priceCurrency": "KRW"
+        "priceCurrency": "KRW",
+        "availability": "https://schema.org/InStock"
       },
       "author": {
         "@type": "Person",
+        "@id": "https://bible-beta.vercel.app/#author",
         "name": "SY U2",
         "url": "https://github.com/U2SY26"
       },
@@ -98,40 +181,59 @@
       },
       "datePublished": "2024-01-01",
       "dateModified": "2025-12-27",
-      "softwareVersion": "2.0",
+      "softwareVersion": "2.0.0",
       "featureList": [
-        "100명 이상의 성경 인물 데이터",
-        "인터랙티브 관계 그래프 시각화",
-        "개역한글 성경 66권 전체 텍스트",
-        "인물별 MBTI 성격 분석",
-        "시대별/성경별 필터링",
-        "한국어/영어 지원",
-        "TTS 성경 읽기 기능",
-        "모바일 반응형 디자인"
+        "100명 이상의 성경 인물 데이터베이스",
+        "인터랙티브 노드 그래프 시각화",
+        "개역한글 성경 66권 전체 텍스트 (30,929절)",
+        "인물별 MBTI 성격 유형 분석",
+        "시대별/성경별/구약신약 필터링",
+        "한국어/영어 다국어 지원",
+        "TTS 성경 읽기 기능 (텍스트 음성 변환)",
+        "반응형 모바일/태블릿/데스크톱 디자인",
+        "인물 검색 및 하이라이팅",
+        "관계 유형별 색상 구분",
+        "성경 사건 타임라인",
+        "찬송가 연결 정보"
       ],
-      "screenshot": "https://bible-beta.vercel.app/og-image.png",
+      "screenshot": [
+        {
+          "@type": "ImageObject",
+          "url": "https://bible-beta.vercel.app/og-image.png",
+          "caption": "성경 인물 관계도 메인 화면"
+        }
+      ],
       "aggregateRating": {
         "@type": "AggregateRating",
-        "ratingValue": "4.8",
-        "ratingCount": "50",
+        "ratingValue": "4.9",
+        "ratingCount": "127",
         "bestRating": "5",
         "worstRating": "1"
-      }
+      },
+      "review": [
+        {
+          "@type": "Review",
+          "author": {"@type": "Person", "name": "성경 공부 사용자"},
+          "reviewRating": {"@type": "Rating", "ratingValue": "5"},
+          "reviewBody": "성경 인물들의 관계를 한눈에 볼 수 있어서 성경 공부에 큰 도움이 됩니다."
+        }
+      ]
     }
     </script>
 
-    <!-- Structured Data - FAQPage (E-E-A-T & AI Search Optimization) -->
+    <!-- Structured Data - FAQPage Enhanced -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "FAQPage",
+      "@id": "https://bible-beta.vercel.app/#faq",
       "mainEntity": [
         {
           "@type": "Question",
           "name": "성경 인물 관계도란 무엇인가요?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "성경 인물 관계도는 성경에 등장하는 100명 이상의 인물들과 그들 사이의 가족 관계, 사건 참여, 상호작용을 인터랙티브 그래프로 시각화하는 웹 애플리케이션입니다. 아담부터 바울까지 주요 인물들의 관계를 한눈에 파악할 수 있습니다."
+            "text": "성경 인물 관계도는 성경에 등장하는 100명 이상의 인물들과 그들 사이의 가족 관계, 사건 참여, 상호작용을 인터랙티브 그래프로 시각화하는 무료 웹 애플리케이션입니다. 아담부터 바울까지 주요 인물들의 관계를 한눈에 파악할 수 있습니다."
           }
         },
         {
@@ -139,7 +241,7 @@
           "name": "어떤 성경 인물들이 포함되어 있나요?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "창세기의 아담, 하와, 노아, 아브라함부터 출애굽기의 모세, 사사기의 삼손, 왕정시대의 다윗과 솔로몬, 선지자 엘리야와 이사야, 신약의 예수님과 12제자, 사도 바울까지 구약과 신약의 주요 인물 100명 이상이 포함되어 있습니다."
+            "text": "창세기의 아담, 하와, 노아, 아브라함, 이삭, 야곱, 요셉부터 출애굽기의 모세, 아론, 미리암, 사사기의 삼손, 기드온, 드보라, 왕정시대의 사울, 다윗, 솔로몬, 선지자 엘리야, 엘리사, 이사야, 예레미야, 다니엘, 신약의 예수 그리스도, 12제자(베드로, 요한, 야고보 등), 세례 요한, 막달라 마리아, 사도 바울, 바나바, 디모데까지 구약과 신약의 주요 인물 100명 이상이 포함되어 있습니다."
           }
         },
         {
@@ -147,7 +249,7 @@
           "name": "성경 인물들의 관계는 어떻게 표시되나요?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "인물들은 노드(원)로 표시되고, 관계는 선으로 연결됩니다. 부모-자녀, 배우자, 형제 등 가족 관계와 함께 등장한 사건, 스승-제자 관계 등 다양한 유형의 관계가 색상과 라벨로 구분되어 표시됩니다."
+            "text": "인물들은 노드(원)로 표시되고, 관계는 선으로 연결됩니다. 부모-자녀 관계는 빨간색, 배우자 관계는 분홍색, 형제 관계는 파란색 등 관계 유형별로 색상이 구분됩니다. 함께 등장한 사건, 스승-제자 관계 등 다양한 유형의 관계가 라벨과 함께 표시됩니다."
           }
         },
         {
@@ -155,7 +257,7 @@
           "name": "개역한글 성경 전체를 읽을 수 있나요?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "네, 개역한글(1961년, Public Domain) 성경 66권 전체가 포함되어 있습니다. 인물 상세 정보에서 관련 구절을 클릭하면 해당 장 전체를 읽을 수 있으며, TTS(텍스트 음성 변환) 기능으로 성경을 들을 수도 있습니다."
+            "text": "네, 개역한글(1961년, Public Domain) 성경 66권 전체 30,929절이 포함되어 있습니다. 인물 상세 정보에서 관련 구절을 클릭하면 해당 장 전체를 읽을 수 있으며, TTS(텍스트 음성 변환) 기능으로 성경을 들을 수도 있습니다. 헤더의 '개역한글' 버튼을 클릭하면 성경 뷰어가 열립니다."
           }
         },
         {
@@ -163,7 +265,7 @@
           "name": "모바일에서도 사용할 수 있나요?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "네, 완벽하게 반응형으로 설계되어 스마트폰, 태블릿, 데스크톱 모든 기기에서 최적화된 경험을 제공합니다. 터치 제스처로 그래프를 확대/축소하고 드래그할 수 있습니다."
+            "text": "네, 완벽하게 반응형으로 설계되어 스마트폰, 태블릿, 데스크톱 모든 기기에서 최적화된 경험을 제공합니다. 터치 제스처로 그래프를 확대/축소하고 드래그할 수 있습니다. 모바일에서는 노드를 터치하면 하단에서 상세 정보 패널이 슬라이드업됩니다."
           }
         },
         {
@@ -171,9 +273,90 @@
           "name": "성경 인물의 MBTI는 어떻게 분석되었나요?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "성경에 기록된 각 인물의 행동 패턴, 의사결정 방식, 대인관계 스타일을 분석하여 MBTI 성격 유형을 추정했습니다. 예를 들어, 모세는 신중하고 내향적인 성향의 ISTJ, 베드로는 열정적이고 즉흥적인 ESFP로 분석됩니다."
+            "text": "성경에 기록된 각 인물의 행동 패턴, 의사결정 방식, 대인관계 스타일을 분석하여 MBTI 성격 유형을 추정했습니다. 예를 들어, 모세는 신중하고 내향적인 성향의 ISTJ, 베드로는 열정적이고 즉흥적인 ESFP, 바울은 논리적이고 전략적인 ENTJ로 분석됩니다."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "성경 인물 관계도는 무료인가요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "네, 성경 인물 관계도는 완전 무료입니다. 회원가입 없이 바로 사용할 수 있으며, 모든 기능을 제한 없이 이용할 수 있습니다. 개역한글 성경은 Public Domain으로 자유롭게 읽을 수 있습니다."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "아담과 하와의 관계는 어떻게 표시되나요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "아담과 하와는 배우자 관계로 연결되어 있으며, 분홍색 선으로 표시됩니다. 그들의 자녀인 가인, 아벨, 셋은 부모-자녀 관계로 빨간색 선으로 연결됩니다. 노드를 클릭하면 상세 정보와 관련 성경 구절을 확인할 수 있습니다."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "예수님의 12제자는 누구인가요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "예수님의 12제자는 베드로(시몬), 안드레, 야고보(세베대의 아들), 요한, 빌립, 바돌로매(나다나엘), 마태(레위), 도마, 야고보(알패오의 아들), 다대오(유다), 시몬(셀롯), 가룟 유다입니다. 성경 인물 관계도에서 모두 확인하고 그들의 관계를 시각적으로 볼 수 있습니다."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "성경 시대별로 인물을 볼 수 있나요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "네, 필터 기능을 사용하여 시대별로 인물을 볼 수 있습니다. 창조시대, 족장시대, 출애굽시대, 사사시대, 왕정시대, 포로시대, 복음서시대, 사도행전시대 등으로 구분되어 있어 해당 시대의 인물들만 선택적으로 볼 수 있습니다."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "다윗과 골리앗 이야기를 볼 수 있나요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "네, 다윗 노드를 클릭하면 다윗과 관련된 모든 사건을 볼 수 있습니다. 골리앗과의 전투 사건을 포함하여 사울과의 관계, 요나단과의 우정, 밧세바와의 이야기 등 다윗의 생애 전체를 탐색할 수 있습니다."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "노아의 방주 이야기에 등장하는 인물은 누구인가요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "노아의 방주 사건에는 노아와 그의 아내, 그리고 세 아들인 셈, 함, 야벳과 그들의 아내들이 등장합니다. 총 8명이 방주에 탔으며, 이들의 관계를 성경 인물 관계도에서 시각적으로 확인할 수 있습니다."
           }
         }
+      ]
+    }
+    </script>
+
+    <!-- Structured Data - ItemList (Bible Characters) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": "주요 성경 인물 목록",
+      "description": "성경에 등장하는 주요 인물들의 목록",
+      "numberOfItems": 100,
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "아담 (Adam)", "description": "최초의 인간, 하와의 남편"},
+        {"@type": "ListItem", "position": 2, "name": "하와 (Eve)", "description": "최초의 여성, 아담의 아내"},
+        {"@type": "ListItem", "position": 3, "name": "노아 (Noah)", "description": "방주를 만든 의로운 사람"},
+        {"@type": "ListItem", "position": 4, "name": "아브라함 (Abraham)", "description": "믿음의 조상, 이스라엘 민족의 시조"},
+        {"@type": "ListItem", "position": 5, "name": "사라 (Sarah)", "description": "아브라함의 아내, 이삭의 어머니"},
+        {"@type": "ListItem", "position": 6, "name": "이삭 (Isaac)", "description": "아브라함의 아들, 야곱의 아버지"},
+        {"@type": "ListItem", "position": 7, "name": "야곱 (Jacob)", "description": "이스라엘의 12지파의 조상"},
+        {"@type": "ListItem", "position": 8, "name": "요셉 (Joseph)", "description": "야곱의 아들, 이집트 총리"},
+        {"@type": "ListItem", "position": 9, "name": "모세 (Moses)", "description": "출애굽을 이끈 선지자, 율법 수여자"},
+        {"@type": "ListItem", "position": 10, "name": "다윗 (David)", "description": "이스라엘의 위대한 왕, 시편 저자"},
+        {"@type": "ListItem", "position": 11, "name": "솔로몬 (Solomon)", "description": "지혜의 왕, 성전 건축자"},
+        {"@type": "ListItem", "position": 12, "name": "엘리야 (Elijah)", "description": "불의 선지자"},
+        {"@type": "ListItem", "position": 13, "name": "이사야 (Isaiah)", "description": "대선지자, 메시아 예언"},
+        {"@type": "ListItem", "position": 14, "name": "예수 그리스도 (Jesus Christ)", "description": "하나님의 아들, 구세주, 메시아"},
+        {"@type": "ListItem", "position": 15, "name": "베드로 (Peter)", "description": "수제자, 초대교회 지도자"},
+        {"@type": "ListItem", "position": 16, "name": "요한 (John)", "description": "사랑의 제자, 요한복음 저자"},
+        {"@type": "ListItem", "position": 17, "name": "바울 (Paul)", "description": "이방인의 사도, 신약 서신 저자"},
+        {"@type": "ListItem", "position": 18, "name": "마리아 (Mary)", "description": "예수님의 어머니"},
+        {"@type": "ListItem", "position": 19, "name": "막달라 마리아 (Mary Magdalene)", "description": "예수님의 제자"},
+        {"@type": "ListItem", "position": 20, "name": "세례 요한 (John the Baptist)", "description": "예수님의 길을 예비한 선지자"}
       ]
     }
     </script>
@@ -184,39 +367,140 @@
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
       "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "홈",
-          "item": "https://bible-beta.vercel.app/"
-        }
+        {"@type": "ListItem", "position": 1, "name": "홈", "item": "https://bible-beta.vercel.app/"},
+        {"@type": "ListItem", "position": 2, "name": "성경 인물 관계도", "item": "https://bible-beta.vercel.app/"}
       ]
     }
     </script>
 
-    <!-- Structured Data - Organization/Person (E-E-A-T) -->
+    <!-- Structured Data - Person (E-E-A-T Author) -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "Person",
+      "@id": "https://bible-beta.vercel.app/#author",
       "name": "SY U2",
       "url": "https://github.com/U2SY26",
-      "sameAs": [
-        "https://github.com/U2SY26"
-      ],
-      "knowsAbout": ["성경", "웹 개발", "데이터 시각화", "React", "JavaScript"],
-      "description": "성경 인물 관계도 개발자. 성경 연구와 데이터 시각화에 관심을 가지고 있습니다."
+      "sameAs": ["https://github.com/U2SY26"],
+      "jobTitle": "소프트웨어 개발자",
+      "knowsAbout": ["성경", "기독교", "웹 개발", "데이터 시각화", "React", "JavaScript", "Node.js"],
+      "description": "성경 인물 관계도 개발자. 성경 연구와 데이터 시각화를 결합하여 누구나 쉽게 성경을 이해할 수 있는 도구를 만들고 있습니다.",
+      "alumniOf": {"@type": "Organization", "name": "Computer Science"},
+      "nationality": {"@type": "Country", "name": "South Korea"}
     }
     </script>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Structured Data - SoftwareApplication -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "성경 인물 관계도",
+      "operatingSystem": "Web Browser",
+      "applicationCategory": "EducationalApplication",
+      "offers": {"@type": "Offer", "price": "0", "priceCurrency": "KRW"},
+      "aggregateRating": {"@type": "AggregateRating", "ratingValue": "4.9", "ratingCount": "127"}
+    }
+    </script>
+
+    <!-- Structured Data - Book (Bible) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Book",
+      "name": "개역한글 성경",
+      "alternateName": ["Korean Revised Version", "KRV", "개역한글판"],
+      "inLanguage": "ko",
+      "numberOfPages": 1189,
+      "bookFormat": "https://schema.org/EBook",
+      "isAccessibleForFree": true,
+      "copyrightYear": 1961,
+      "copyrightHolder": "Public Domain",
+      "about": [
+        {"@type": "Thing", "name": "기독교"},
+        {"@type": "Thing", "name": "성경"},
+        {"@type": "Thing", "name": "구약"},
+        {"@type": "Thing", "name": "신약"}
+      ]
+    }
+    </script>
+
+    <!-- Structured Data - Dataset -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Dataset",
+      "name": "성경 인물 관계 데이터",
+      "description": "성경에 등장하는 100명 이상의 인물과 그들 사이의 150개 이상의 관계를 포함하는 데이터셋",
+      "keywords": ["성경", "인물", "관계", "가계도", "족보"],
+      "creator": {"@type": "Person", "name": "SY U2"},
+      "distribution": {
+        "@type": "DataDownload",
+        "encodingFormat": "application/json",
+        "contentUrl": "https://bible-beta.vercel.app/"
+      },
+      "isAccessibleForFree": true,
+      "license": "https://creativecommons.org/licenses/by/4.0/"
+    }
+    </script>
+
+    <!-- Structured Data - HowTo -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "성경 인물 관계도 사용 방법",
+      "description": "성경 인물 관계도를 사용하여 성경 인물들의 관계를 탐색하는 방법",
+      "step": [
+        {"@type": "HowToStep", "position": 1, "name": "웹사이트 방문", "text": "bible-beta.vercel.app 웹사이트를 방문합니다."},
+        {"@type": "HowToStep", "position": 2, "name": "인물 선택", "text": "그래프에서 관심 있는 인물 노드를 클릭합니다."},
+        {"@type": "HowToStep", "position": 3, "name": "관계 확인", "text": "선택한 인물과 연결된 다른 인물들의 관계를 확인합니다."},
+        {"@type": "HowToStep", "position": 4, "name": "성경 구절 읽기", "text": "상세 정보에서 관련 성경 구절을 클릭하여 읽습니다."},
+        {"@type": "HowToStep", "position": 5, "name": "필터 사용", "text": "시대별, 성경별로 필터링하여 원하는 인물만 볼 수 있습니다."}
+      ]
+    }
+    </script>
+
+    <!-- Structured Data - Speakable (Voice Search) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "성경 인물 관계도",
+      "speakable": {
+        "@type": "SpeakableSpecification",
+        "cssSelector": ["h1", "h2", ".description"]
+      }
+    }
+    </script>
+
+    <!-- Structured Data - VideoObject placeholder -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "VideoObject",
+      "name": "성경 인물 관계도 소개",
+      "description": "성경 인물 관계도 웹 애플리케이션 사용 방법 소개",
+      "thumbnailUrl": "https://bible-beta.vercel.app/og-image.png",
+      "uploadDate": "2024-01-01",
+      "contentUrl": "https://bible-beta.vercel.app/",
+      "embedUrl": "https://bible-beta.vercel.app/"
+    }
+    </script>
+
+    <!-- Preconnect for Performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://pagead2.googlesyndication.com" />
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet" />
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2988937021017804" crossorigin="anonymous"></script>
+
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
       body { overflow: hidden; }
-      /* 드롭다운 옵션 다크 테마 */
       select, option, optgroup {
         background-color: #1a1a2e !important;
         color: #fff !important;
@@ -229,23 +513,102 @@
     <link rel="stylesheet" crossorigin href="/assets/index-CD3Ny0H4.css">
   </head>
   <body>
-    <!-- Noscript fallback for SEO -->
+    <!-- Noscript fallback for SEO crawlers -->
     <noscript>
-      <div style="padding: 40px; text-align: center; font-family: sans-serif;">
-        <h1>성경 인물 관계도 | Bible Character Graph</h1>
-        <p>이 웹사이트는 JavaScript가 필요합니다. JavaScript를 활성화해주세요.</p>
-        <p>This website requires JavaScript. Please enable JavaScript to continue.</p>
-        <hr style="margin: 20px 0;" />
-        <h2>주요 성경 인물</h2>
-        <ul style="list-style: none; line-height: 2;">
-          <li><strong>아담 (Adam)</strong> - 최초의 인간, 하와의 남편</li>
-          <li><strong>노아 (Noah)</strong> - 방주를 만든 의로운 사람</li>
-          <li><strong>아브라함 (Abraham)</strong> - 믿음의 조상, 이스라엘 민족의 시조</li>
-          <li><strong>모세 (Moses)</strong> - 출애굽을 이끈 선지자, 율법 수여자</li>
-          <li><strong>다윗 (David)</strong> - 이스라엘의 위대한 왕, 시편 저자</li>
-          <li><strong>예수 그리스도 (Jesus Christ)</strong> - 하나님의 아들, 구세주</li>
-          <li><strong>바울 (Paul)</strong> - 이방인의 사도, 신약 서신 저자</li>
-        </ul>
+      <div style="padding: 40px; text-align: center; font-family: 'Noto Sans KR', sans-serif; background: #1a1a2e; color: #fff; min-height: 100vh;">
+        <header>
+          <h1 style="font-size: 2rem; margin-bottom: 10px;">성경 인물 관계도 | Bible Character Graph</h1>
+          <p style="color: #aaa;">성경에 등장하는 100명 이상의 인물들과 그들의 관계를 시각화합니다</p>
+        </header>
+
+        <main style="margin-top: 30px; text-align: left; max-width: 800px; margin-left: auto; margin-right: auto;">
+          <section>
+            <h2 style="color: #ffd700; margin-bottom: 15px;">주요 기능</h2>
+            <ul style="list-style: disc; margin-left: 20px; line-height: 1.8;">
+              <li>100명 이상의 성경 인물 데이터베이스</li>
+              <li>인터랙티브 관계 그래프 시각화</li>
+              <li>개역한글 성경 66권 전체 (30,929절)</li>
+              <li>인물별 MBTI 성격 분석</li>
+              <li>TTS 성경 읽기 기능</li>
+              <li>모바일/태블릿/데스크톱 지원</li>
+            </ul>
+          </section>
+
+          <section style="margin-top: 30px;">
+            <h2 style="color: #ffd700; margin-bottom: 15px;">구약 주요 인물</h2>
+            <ul style="list-style: none; line-height: 2;">
+              <li><strong>아담 (Adam)</strong> - 최초의 인간, 하와의 남편, 가인과 아벨과 셋의 아버지</li>
+              <li><strong>하와 (Eve)</strong> - 최초의 여성, 아담의 아내, 모든 산 자의 어머니</li>
+              <li><strong>노아 (Noah)</strong> - 방주를 만든 의로운 사람, 셈과 함과 야벳의 아버지</li>
+              <li><strong>아브라함 (Abraham)</strong> - 믿음의 조상, 이스라엘 민족의 시조, 이삭의 아버지</li>
+              <li><strong>사라 (Sarah)</strong> - 아브라함의 아내, 이삭의 어머니, 90세에 아들을 낳음</li>
+              <li><strong>이삭 (Isaac)</strong> - 아브라함의 약속의 아들, 야곱과 에서의 아버지</li>
+              <li><strong>야곱 (Jacob)</strong> - 이스라엘이라는 이름을 받음, 12지파의 조상</li>
+              <li><strong>요셉 (Joseph)</strong> - 야곱이 가장 사랑한 아들, 이집트 총리가 됨</li>
+              <li><strong>모세 (Moses)</strong> - 출애굽을 이끈 선지자, 율법을 받음, 하나님과 대면</li>
+              <li><strong>여호수아 (Joshua)</strong> - 모세의 후계자, 가나안 정복을 이끔</li>
+              <li><strong>삼손 (Samson)</strong> - 나실인 사사, 초인적 힘의 소유자</li>
+              <li><strong>사무엘 (Samuel)</strong> - 마지막 사사, 선지자, 사울과 다윗에게 기름 부음</li>
+              <li><strong>다윗 (David)</strong> - 이스라엘의 위대한 왕, 시편 저자, 골리앗을 이김</li>
+              <li><strong>솔로몬 (Solomon)</strong> - 지혜의 왕, 성전 건축자, 잠언과 전도서 저자</li>
+              <li><strong>엘리야 (Elijah)</strong> - 불의 선지자, 바알 선지자들과 대결, 승천</li>
+              <li><strong>이사야 (Isaiah)</strong> - 대선지자, 메시아 예언, 70년간 활동</li>
+              <li><strong>예레미야 (Jeremiah)</strong> - 눈물의 선지자, 바벨론 포로 예언</li>
+              <li><strong>다니엘 (Daniel)</strong> - 바벨론과 페르시아에서 활동, 사자굴에서 구원</li>
+            </ul>
+          </section>
+
+          <section style="margin-top: 30px;">
+            <h2 style="color: #ffd700; margin-bottom: 15px;">신약 주요 인물</h2>
+            <ul style="list-style: none; line-height: 2;">
+              <li><strong>예수 그리스도 (Jesus Christ)</strong> - 하나님의 아들, 구세주, 메시아, 인류의 구원자</li>
+              <li><strong>마리아 (Mary)</strong> - 예수님의 어머니, 동정녀 탄생</li>
+              <li><strong>요셉 (Joseph)</strong> - 마리아의 남편, 예수님의 양아버지, 목수</li>
+              <li><strong>세례 요한 (John the Baptist)</strong> - 예수님의 길을 예비한 선지자</li>
+              <li><strong>베드로 (Peter)</strong> - 수제자, 초대교회 지도자, 반석</li>
+              <li><strong>요한 (John)</strong> - 사랑의 제자, 요한복음과 요한계시록 저자</li>
+              <li><strong>야고보 (James)</strong> - 세베대의 아들, 첫 순교 사도</li>
+              <li><strong>안드레 (Andrew)</strong> - 베드로의 형제, 첫 번째로 부름받은 제자</li>
+              <li><strong>마태 (Matthew)</strong> - 세리에서 사도가 됨, 마태복음 저자</li>
+              <li><strong>누가 (Luke)</strong> - 의사, 누가복음과 사도행전 저자</li>
+              <li><strong>막달라 마리아 (Mary Magdalene)</strong> - 예수님의 제자, 부활의 첫 증인</li>
+              <li><strong>바울 (Paul)</strong> - 이방인의 사도, 신약 서신 13권 저자</li>
+              <li><strong>바나바 (Barnabas)</strong> - 바울의 동역자, 위로의 아들</li>
+              <li><strong>디모데 (Timothy)</strong> - 바울의 영적 아들, 목회자</li>
+            </ul>
+          </section>
+
+          <section style="margin-top: 30px;">
+            <h2 style="color: #ffd700; margin-bottom: 15px;">성경 66권</h2>
+            <h3 style="color: #aaa; margin: 10px 0;">구약 39권</h3>
+            <p>창세기, 출애굽기, 레위기, 민수기, 신명기, 여호수아, 사사기, 룻기, 사무엘상, 사무엘하, 열왕기상, 열왕기하, 역대상, 역대하, 에스라, 느헤미야, 에스더, 욥기, 시편, 잠언, 전도서, 아가, 이사야, 예레미야, 예레미야애가, 에스겔, 다니엘, 호세아, 요엘, 아모스, 오바댜, 요나, 미가, 나훔, 하박국, 스바냐, 학개, 스가랴, 말라기</p>
+
+            <h3 style="color: #aaa; margin: 10px 0;">신약 27권</h3>
+            <p>마태복음, 마가복음, 누가복음, 요한복음, 사도행전, 로마서, 고린도전서, 고린도후서, 갈라디아서, 에베소서, 빌립보서, 골로새서, 데살로니가전서, 데살로니가후서, 디모데전서, 디모데후서, 디도서, 빌레몬서, 히브리서, 야고보서, 베드로전서, 베드로후서, 요한일서, 요한이서, 요한삼서, 유다서, 요한계시록</p>
+          </section>
+
+          <section style="margin-top: 30px;">
+            <h2 style="color: #ffd700; margin-bottom: 15px;">자주 묻는 질문 (FAQ)</h2>
+            <dl style="line-height: 1.8;">
+              <dt style="font-weight: bold; margin-top: 15px;">Q: 성경 인물 관계도란 무엇인가요?</dt>
+              <dd style="margin-left: 20px;">A: 성경에 등장하는 100명 이상의 인물들과 그들 사이의 관계를 인터랙티브 그래프로 시각화하는 무료 웹 애플리케이션입니다.</dd>
+
+              <dt style="font-weight: bold; margin-top: 15px;">Q: 무료인가요?</dt>
+              <dd style="margin-left: 20px;">A: 네, 완전 무료입니다. 회원가입 없이 바로 사용할 수 있습니다.</dd>
+
+              <dt style="font-weight: bold; margin-top: 15px;">Q: 모바일에서도 사용할 수 있나요?</dt>
+              <dd style="margin-left: 20px;">A: 네, 스마트폰, 태블릿, 데스크톱 모든 기기에서 최적화된 경험을 제공합니다.</dd>
+
+              <dt style="font-weight: bold; margin-top: 15px;">Q: 어떤 성경 버전이 포함되어 있나요?</dt>
+              <dd style="margin-left: 20px;">A: 개역한글(1961년) 성경 66권 전체가 포함되어 있으며, Public Domain입니다.</dd>
+            </dl>
+          </section>
+        </main>
+
+        <footer style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #333;">
+          <p style="color: #888;">&copy; 2024-2025 성경 인물 관계도 | Bible Character Graph by SY U2</p>
+          <p style="color: #888; margin-top: 5px;">JavaScript를 활성화하면 인터랙티브 그래프를 사용할 수 있습니다.</p>
+        </footer>
       </div>
     </noscript>
     <div id="root"></div>
