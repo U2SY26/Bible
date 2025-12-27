@@ -150,15 +150,46 @@ const mbtiQuestions = [
   { q: '계획을 세우고 따르는 것을 선호하나요?', e: 'J', i: 'P' }
 ];
 
-// ==================== 모바일 감지 ====================
+// ==================== 모바일/태블릿 감지 ====================
 const useIsMobile = () => {
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [isMobile, setIsMobile] = useState(() => {
+    // 태블릿 포함 (1024px 미만) 또는 터치 디바이스
+    const isSmallScreen = window.innerWidth < 1024;
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    return isSmallScreen || isTouchDevice;
+  });
+
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    const handleResize = () => {
+      const isSmallScreen = window.innerWidth < 1024;
+      const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      setIsMobile(isSmallScreen || isTouchDevice);
+    };
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
   return isMobile;
+};
+
+// 실제 뷰포트 높이 (iOS Safari 주소바 대응)
+const useViewportHeight = () => {
+  const [vh, setVh] = useState(window.innerHeight);
+
+  useEffect(() => {
+    const updateVh = () => setVh(window.innerHeight);
+    window.addEventListener('resize', updateVh);
+    window.addEventListener('orientationchange', updateVh);
+    // iOS Safari에서 스크롤시에도 업데이트
+    window.visualViewport?.addEventListener('resize', updateVh);
+    return () => {
+      window.removeEventListener('resize', updateVh);
+      window.removeEventListener('orientationchange', updateVh);
+      window.visualViewport?.removeEventListener('resize', updateVh);
+    };
+  }, []);
+
+  return vh;
 };
 
 // ==================== 스타일 정의 ====================
@@ -176,15 +207,19 @@ const styles = {
   },
   containerMobile: {
     width: '100vw',
-    minHeight: '100vh',
+    height: '100%',
+    minHeight: '-webkit-fill-available', // iOS Safari 대응
     background: '#000',
     fontFamily: "'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif",
     color: '#fff',
-    overflowX: 'hidden',
-    overflowY: 'auto',
+    overflow: 'hidden',
     display: 'flex',
     flexDirection: 'column',
-    position: 'relative'
+    position: 'fixed', // fixed로 변경하여 bottom sheet가 제대로 작동하도록
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0
   },
   header: {
     padding: '10px 20px',
@@ -599,6 +634,7 @@ const multiFieldSearch = (character, query, lang) => {
 
 export default function App() {
   const isMobile = useIsMobile();
+  const viewportHeight = useViewportHeight();
   const [lang, setLang] = useState('ko');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTestament, setSelectedTestament] = useState('both');
@@ -1334,27 +1370,28 @@ export default function App() {
     }
   }, [isMobile, selectedCharacter]);
 
-  // Bottom Sheet 터치 핸들러
-  const handleBottomSheetTouchStart = useCallback((e) => {
-    if (e.touches.length !== 1) return;
-    bottomSheetDragStart.current = e.touches[0].clientY;
+  // Bottom Sheet 터치/마우스 핸들러
+  const bottomSheetDragging = useRef(false);
+
+  const handleBottomSheetDragStart = useCallback((clientY) => {
+    bottomSheetDragStart.current = clientY;
     bottomSheetStartHeight.current = bottomSheetHeight;
+    bottomSheetDragging.current = true;
   }, [bottomSheetHeight]);
 
-  const handleBottomSheetTouchMove = useCallback((e) => {
-    if (!bottomSheetDragStart.current) return;
+  const handleBottomSheetDragMove = useCallback((clientY) => {
+    if (!bottomSheetDragStart.current || !bottomSheetDragging.current) return;
 
-    const currentY = e.touches[0].clientY;
-    const deltaY = bottomSheetDragStart.current - currentY;
-    const windowHeight = window.innerHeight;
+    const deltaY = bottomSheetDragStart.current - clientY;
+    const windowHeight = viewportHeight;
     const deltaPercent = (deltaY / windowHeight) * 100;
 
     const newHeight = Math.max(0, Math.min(90, bottomSheetStartHeight.current + deltaPercent));
     setBottomSheetHeight(newHeight);
-  }, []);
+  }, [viewportHeight]);
 
-  const handleBottomSheetTouchEnd = useCallback(() => {
-    if (!bottomSheetDragStart.current) return;
+  const handleBottomSheetDragEnd = useCallback(() => {
+    if (!bottomSheetDragStart.current || !bottomSheetDragging.current) return;
 
     // 스냅 포인트로 이동 (0, 40, 70, 90)
     const snapPoints = [0, 40, 70, 90];
@@ -1377,7 +1414,45 @@ export default function App() {
 
     setBottomSheetHeight(closestSnap);
     bottomSheetDragStart.current = null;
+    bottomSheetDragging.current = false;
   }, [bottomSheetHeight]);
+
+  // 터치 이벤트 핸들러
+  const handleBottomSheetTouchStart = useCallback((e) => {
+    if (e.touches.length !== 1) return;
+    e.preventDefault();
+    handleBottomSheetDragStart(e.touches[0].clientY);
+  }, [handleBottomSheetDragStart]);
+
+  const handleBottomSheetTouchMove = useCallback((e) => {
+    if (e.touches.length !== 1) return;
+    e.preventDefault();
+    handleBottomSheetDragMove(e.touches[0].clientY);
+  }, [handleBottomSheetDragMove]);
+
+  const handleBottomSheetTouchEnd = useCallback((e) => {
+    e.preventDefault();
+    handleBottomSheetDragEnd();
+  }, [handleBottomSheetDragEnd]);
+
+  // 마우스 이벤트 핸들러 (태블릿 + 마우스 사용시)
+  const handleBottomSheetMouseDown = useCallback((e) => {
+    e.preventDefault();
+    handleBottomSheetDragStart(e.clientY);
+
+    const handleMouseMove = (moveE) => {
+      handleBottomSheetDragMove(moveE.clientY);
+    };
+    const handleMouseUp = () => {
+      handleBottomSheetDragEnd();
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+  }, [handleBottomSheetDragStart, handleBottomSheetDragMove, handleBottomSheetDragEnd]);
+
 
   // Bottom Sheet 닫기
   const handleBottomSheetClose = useCallback(() => {
@@ -2305,7 +2380,7 @@ export default function App() {
               bottom: 0,
               left: 0,
               right: 0,
-              height: `${bottomSheetHeight}vh`,
+              height: `${Math.round(viewportHeight * bottomSheetHeight / 100)}px`,
               background: 'linear-gradient(180deg, rgba(20,20,40,0.98) 0%, rgba(12,12,28,0.99) 100%)',
               borderTopLeftRadius: '24px',
               borderTopRightRadius: '24px',
@@ -2314,7 +2389,9 @@ export default function App() {
               display: 'flex',
               flexDirection: 'column',
               transition: bottomSheetDragStart.current ? 'none' : 'height 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-              overflow: 'hidden'
+              overflow: 'hidden',
+              // iOS Safari safe area 대응
+              paddingBottom: 'env(safe-area-inset-bottom, 0px)'
             }}
           >
             {/* 드래그 핸들 */}
@@ -2322,11 +2399,13 @@ export default function App() {
               onTouchStart={handleBottomSheetTouchStart}
               onTouchMove={handleBottomSheetTouchMove}
               onTouchEnd={handleBottomSheetTouchEnd}
+              onMouseDown={handleBottomSheetMouseDown}
               style={{
                 padding: '12px 16px 8px',
                 cursor: 'grab',
                 touchAction: 'none',
-                flexShrink: 0
+                flexShrink: 0,
+                userSelect: 'none'
               }}
             >
               {/* 핸들 바 */}
