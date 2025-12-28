@@ -195,7 +195,8 @@ const useViewportHeight = () => {
 // ==================== 스타일 정의 ====================
 const styles = {
   container: {
-    width: '100vw',
+    width: '100%',
+    maxWidth: '100vw',
     height: '100vh',
     background: '#000',
     fontFamily: "'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif",
@@ -203,10 +204,12 @@ const styles = {
     overflow: 'hidden',
     display: 'flex',
     flexDirection: 'column',
-    position: 'relative'
+    position: 'relative',
+    boxSizing: 'border-box'
   },
   containerMobile: {
-    width: '100vw',
+    width: '100%',
+    maxWidth: '100vw',
     height: '100%',
     minHeight: '-webkit-fill-available', // iOS Safari 대응
     background: '#000',
@@ -219,7 +222,8 @@ const styles = {
     top: 0,
     left: 0,
     right: 0,
-    bottom: 0
+    bottom: 0,
+    boxSizing: 'border-box'
   },
   header: {
     padding: '10px 20px',
@@ -319,14 +323,16 @@ const styles = {
     flex: 1,
     display: 'flex',
     overflow: 'hidden',
-    position: 'relative'
+    position: 'relative',
+    boxSizing: 'border-box'
   },
   mainContentMobile: {
     flex: 1,
     display: 'flex',
     flexDirection: 'column',
     overflow: 'hidden',
-    position: 'relative'
+    position: 'relative',
+    boxSizing: 'border-box'
   },
   graphContainer: {
     flex: 1,
@@ -2714,7 +2720,8 @@ function CharacterDetail({ character, lang, relatedEvents, relatedHymns, related
         borderRadius: '14px',
         overflow: 'hidden',
         border: '1px solid rgba(102,126,234,0.3)',
-        position: 'relative'
+        position: 'relative',
+    boxSizing: 'border-box'
       }}>
         {artwork ? (
           <img
@@ -3027,7 +3034,8 @@ function EventDetail({ event, lang, eras, onCharacterSelect, artwork, onVerseCli
         borderRadius: '14px',
         overflow: 'hidden',
         border: '1px solid rgba(102,126,234,0.3)',
-        position: 'relative'
+        position: 'relative',
+    boxSizing: 'border-box'
       }}>
         {artwork ? (
           <img
@@ -3333,13 +3341,13 @@ function TimelineViewer({ characters, events, eras, relationships, lang, isMobil
         ))}
       </div>
 
-      {/* 메인 타임라인 영역 */}
+      {/* 메인 타임라인 영역 - 가로 스크롤만 */}
       <div
         ref={containerRef}
         style={{
           flex: 1,
           overflowX: 'auto',
-          overflowY: 'auto',
+          overflowY: 'hidden',
           padding: '20px',
           WebkitOverflowScrolling: 'touch'
         }}
@@ -3347,8 +3355,9 @@ function TimelineViewer({ characters, events, eras, relationships, lang, isMobil
         <div style={{
           display: 'flex',
           minWidth: 'fit-content',
-          minHeight: '100%',
-          gap: '4px'
+          height: '100%',
+          gap: '4px',
+          alignItems: 'stretch'
         }}>
           {/* 영원 (삼위일체) 섹션 */}
           <div style={{
@@ -3359,7 +3368,8 @@ function TimelineViewer({ characters, events, eras, relationships, lang, isMobil
             display: 'flex',
             flexDirection: 'column',
             gap: '12px',
-            flexShrink: 0
+            flexShrink: 0,
+            overflowY: 'auto'
           }}>
             <h3 style={{
               margin: 0,
@@ -3395,7 +3405,8 @@ function TimelineViewer({ characters, events, eras, relationships, lang, isMobil
                       : '0 4px 12px rgba(0,0,0,0.4)',
                     transition: 'all 0.2s ease',
                     transform: hoveredNode === char.id ? 'scale(1.1)' : 'scale(1)',
-                    position: 'relative'
+                    position: 'relative',
+    boxSizing: 'border-box'
                   }}
                 >
                   {!characterArtwork[char.id] && (
@@ -3439,7 +3450,9 @@ function TimelineViewer({ characters, events, eras, relationships, lang, isMobil
                   flexDirection: 'column',
                   gap: '12px',
                   flexShrink: 0,
-                  position: 'relative'
+                  position: 'relative',
+                  boxSizing: 'border-box',
+                  overflowY: 'auto'
                 }}
               >
                 {/* 시대 헤더 */}
