@@ -7,7 +7,7 @@ import { characterArtwork, eventArtwork } from '../frontend/src/data/artwork.js'
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const outputPath = path.resolve(__dirname, '../frontend/src/data/artwork.generated.json');
 
-const MAX_IMAGES = 3;
+const MAX_IMAGES = Math.max(1, Number(process.env.ARTWORK_COUNT) || 6);
 const MAX_CONCURRENT = 4;
 const REQUEST_DELAY_MS = 150;
 
@@ -183,7 +183,7 @@ const searchCommons = async (query) => {
     generator: 'search',
     gsrsearch: `${query} filetype:bitmap`,
     gsrnamespace: '6',
-    gsrlimit: '6',
+    gsrlimit: '12',
     prop: 'imageinfo',
     iiprop: 'url|extmetadata',
     iiurlwidth: '600',
@@ -246,6 +246,24 @@ const loadExisting = async () => {
   }
 };
 
+const normalizeEntry = (entry) => {
+  if (!entry) return [];
+  return Array.isArray(entry) ? entry.filter(Boolean) : [entry];
+};
+
+const mergeUniqueLists = (...lists) => {
+  const merged = [];
+  const seen = new Set();
+  lists.forEach((list) => {
+    list.forEach((item) => {
+      if (!item?.url || seen.has(item.url)) return;
+      seen.add(item.url);
+      merged.push(item);
+    });
+  });
+  return { merged, seen };
+};
+
 const applyOverrides = (target, overrides) => {
   for (const [id, items] of Object.entries(overrides || {})) {
     if (!target[id] || target[id].length === 0) {
@@ -282,25 +300,28 @@ const main = async () => {
   const existing = await loadExisting();
   applyOverrides(existing.characterArtwork, manualOverrides.characterArtwork);
   applyOverrides(existing.eventArtwork, manualOverrides.eventArtwork);
-  const existingCharacterIds = new Set([
-    ...Object.keys(characterArtwork),
-    ...Object.keys(existing.characterArtwork)
-  ]);
-  const existingEventIds = new Set([
-    ...Object.keys(eventArtwork),
-    ...Object.keys(existing.eventArtwork)
-  ]);
+  const tasks = [];
+  const buildTasks = (items, type) => {
+    items.forEach((item) => {
+      const manualList = normalizeEntry(type === 'character' ? characterArtwork[item.id] : eventArtwork[item.id]);
+      const generatedList = normalizeEntry(type === 'character' ? existing.characterArtwork[item.id] : existing.eventArtwork[item.id]);
+      const { merged } = mergeUniqueLists(manualList, generatedList);
+      if (merged.length < MAX_IMAGES) {
+        tasks.push({
+          type,
+          id: item.id,
+          name_en: item.name_en,
+          description_en: item.description_en
+        });
+      }
+    });
+  };
 
-  const missingCharacters = allCharacters.filter((c) => !existingCharacterIds.has(c.id));
-  const missingEvents = events.filter((e) => !existingEventIds.has(e.id));
+  buildTasks(allCharacters, 'character');
+  buildTasks(events, 'event');
 
-  console.log(`Missing characters: ${missingCharacters.length}`);
-  console.log(`Missing events: ${missingEvents.length}`);
-
-  const tasks = [
-    ...missingCharacters.map((c) => ({ type: 'character', id: c.id, name_en: c.name_en, description_en: c.description_en })),
-    ...missingEvents.map((e) => ({ type: 'event', id: e.id, name_en: e.name_en, description_en: e.description_en }))
-  ];
+  console.log(`Characters needing fill: ${tasks.filter((t) => t.type === 'character').length}`);
+  console.log(`Events needing fill: ${tasks.filter((t) => t.type === 'event').length}`);
 
   let completed = 0;
   const total = tasks.length;
@@ -310,14 +331,28 @@ const main = async () => {
     while (tasks.length) {
       const item = tasks.shift();
       if (!item) return;
+      const manualList = normalizeEntry(item.type === 'character' ? characterArtwork[item.id] : eventArtwork[item.id]);
+      const generatedList = normalizeEntry(item.type === 'character' ? existing.characterArtwork[item.id] : existing.eventArtwork[item.id]);
+      const { merged, seen } = mergeUniqueLists(manualList, generatedList);
+      let combinedCount = merged.length;
+
       const results = await fetchArtworkForItem(item);
       if (results.length) {
+        results.forEach((result) => {
+          if (!result?.url || seen.has(result.url)) return;
+          if (combinedCount >= MAX_IMAGES) return;
+          seen.add(result.url);
+          generatedList.push(result);
+          combinedCount += 1;
+        });
         if (item.type === 'character') {
-          existing.characterArtwork[item.id] = results;
-        } else {
-          existing.eventArtwork[item.id] = results;
+          if (generatedList.length) existing.characterArtwork[item.id] = generatedList;
+        } else if (generatedList.length) {
+          existing.eventArtwork[item.id] = generatedList;
         }
-      } else {
+      }
+
+      if (combinedCount === 0) {
         missingLog.push(`${item.type}:${item.id}`);
       }
       completed += 1;
