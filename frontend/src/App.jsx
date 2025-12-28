@@ -244,18 +244,20 @@ const styles = {
     textShadow: '0 0 30px rgba(255,215,0,0.3)'
   },
   filterToggle: {
-    padding: '8px 16px',
+    padding: '6px 10px',
     borderRadius: '20px',
     border: '1px solid rgba(102,126,234,0.5)',
     background: 'linear-gradient(135deg, rgba(102,126,234,0.3), rgba(118,75,162,0.3))',
     color: '#fff',
     cursor: 'pointer',
-    fontSize: '0.85rem',
+    fontSize: '0.75rem',
     display: 'flex',
     alignItems: 'center',
-    gap: '8px',
+    gap: '4px',
     transition: 'all 0.3s ease',
-    boxShadow: '0 2px 10px rgba(102,126,234,0.3)'
+    boxShadow: '0 2px 10px rgba(102,126,234,0.3)',
+    whiteSpace: 'nowrap',
+    flexShrink: 0
   },
   filterSection: {
     display: 'grid',
@@ -654,6 +656,7 @@ export default function App() {
   const [hoveredNode, setHoveredNode] = useState(null);
   const [animationTime, setAnimationTime] = useState(0);
   const [showFilters, setShowFilters] = useState(!isMobile);
+  const [showTimeline, setShowTimeline] = useState(false);
   const [nodeScale, setNodeScale] = useState(1.0);
   const [showMBTI, setShowMBTI] = useState(false);
   const [userMBTI, setUserMBTI] = useState('');
@@ -1620,13 +1623,24 @@ export default function App() {
         <div style={styles.headerTop}>
           <h1 style={styles.title}>성경 인물 관계도</h1>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'nowrap' }}>
+            <button
+              style={{
+                ...styles.filterToggle,
+                background: showTimeline
+                  ? 'linear-gradient(135deg, rgba(56,178,172,0.5), rgba(49,151,149,0.5))'
+                  : 'linear-gradient(135deg, rgba(56,178,172,0.3), rgba(49,151,149,0.3))',
+                borderColor: 'rgba(56,178,172,0.5)'
+              }}
+              onClick={() => setShowTimeline(!showTimeline)}
+            >
+              📅 타임라인
+            </button>
             <button
               style={{
                 ...styles.filterToggle,
                 background: 'linear-gradient(135deg, rgba(255,215,0,0.3), rgba(255,140,0,0.3))',
-                borderColor: 'rgba(255,215,0,0.5)',
-                whiteSpace: 'nowrap'
+                borderColor: 'rgba(255,215,0,0.5)'
               }}
               onClick={() => setBibleViewer({
                 show: true,
@@ -1637,7 +1651,7 @@ export default function App() {
                 totalChapters: 50
               })}
             >
-              📖 개역한글
+              📖 성경
             </button>
             <button
               style={{
@@ -2579,6 +2593,32 @@ export default function App() {
         document.body
       )}
 
+      {/* 타임라인 뷰어 - Portal로 분리 */}
+      {showTimeline && createPortal(
+        <TimelineViewer
+          characters={allCharacters}
+          events={events}
+          eras={eras}
+          relationships={relationships}
+          lang={lang}
+          isMobile={isMobile}
+          onClose={() => setShowTimeline(false)}
+          onCharacterSelect={(id) => {
+            setSelectedCharacter(id);
+            setShowTimeline(false);
+            if (isMobile) setBottomSheetHeight(40);
+          }}
+          onEventSelect={(id) => {
+            setSelectedEvent(id);
+            setShowTimeline(false);
+            setShowPopup('event');
+          }}
+          characterArtwork={characterArtwork}
+          eventArtwork={eventArtwork}
+        />,
+        document.body
+      )}
+
       {/* MBTI 퀴즈 팝업 - Portal로 분리 */}
       {showPopup === 'mbtiQuiz' && createPortal(
         <>
@@ -3141,6 +3181,434 @@ function EventDetail({ event, lang, eras, onCharacterSelect, artwork, onVerseCli
         </p>
       )}
     </>
+  );
+}
+
+// ==================== 타임라인 뷰어 컴포넌트 ====================
+function TimelineViewer({ characters, events, eras, relationships, lang, isMobile, onClose, onCharacterSelect, onEventSelect, characterArtwork, eventArtwork }) {
+  const containerRef = useRef(null);
+  const [selectedNode, setSelectedNode] = useState(null);
+  const [hoveredNode, setHoveredNode] = useState(null);
+
+  // 시대 순서대로 정렬
+  const sortedEras = useMemo(() => {
+    return [...eras].sort((a, b) => a.year_start - b.year_start);
+  }, [eras]);
+
+  // 캐릭터를 시대별로 그룹화
+  const charactersByEra = useMemo(() => {
+    const grouped = {};
+    sortedEras.forEach(era => {
+      grouped[era.id] = characters.filter(char => char.era === era.id);
+    });
+    // 시대 정보가 없는 캐릭터 (eternal, both 등)
+    grouped['eternal'] = characters.filter(char => char.era === 'eternal' || !char.era);
+    return grouped;
+  }, [characters, sortedEras]);
+
+  // 이벤트를 시대별로 그룹화
+  const eventsByEra = useMemo(() => {
+    const grouped = {};
+    sortedEras.forEach(era => {
+      grouped[era.id] = events.filter(evt => evt.era === era.id);
+    });
+    return grouped;
+  }, [events, sortedEras]);
+
+  // 연결선 계산 (관련 캐릭터)
+  const connections = useMemo(() => {
+    const lines = [];
+    relationships.forEach(rel => {
+      const fromChar = characters.find(c => c.id === rel.source);
+      const toChar = characters.find(c => c.id === rel.target);
+      if (fromChar && toChar) {
+        lines.push({
+          from: rel.source,
+          to: rel.target,
+          type: rel.type,
+          fromEra: fromChar.era || 'eternal',
+          toEra: toChar.era || 'eternal'
+        });
+      }
+    });
+    return lines;
+  }, [characters, relationships]);
+
+  // 노드 클릭 핸들러
+  const handleNodeClick = (type, id) => {
+    if (type === 'character') {
+      onCharacterSelect(id);
+    } else {
+      onEventSelect(id);
+    }
+  };
+
+  // ESC 키로 닫기
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
+
+  const eraWidth = isMobile ? 280 : 350;
+  const nodeSize = isMobile ? 50 : 60;
+
+  return (
+    <div style={{
+      position: 'fixed',
+      inset: 0,
+      background: 'linear-gradient(180deg, #0a0a1a 0%, #1a1a2e 100%)',
+      zIndex: 2000,
+      display: 'flex',
+      flexDirection: 'column',
+      overflow: 'hidden'
+    }}>
+      {/* 헤더 */}
+      <div style={{
+        padding: isMobile ? '12px 16px' : '16px 24px',
+        background: 'rgba(20,20,40,0.95)',
+        borderBottom: '1px solid rgba(102,126,234,0.3)',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        flexShrink: 0
+      }}>
+        <h2 style={{
+          margin: 0,
+          fontSize: isMobile ? '1.1rem' : '1.3rem',
+          background: 'linear-gradient(135deg, #38b2ac, #319795)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent'
+        }}>
+          📅 성경 타임라인
+        </h2>
+        <button
+          onClick={onClose}
+          style={{
+            background: 'rgba(255,255,255,0.1)',
+            border: '1px solid rgba(255,255,255,0.2)',
+            borderRadius: '50%',
+            width: '36px',
+            height: '36px',
+            color: '#fff',
+            fontSize: '1.2rem',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+        >✕</button>
+      </div>
+
+      {/* 시대 범례 */}
+      <div style={{
+        padding: '8px 16px',
+        display: 'flex',
+        gap: '8px',
+        overflowX: 'auto',
+        flexShrink: 0,
+        background: 'rgba(10,10,30,0.5)'
+      }}>
+        {sortedEras.map(era => (
+          <div
+            key={era.id}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              padding: '4px 8px',
+              borderRadius: '12px',
+              background: `${era.color}30`,
+              border: `1px solid ${era.color}50`,
+              fontSize: '0.7rem',
+              whiteSpace: 'nowrap',
+              flexShrink: 0
+            }}
+          >
+            <div style={{ width: 8, height: 8, borderRadius: '50%', background: era.color }} />
+            <span>{lang === 'ko' ? era.name_ko : era.name_en}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* 메인 타임라인 영역 */}
+      <div
+        ref={containerRef}
+        style={{
+          flex: 1,
+          overflowX: 'auto',
+          overflowY: 'auto',
+          padding: '20px',
+          WebkitOverflowScrolling: 'touch'
+        }}
+      >
+        <div style={{
+          display: 'flex',
+          minWidth: 'fit-content',
+          minHeight: '100%',
+          gap: '4px'
+        }}>
+          {/* 영원 (삼위일체) 섹션 */}
+          <div style={{
+            width: eraWidth * 0.6,
+            background: 'linear-gradient(180deg, rgba(255,215,0,0.1) 0%, rgba(255,215,0,0.05) 100%)',
+            borderRadius: '16px',
+            padding: '16px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '12px',
+            flexShrink: 0
+          }}>
+            <h3 style={{
+              margin: 0,
+              fontSize: '0.85rem',
+              color: '#ffd700',
+              textAlign: 'center',
+              borderBottom: '1px solid rgba(255,215,0,0.3)',
+              paddingBottom: '8px'
+            }}>
+              ✨ 영원
+            </h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', alignItems: 'center' }}>
+              {charactersByEra['eternal']?.slice(0, 5).map(char => (
+                <div
+                  key={char.id}
+                  onClick={() => handleNodeClick('character', char.id)}
+                  onMouseEnter={() => setHoveredNode(char.id)}
+                  onMouseLeave={() => setHoveredNode(null)}
+                  style={{
+                    width: nodeSize,
+                    height: nodeSize,
+                    borderRadius: '50%',
+                    background: characterArtwork[char.id]
+                      ? `url(${characterArtwork[char.id]}) center/cover`
+                      : 'linear-gradient(135deg, #ffd700, #ff6b6b)',
+                    border: hoveredNode === char.id ? '3px solid #ffd700' : '2px solid rgba(255,215,0,0.5)',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: hoveredNode === char.id
+                      ? '0 0 20px rgba(255,215,0,0.6)'
+                      : '0 4px 12px rgba(0,0,0,0.4)',
+                    transition: 'all 0.2s ease',
+                    transform: hoveredNode === char.id ? 'scale(1.1)' : 'scale(1)',
+                    position: 'relative'
+                  }}
+                >
+                  {!characterArtwork[char.id] && (
+                    <span style={{ fontSize: '1.5rem' }}>
+                      {char.id === 'god' ? '👑' : char.id === 'jesus' ? '✝️' : '🕊️'}
+                    </span>
+                  )}
+                </div>
+              ))}
+              {charactersByEra['eternal']?.slice(0, 5).map(char => (
+                <span key={`label-${char.id}`} style={{
+                  fontSize: '0.7rem',
+                  color: '#ffd700',
+                  textAlign: 'center',
+                  marginTop: '-8px'
+                }}>
+                  {lang === 'ko' ? char.name_ko : char.name_en}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* 시대별 섹션 */}
+          {sortedEras.map((era, eraIndex) => {
+            const chars = charactersByEra[era.id] || [];
+            const evts = eventsByEra[era.id] || [];
+            const allItems = [
+              ...evts.map(e => ({ ...e, type: 'event' })),
+              ...chars.map(c => ({ ...c, type: 'character' }))
+            ].sort((a, b) => (a.year || 0) - (b.year || 0));
+
+            return (
+              <div
+                key={era.id}
+                style={{
+                  width: eraWidth,
+                  background: `linear-gradient(180deg, ${era.color}20 0%, ${era.color}08 100%)`,
+                  borderRadius: '16px',
+                  padding: '16px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '12px',
+                  flexShrink: 0,
+                  position: 'relative'
+                }}
+              >
+                {/* 시대 헤더 */}
+                <h3 style={{
+                  margin: 0,
+                  fontSize: '0.85rem',
+                  color: era.color,
+                  textAlign: 'center',
+                  borderBottom: `1px solid ${era.color}50`,
+                  paddingBottom: '8px'
+                }}>
+                  {lang === 'ko' ? era.name_ko : era.name_en}
+                  <div style={{ fontSize: '0.65rem', opacity: 0.7, marginTop: '2px' }}>
+                    {era.year_start < 0 ? `BC ${Math.abs(era.year_start)}` : `AD ${era.year_start}`}
+                    {' ~ '}
+                    {era.year_end < 0 ? `BC ${Math.abs(era.year_end)}` : `AD ${era.year_end}`}
+                  </div>
+                </h3>
+
+                {/* 이벤트 노드들 */}
+                {evts.length > 0 && (
+                  <div style={{ marginBottom: '8px' }}>
+                    <div style={{ fontSize: '0.65rem', color: era.color, marginBottom: '6px', opacity: 0.8 }}>
+                      📌 주요 사건
+                    </div>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center' }}>
+                      {evts.slice(0, 6).map(evt => (
+                        <div
+                          key={evt.id}
+                          onClick={() => handleNodeClick('event', evt.id)}
+                          onMouseEnter={() => setHoveredNode(evt.id)}
+                          onMouseLeave={() => setHoveredNode(null)}
+                          style={{
+                            padding: '6px 10px',
+                            borderRadius: '16px',
+                            background: hoveredNode === evt.id
+                              ? `${era.color}60`
+                              : `${era.color}30`,
+                            border: `1px solid ${era.color}80`,
+                            cursor: 'pointer',
+                            fontSize: '0.7rem',
+                            color: '#fff',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '4px',
+                            transition: 'all 0.2s ease',
+                            transform: hoveredNode === evt.id ? 'scale(1.05)' : 'scale(1)'
+                          }}
+                        >
+                          <span>{evt.icon || '📖'}</span>
+                          <span>{lang === 'ko' ? evt.name_ko : evt.name_en}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 캐릭터 노드들 */}
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: '0.65rem', color: era.color, marginBottom: '6px', opacity: 0.8 }}>
+                    👥 인물 ({chars.length})
+                  </div>
+                  <div style={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: '10px',
+                    justifyContent: 'center',
+                    alignContent: 'flex-start'
+                  }}>
+                    {chars.slice(0, isMobile ? 8 : 12).map(char => (
+                      <div
+                        key={char.id}
+                        onClick={() => handleNodeClick('character', char.id)}
+                        onMouseEnter={() => setHoveredNode(char.id)}
+                        onMouseLeave={() => setHoveredNode(null)}
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          gap: '4px',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        <div style={{
+                          width: nodeSize * 0.75,
+                          height: nodeSize * 0.75,
+                          borderRadius: '50%',
+                          background: characterArtwork[char.id]
+                            ? `url(${characterArtwork[char.id]}) center/cover`
+                            : `linear-gradient(135deg, ${era.color}, ${era.color}80)`,
+                          border: hoveredNode === char.id ? `3px solid ${era.color}` : `2px solid ${era.color}60`,
+                          boxShadow: hoveredNode === char.id
+                            ? `0 0 15px ${era.color}80`
+                            : '0 2px 8px rgba(0,0,0,0.3)',
+                          transition: 'all 0.2s ease',
+                          transform: hoveredNode === char.id ? 'scale(1.15)' : 'scale(1)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}>
+                          {!characterArtwork[char.id] && (
+                            <span style={{ fontSize: '0.9rem', opacity: 0.9 }}>
+                              {char.name_ko?.charAt(0) || '?'}
+                            </span>
+                          )}
+                        </div>
+                        <span style={{
+                          fontSize: '0.6rem',
+                          color: hoveredNode === char.id ? '#fff' : 'rgba(255,255,255,0.7)',
+                          textAlign: 'center',
+                          maxWidth: nodeSize,
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap'
+                        }}>
+                          {lang === 'ko' ? char.name_ko : char.name_en}
+                        </span>
+                      </div>
+                    ))}
+                    {chars.length > (isMobile ? 8 : 12) && (
+                      <div style={{
+                        width: nodeSize * 0.75,
+                        height: nodeSize * 0.75,
+                        borderRadius: '50%',
+                        background: `${era.color}30`,
+                        border: `2px dashed ${era.color}60`,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '0.7rem',
+                        color: era.color
+                      }}>
+                        +{chars.length - (isMobile ? 8 : 12)}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* 연결선 (다음 시대로) */}
+                {eraIndex < sortedEras.length - 1 && (
+                  <div style={{
+                    position: 'absolute',
+                    right: '-10px',
+                    top: '50%',
+                    width: '20px',
+                    height: '2px',
+                    background: `linear-gradient(90deg, ${era.color}, ${sortedEras[eraIndex + 1].color})`,
+                    zIndex: 10
+                  }} />
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* 하단 안내 */}
+      <div style={{
+        padding: '8px 16px',
+        background: 'rgba(20,20,40,0.95)',
+        borderTop: '1px solid rgba(102,126,234,0.2)',
+        textAlign: 'center',
+        fontSize: '0.7rem',
+        color: 'rgba(255,255,255,0.5)',
+        flexShrink: 0
+      }}>
+        좌우로 스크롤하여 시대를 탐색하세요 • 노드를 클릭하면 상세정보를 볼 수 있습니다
+      </div>
+    </div>
   );
 }
 
