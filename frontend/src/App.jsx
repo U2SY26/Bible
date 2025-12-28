@@ -240,29 +240,27 @@ const styles = {
     gap: '4px'
   },
   title: {
-    fontSize: '0.75rem',
+    fontSize: '0.7rem',
     fontWeight: '700',
     background: 'linear-gradient(135deg, #ffd700 0%, #ff6b6b 50%, #a855f7 100%)',
     WebkitBackgroundClip: 'text',
     WebkitTextFillColor: 'transparent',
     whiteSpace: 'nowrap',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    flex: '0 1 auto',
-    minWidth: '30px'
+    lineHeight: 1
   },
   filterToggle: {
-    padding: '3px 5px',
-    borderRadius: '10px',
+    padding: '4px 6px',
+    borderRadius: '12px',
     border: '1px solid rgba(102,126,234,0.5)',
     background: 'linear-gradient(135deg, rgba(102,126,234,0.3), rgba(118,75,162,0.3))',
     color: '#fff',
     cursor: 'pointer',
-    fontSize: '0.55rem',
-    display: 'flex',
+    fontSize: '0.6rem',
+    display: 'inline-flex',
     alignItems: 'center',
-    gap: '1px',
-    whiteSpace: 'nowrap'
+    gap: '2px',
+    whiteSpace: 'nowrap',
+    lineHeight: 1
   },
   filterSection: {
     display: 'grid',
@@ -1640,9 +1638,7 @@ export default function App() {
                 borderColor: 'rgba(56,178,172,0.5)'
               }}
               onClick={() => setShowTimeline(!showTimeline)}
-            >
-              📅
-            </button>
+            >📅 타임라인</button>
             <button
               style={{
                 ...styles.filterToggle,
@@ -1657,9 +1653,7 @@ export default function App() {
                 highlightVerse: null,
                 totalChapters: 50
               })}
-            >
-              📖
-            </button>
+            >📖 성경</button>
             <button
               style={{
                 ...styles.filterToggle,
