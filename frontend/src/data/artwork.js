@@ -3,24 +3,66 @@
 
 export const characterArtwork = {
   // ==================== 삼위일체 ====================
-  god: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Andrej_Rubl%C3%ABv_-_Trinity_-_Google_Art_Project.jpg/400px-Andrej_Rubl%C3%ABv_-_Trinity_-_Google_Art_Project.jpg',
-    title: 'Trinity',
-    artist: 'Andrei Rublev',
-    year: '1425'
-  },
-  jesus: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Christ_as_Salvator_Mundi%2C_by_Leonardo_da_Vinci%2C_1499-1500.jpg/400px-Christ_as_Salvator_Mundi%2C_by_Leonardo_da_Vinci%2C_1499-1500.jpg',
-    title: 'Salvator Mundi',
-    artist: 'Leonardo da Vinci',
-    year: '1500'
-  },
-  holy_spirit: {
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Holy_Spirit_as_Dove_%28ceiling%29.jpg/400px-Holy_Spirit_as_Dove_%28ceiling%29.jpg',
-    title: 'Holy Spirit as Dove',
-    artist: 'Gian Lorenzo Bernini',
-    year: '1660'
-  },
+  god: [
+    {
+      url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Andrej_Rubl%C3%ABv_-_Trinity_-_Google_Art_Project.jpg/960px-Andrej_Rubl%C3%ABv_-_Trinity_-_Google_Art_Project.jpg',
+      title: 'Trinity',
+      artist: 'Andrei Rublev',
+      year: '1425'
+    },
+    {
+      url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Masaccio%2C_Holy_Trinity%2C_1425-28%2C_Santa_Maria_Novella%2C_Florence.jpg/960px-Masaccio%2C_Holy_Trinity%2C_1425-28%2C_Santa_Maria_Novella%2C_Florence.jpg',
+      title: 'Holy Trinity',
+      artist: 'Masaccio',
+      year: '1426'
+    },
+    {
+      url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/Albrecht_D%C3%BCrer_-_Adoration_of_the_Trinity_%28Landauer_Altar%29_-_Google_Art_Project.jpg/960px-Albrecht_D%C3%BCrer_-_Adoration_of_the_Trinity_%28Landauer_Altar%29_-_Google_Art_Project.jpg',
+      title: 'Adoration of the Trinity',
+      artist: 'Albrecht Durer',
+      year: '1511'
+    }
+  ],
+  jesus: [
+    {
+      url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Christ_as_Salvator_Mundi%2C_by_Leonardo_da_Vinci%2C_1499-1500.jpg/960px-Christ_as_Salvator_Mundi%2C_by_Leonardo_da_Vinci%2C_1499-1500.jpg',
+      title: 'Salvator Mundi',
+      artist: 'Leonardo da Vinci',
+      year: '1500'
+    },
+    {
+      url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/%C3%9Altima_Cena_-_Da_Vinci_5.jpg/960px-%C3%9Altima_Cena_-_Da_Vinci_5.jpg',
+      title: 'The Last Supper',
+      artist: 'Leonardo da Vinci',
+      year: '1498'
+    },
+    {
+      url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Raphael_-_The_Transfiguration_-_Google_Art_Project.jpg/960px-Raphael_-_The_Transfiguration_-_Google_Art_Project.jpg',
+      title: 'The Transfiguration',
+      artist: 'Raphael',
+      year: '1520'
+    }
+  ],
+  holy_spirit: [
+    {
+      url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Holy_Spirit_as_Dove_%28ceiling%29.jpg/960px-Holy_Spirit_as_Dove_%28ceiling%29.jpg',
+      title: 'Holy Spirit as Dove',
+      artist: 'Gian Lorenzo Bernini',
+      year: '1660'
+    },
+    {
+      url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Andrea_del_Verrocchio%2C_Leonardo_da_Vinci_-_Baptism_of_Christ_-_Uffizi.jpg/960px-Andrea_del_Verrocchio%2C_Leonardo_da_Vinci_-_Baptism_of_Christ_-_Uffizi.jpg',
+      title: 'The Baptism of Christ',
+      artist: 'Andrea del Verrocchio, Leonardo da Vinci',
+      year: '1475'
+    },
+    {
+      url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Santa_Maria_della_Salute_%28Venice%29_-_Discesa_dello_Spirito_Santo_di_Tiziano_%281555%29.jpg/960px-Santa_Maria_della_Salute_%28Venice%29_-_Discesa_dello_Spirito_Santo_di_Tiziano_%281555%29.jpg',
+      title: 'Descent of the Holy Spirit',
+      artist: 'Titian',
+      year: '1555'
+    }
+  ],
 
   // ==================== 창세기 - 태초 ====================
   adam: {

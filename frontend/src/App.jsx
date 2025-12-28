@@ -2743,6 +2743,12 @@ function CharacterDetail({ character, lang, relatedEvents, relatedHymns, related
   const nodeColor = getNodeColor(character, true, true);
   const artworkItems = normalizeArtworkEntry(artwork);
   const hasArtwork = artworkItems.length > 0;
+  const [artworkExpanded, setArtworkExpanded] = useState(false);
+  const artworkHeight = artworkExpanded ? 360 : 240;
+
+  useEffect(() => {
+    setArtworkExpanded(false);
+  }, [character.id]);
   const fallbackGradient = character.testament === 'old'
     ? 'linear-gradient(135deg, #2c3e50 0%, #4ca1af 50%, #c9d6ff 100%)'
     : 'linear-gradient(135deg, #43cea2 0%, #185a9d 50%, #a855f7 100%)';
@@ -2757,12 +2763,15 @@ function CharacterDetail({ character, lang, relatedEvents, relatedHymns, related
   return (
     <>
       {/* 미술 작품 또는 기본 이미지 */}
-      <div style={{
+      <div
+        onClick={() => { if (hasArtwork) setArtworkExpanded(prev => !prev); }}
+        style={{
         marginBottom: '16px',
         borderRadius: '14px',
         overflow: 'hidden',
         border: '1px solid rgba(102,126,234,0.3)',
         position: 'relative',
+    cursor: hasArtwork ? (artworkExpanded ? 'zoom-out' : 'zoom-in') : 'default',
     boxSizing: 'border-box'
       }}>
                 {hasArtwork ? (
@@ -2787,7 +2796,8 @@ function CharacterDetail({ character, lang, relatedEvents, relatedHymns, related
                 >
                   <div style={{
                     width: '100%',
-                    height: '160px',
+                    height: artworkHeight,
+                    transition: 'height 0.25s ease',
                     background: fallbackGradient
                   }}>
                     <img
@@ -2820,7 +2830,8 @@ function CharacterDetail({ character, lang, relatedEvents, relatedHymns, related
         ) : (
           <div style={{
             width: '100%',
-            height: '160px',
+            height: artworkHeight,
+            transition: 'height 0.25s ease',
             background: defaultArtwork.gradient,
             display: 'flex',
             alignItems: 'center',
@@ -3110,17 +3121,26 @@ function EventDetail({ event, lang, eras, onCharacterSelect, artwork, onVerseCli
   const era = eras.find(e => e.id === event.era);
   const artworkItems = normalizeArtworkEntry(artwork);
   const hasArtwork = artworkItems.length > 0;
+  const [artworkExpanded, setArtworkExpanded] = useState(false);
+  const artworkHeight = artworkExpanded ? 360 : 240;
+
+  useEffect(() => {
+    setArtworkExpanded(false);
+  }, [event.id]);
   const fallbackGradient = 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)';
 
   return (
     <>
       {/* 미술 작품 또는 기본 이미지 */}
-      <div style={{
+      <div
+        onClick={() => { if (hasArtwork) setArtworkExpanded(prev => !prev); }}
+        style={{
         marginBottom: '16px',
         borderRadius: '14px',
         overflow: 'hidden',
         border: '1px solid rgba(102,126,234,0.3)',
         position: 'relative',
+    cursor: hasArtwork ? (artworkExpanded ? 'zoom-out' : 'zoom-in') : 'default',
     boxSizing: 'border-box'
       }}>
                 {hasArtwork ? (
@@ -3145,7 +3165,8 @@ function EventDetail({ event, lang, eras, onCharacterSelect, artwork, onVerseCli
                 >
                   <div style={{
                     width: '100%',
-                    height: '160px',
+                    height: artworkHeight,
+                    transition: 'height 0.25s ease',
                     background: fallbackGradient
                   }}>
                     <img
@@ -3178,14 +3199,15 @@ function EventDetail({ event, lang, eras, onCharacterSelect, artwork, onVerseCli
         ) : (
           <div style={{
             width: '100%',
-            height: '160px',
+            height: artworkHeight,
+            transition: 'height 0.25s ease',
             background: fallbackGradient,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             fontSize: '4rem'
           }}>
-            {event.icon || '?'}
+            {event.icon || '??'}
           </div>
         )}
         {hasArtwork && artworkItems.length > 1 && (
