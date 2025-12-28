@@ -12,7 +12,9 @@
       "Bash(npm run build:*)",
       "Bash(npm install:*)",
       "Bash(git commit -m \"$\\(cat <<''EOF''\nUpgrade to premium UI with glassmorphism and animations\n\n- Add background particle animation system\n- Implement glassmorphism design for header, sidebar, timeline\n- Add SVG glow filters for nodes \\(gold, blue, purple\\)\n- Add pulse animation for selected nodes\n- Add particle flow animation on active relationships\n- Add hover effects with scale transitions\n- Integrate rich Bible data \\(100+ characters, 50+ events, 150+ relationships, 43 hymns\\)\n- Add 66 Bible books reference data\n- Add legend for node colors\n- Improve dropdown styling with dark background\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(git -C \"d:/Bible\" add -A)",
+      "Bash(git -C \"d:/Bible\" commit -m \"$\\(cat <<''EOF''\nAdd Google Analytics and simplify footer to single line\n\n- Add Google Analytics tag \\(G-6354L66V8C\\) to index.html\n- Simplify footer to single line with smaller text \\(0.55rem\\)\n- Compact business info display\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")"
     ]
   }
 }
