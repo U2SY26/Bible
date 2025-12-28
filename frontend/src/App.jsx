@@ -17,6 +17,7 @@ import {
   locationTypeIcons
 } from './data/index.js';
 import { characterArtwork, eventArtwork } from './data/artwork.js';
+import { missingCharacterArtwork, missingEventArtwork } from './data/artwork-missing.js';
 import artworkGenerated from './data/artwork.generated.json';
 import bibleData from './data/bible.json';
 import { bibleBooks as bibleBooksMeta, findBookByName } from './data/bible-books.js';
@@ -60,8 +61,11 @@ const mapArtworkUrls = (artworkMap) => {
 
 const generatedCharacterArtwork = artworkGenerated.characterArtwork || {};
 const generatedEventArtwork = artworkGenerated.eventArtwork || {};
-const characterArtworkAll = mergeArtworkMaps(characterArtwork, generatedCharacterArtwork);
-const eventArtworkAll = mergeArtworkMaps(eventArtwork, generatedEventArtwork);
+// Merge all artwork sources: manual > missing > generated
+const characterArtworkMerged = mergeArtworkMaps(characterArtwork, missingCharacterArtwork);
+const characterArtworkAll = mergeArtworkMaps(characterArtworkMerged, generatedCharacterArtwork);
+const eventArtworkMerged = mergeArtworkMaps(eventArtwork, missingEventArtwork);
+const eventArtworkAll = mergeArtworkMaps(eventArtworkMerged, generatedEventArtwork);
 const characterArtworkUrls = mapArtworkUrls(characterArtworkAll);
 const eventArtworkUrls = mapArtworkUrls(eventArtworkAll);
 
@@ -1217,6 +1221,32 @@ export default function App() {
   // 드래그 대상을 ref로도 추적 (이벤트 타이밍 문제 해결)
   const dragTargetRef = useRef(null);
 
+  const getLocalPoint = useCallback((clientX, clientY) => {
+    if (!containerRef.current) return null;
+    const rect = containerRef.current.getBoundingClientRect();
+    return { x: clientX - rect.left, y: clientY - rect.top };
+  }, []);
+
+  const applyZoomAtPoint = useCallback((scale, point, minZoom, maxZoom) => {
+    if (!point) return;
+    // 현재 zoom과 pan 값을 가져와서 계산
+    setZoom(currentZoom => {
+      const nextZoom = Math.max(minZoom, Math.min(maxZoom, currentZoom * scale));
+      // 마우스/터치 위치의 world 좌표 계산 후, 같은 위치 유지하도록 pan 조정
+      setPan(currentPan => {
+        // 현재 화면에서 마우스 위치에 해당하는 world 좌표
+        const worldX = (point.x - currentPan.x) / currentZoom;
+        const worldY = (point.y - currentPan.y) / currentZoom;
+        // 새 zoom에서 같은 world 좌표가 같은 화면 위치에 오도록 pan 계산
+        return {
+          x: point.x - worldX * nextZoom,
+          y: point.y - worldY * nextZoom
+        };
+      });
+      return nextZoom;
+    });
+  }, []);
+
   const handlePointerDown = useCallback((e, characterId = null) => {
     // 두 손가락 터치는 핀치 줌으로 처리
     if (e.touches && e.touches.length === 2) {
@@ -1250,9 +1280,14 @@ export default function App() {
       const dx = e.touches[0].clientX - e.touches[1].clientX;
       const dy = e.touches[0].clientY - e.touches[1].clientY;
       const newDist = Math.sqrt(dx * dx + dy * dy);
-      const scale = newDist / lastTouchDistance.current;
-
-      setZoom(prev => Math.max(0.2, Math.min(3, prev * scale)));
+      const prevDist = lastTouchDistance.current;
+      if (prevDist > 0) {
+        const scale = newDist / prevDist;
+        const centerX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+        const centerY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+        const centerPoint = getLocalPoint(centerX, centerY);
+        applyZoomAtPoint(scale, centerPoint, 0.2, 3);
+      }
       lastTouchDistance.current = newDist;
       return;
     }
@@ -1291,7 +1326,7 @@ export default function App() {
     }
 
     setLastMouse({ x: clientX, y: clientY });
-  }, [dragTarget, isDragging, lastMouse, zoom]);
+  }, [applyZoomAtPoint, dragTarget, getLocalPoint, isDragging, lastMouse, zoom]);
 
   const handlePointerUp = useCallback((e) => {
     // 핀치 줌 종료
@@ -1340,9 +1375,10 @@ export default function App() {
 
   const handleWheel = useCallback((e) => {
     e.preventDefault();
+    const point = getLocalPoint(e.clientX, e.clientY);
     const delta = e.deltaY > 0 ? 0.9 : 1.1;
-    setZoom(prev => Math.max(0.1, Math.min(5, prev * delta)));
-  }, []);
+    applyZoomAtPoint(delta, point, 0.1, 5);
+  }, [applyZoomAtPoint, getLocalPoint]);
 
   const handleCharacterClick = useCallback((characterId) => {
     // 토글: 같은 인물 클릭시 선택 해제
@@ -1699,6 +1735,20 @@ export default function App() {
                 totalChapters: 50
               })}
             >📖 성경</button>
+            <a
+              href="https://www.bskorea.or.kr/index.php"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                ...styles.filterToggle,
+                background: 'linear-gradient(135deg, rgba(0,100,180,0.3), rgba(0,60,120,0.3))',
+                borderColor: 'rgba(0,100,180,0.5)',
+                textDecoration: 'none',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >📚 성서공회</a>
             <button
               style={{
                 ...styles.filterToggle,
@@ -2745,10 +2795,12 @@ function CharacterDetail({ character, lang, relatedEvents, relatedHymns, related
   const artworkItems = normalizeArtworkEntry(artwork);
   const hasArtwork = artworkItems.length > 0;
   const [artworkExpanded, setArtworkExpanded] = useState(false);
-  const artworkHeight = artworkExpanded ? 360 : 240;
+  const [fullscreenArtwork, setFullscreenArtwork] = useState(null);
+  const artworkHeight = artworkExpanded ? 450 : 200;
 
   useEffect(() => {
     setArtworkExpanded(false);
+    setFullscreenArtwork(null);
   }, [character.id]);
   const fallbackGradient = character.testament === 'old'
     ? 'linear-gradient(135deg, #2c3e50 0%, #4ca1af 50%, #c9d6ff 100%)'
@@ -2799,15 +2851,23 @@ function CharacterDetail({ character, lang, relatedEvents, relatedHymns, related
                     width: '100%',
                     height: artworkHeight,
                     transition: 'height 0.25s ease',
-                    background: fallbackGradient
+                    background: fallbackGradient,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
                   }}>
                     <img
                       src={item.url}
                       alt={title}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setFullscreenArtwork(item);
+                      }}
                       style={{
                         width: '100%',
                         height: '100%',
-                        objectFit: 'cover'
+                        objectFit: artworkExpanded ? 'contain' : 'cover',
+                        cursor: 'zoom-in'
                       }}
                       onError={(e) => { e.target.style.display = 'none'; }}
                     />
@@ -3113,6 +3173,64 @@ function CharacterDetail({ character, lang, relatedEvents, relatedHymns, related
           </div>
         </div>
       )}
+
+      {/* 전체화면 아트워크 뷰어 */}
+      {fullscreenArtwork && createPortal(
+        <div
+          onClick={() => setFullscreenArtwork(null)}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0,0,0,0.95)',
+            zIndex: 10000,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'zoom-out',
+            padding: '20px'
+          }}
+        >
+          <img
+            src={fullscreenArtwork.url}
+            alt={fullscreenArtwork.title}
+            style={{
+              maxWidth: '95vw',
+              maxHeight: '85vh',
+              objectFit: 'contain',
+              borderRadius: '8px',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.5)'
+            }}
+          />
+          <div style={{
+            marginTop: '16px',
+            textAlign: 'center',
+            color: '#fff'
+          }}>
+            <div style={{ fontSize: '1rem', fontWeight: '600' }}>{fullscreenArtwork.title}</div>
+            <div style={{ fontSize: '0.85rem', opacity: 0.7, marginTop: '4px' }}>
+              {[fullscreenArtwork.artist, fullscreenArtwork.year].filter(Boolean).join(', ')}
+            </div>
+          </div>
+          <button
+            onClick={(e) => { e.stopPropagation(); setFullscreenArtwork(null); }}
+            style={{
+              position: 'absolute',
+              top: '20px',
+              right: '20px',
+              background: 'rgba(255,255,255,0.2)',
+              border: 'none',
+              borderRadius: '50%',
+              width: '40px',
+              height: '40px',
+              color: '#fff',
+              fontSize: '1.2rem',
+              cursor: 'pointer'
+            }}
+          >✕</button>
+        </div>,
+        document.body
+      )}
     </>
   );
 }
@@ -3123,10 +3241,12 @@ function EventDetail({ event, lang, eras, onCharacterSelect, artwork, onVerseCli
   const artworkItems = normalizeArtworkEntry(artwork);
   const hasArtwork = artworkItems.length > 0;
   const [artworkExpanded, setArtworkExpanded] = useState(false);
-  const artworkHeight = artworkExpanded ? 360 : 240;
+  const [fullscreenArtwork, setFullscreenArtwork] = useState(null);
+  const artworkHeight = artworkExpanded ? 450 : 200;
 
   useEffect(() => {
     setArtworkExpanded(false);
+    setFullscreenArtwork(null);
   }, [event.id]);
   const fallbackGradient = 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)';
 
@@ -3168,15 +3288,23 @@ function EventDetail({ event, lang, eras, onCharacterSelect, artwork, onVerseCli
                     width: '100%',
                     height: artworkHeight,
                     transition: 'height 0.25s ease',
-                    background: fallbackGradient
+                    background: fallbackGradient,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
                   }}>
                     <img
                       src={item.url}
                       alt={title}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setFullscreenArtwork(item);
+                      }}
                       style={{
                         width: '100%',
                         height: '100%',
-                        objectFit: 'cover'
+                        objectFit: artworkExpanded ? 'contain' : 'cover',
+                        cursor: 'zoom-in'
                       }}
                       onError={(e) => { e.target.style.display = 'none'; }}
                     />
@@ -3337,6 +3465,64 @@ function EventDetail({ event, lang, eras, onCharacterSelect, artwork, onVerseCli
         <p style={{ opacity: 0.4, fontSize: '0.8rem', marginTop: 14, textAlign: 'center' }}>
           📍 {event.location}
         </p>
+      )}
+
+      {/* 전체화면 아트워크 뷰어 */}
+      {fullscreenArtwork && createPortal(
+        <div
+          onClick={() => setFullscreenArtwork(null)}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0,0,0,0.95)',
+            zIndex: 10000,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'zoom-out',
+            padding: '20px'
+          }}
+        >
+          <img
+            src={fullscreenArtwork.url}
+            alt={fullscreenArtwork.title}
+            style={{
+              maxWidth: '95vw',
+              maxHeight: '85vh',
+              objectFit: 'contain',
+              borderRadius: '8px',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.5)'
+            }}
+          />
+          <div style={{
+            marginTop: '16px',
+            textAlign: 'center',
+            color: '#fff'
+          }}>
+            <div style={{ fontSize: '1rem', fontWeight: '600' }}>{fullscreenArtwork.title}</div>
+            <div style={{ fontSize: '0.85rem', opacity: 0.7, marginTop: '4px' }}>
+              {[fullscreenArtwork.artist, fullscreenArtwork.year].filter(Boolean).join(', ')}
+            </div>
+          </div>
+          <button
+            onClick={(e) => { e.stopPropagation(); setFullscreenArtwork(null); }}
+            style={{
+              position: 'absolute',
+              top: '20px',
+              right: '20px',
+              background: 'rgba(255,255,255,0.2)',
+              border: 'none',
+              borderRadius: '50%',
+              width: '40px',
+              height: '40px',
+              color: '#fff',
+              fontSize: '1.2rem',
+              cursor: 'pointer'
+            }}
+          >✕</button>
+        </div>,
+        document.body
       )}
     </>
   );
