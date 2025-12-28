@@ -2701,6 +2701,69 @@ export default function App() {
       )}
 
       {/* MBTI 퀴즈 팝업 - Portal로 분리 */}
+      {/* 푸터 - 사업자 정보 */}
+      <footer style={{
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        background: 'linear-gradient(180deg, rgba(10,5,20,0.95) 0%, rgba(15,10,25,0.98) 100%)',
+        borderTop: '1px solid rgba(255,215,0,0.2)',
+        padding: '12px 16px',
+        zIndex: 90,
+        fontSize: '0.7rem',
+        color: 'rgba(255,255,255,0.6)',
+        textAlign: 'center',
+        lineHeight: 1.6
+      }}>
+        <a
+          href="https://yunaipartner.vercel.app/"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            display: 'inline-block',
+            marginBottom: '8px',
+            padding: '6px 16px',
+            background: 'linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,140,0,0.2))',
+            border: '1px solid rgba(255,215,0,0.4)',
+            borderRadius: '20px',
+            color: '#ffd700',
+            textDecoration: 'none',
+            fontWeight: '600',
+            fontSize: '0.8rem'
+          }}
+        >
+          🚀 YUN AI Partner - AI 컨설팅 & 교육
+        </a>
+        <div style={{ marginBottom: '4px' }}>
+          <span>상호: 유투디아</span>
+          <span style={{ margin: '0 8px', opacity: 0.4 }}>|</span>
+          <span>대표: 최유이</span>
+          <span style={{ margin: '0 8px', opacity: 0.4 }}>|</span>
+          <span>사업자등록번호: 749-58-00902</span>
+        </div>
+        <div style={{ marginBottom: '4px' }}>
+          주소: 인천광역시 서구 완정로 179, 6층 601-792호
+        </div>
+        <div style={{ marginBottom: '6px' }}>
+          <span>업태: 전문, 과학 및 기술서비스업</span>
+          <span style={{ margin: '0 8px', opacity: 0.4 }}>|</span>
+          <span>종목: 경영 컨설팅업</span>
+        </div>
+        <div>
+          <a
+            href="https://yunaipartner.vercel.app/#/privacy"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: '#ffd700', textDecoration: 'none' }}
+          >
+            개인정보처리방침
+          </a>
+          <span style={{ margin: '0 8px', opacity: 0.4 }}>|</span>
+          <span>© {new Date().getFullYear()} YUN AI Partner (유투디아)</span>
+        </div>
+      </footer>
+
       {showPopup === 'mbtiQuiz' && createPortal(
         <>
           <div style={styles.overlay} onClick={() => setShowPopup(null)} />
