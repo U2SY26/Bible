@@ -320,9 +320,10 @@ const styles = {
     position: 'relative'
   },
   mainContentMobile: {
-    flex: 'none',
-    display: 'block',
-    overflow: 'visible',
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    overflow: 'hidden',
     position: 'relative'
   },
   graphContainer: {
@@ -333,7 +334,8 @@ const styles = {
   },
   graphContainerMobile: {
     width: '100%',
-    height: '55vh',
+    height: '100%',  // 전체 화면으로 확장
+    flex: 1,
     position: 'relative',
     overflow: 'hidden',
     background: '#000',
