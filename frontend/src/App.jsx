@@ -17,9 +17,53 @@ import {
   locationTypeIcons
 } from './data/index.js';
 import { characterArtwork, eventArtwork } from './data/artwork.js';
+import artworkGenerated from './data/artwork.generated.json';
 import bibleData from './data/bible.json';
 import { bibleBooks as bibleBooksMeta, findBookByName } from './data/bible-books.js';
 import TimelineMap from './TimelineMap.jsx';
+
+const normalizeArtworkEntry = (entry) => {
+  if (!entry) return [];
+  return Array.isArray(entry) ? entry.filter(Boolean) : [entry];
+};
+
+const mergeArtworkMaps = (manual, generated) => {
+  const merged = { ...(generated || {}) };
+  Object.entries(manual || {}).forEach(([id, entry]) => {
+    const manualList = normalizeArtworkEntry(entry);
+    const existingList = normalizeArtworkEntry(merged[id]);
+    const combined = [...manualList, ...existingList];
+    const seen = new Set();
+    const unique = [];
+    combined.forEach((item) => {
+      if (!item?.url || seen.has(item.url)) return;
+      seen.add(item.url);
+      unique.push(item);
+    });
+    if (unique.length) {
+      merged[id] = unique;
+    }
+  });
+  return merged;
+};
+
+const pickPrimaryArtwork = (entry) => normalizeArtworkEntry(entry)[0] || null;
+
+const mapArtworkUrls = (artworkMap) => {
+  const urls = {};
+  Object.entries(artworkMap || {}).forEach(([id, entry]) => {
+    const primary = pickPrimaryArtwork(entry);
+    if (primary?.url) urls[id] = primary.url;
+  });
+  return urls;
+};
+
+const generatedCharacterArtwork = artworkGenerated.characterArtwork || {};
+const generatedEventArtwork = artworkGenerated.eventArtwork || {};
+const characterArtworkAll = mergeArtworkMaps(characterArtwork, generatedCharacterArtwork);
+const eventArtworkAll = mergeArtworkMaps(eventArtwork, generatedEventArtwork);
+const characterArtworkUrls = mapArtworkUrls(characterArtworkAll);
+const eventArtworkUrls = mapArtworkUrls(eventArtworkAll);
 
 // ==================== MBTI 데이터 (확장) ====================
 const mbtiData = {
@@ -2505,7 +2549,7 @@ export default function App() {
                 }}
                 onEventClick={handleEventClick}
                 onVerseClick={handleVerseClick}
-                artwork={characterArtwork[selectedCharacter]}
+                artwork={characterArtworkAll[selectedCharacter]}
                 mbtiData={mbtiData[selectedCharacter]}
               />
             </div>
@@ -2526,7 +2570,7 @@ export default function App() {
               onCharacterSelect={setSelectedCharacter}
               onEventClick={handleEventClick}
               onVerseClick={handleVerseClick}
-              artwork={characterArtwork[selectedCharacter]}
+              artwork={characterArtworkAll[selectedCharacter]}
               mbtiData={mbtiData[selectedCharacter]}
             />
           </aside>
@@ -2553,7 +2597,7 @@ export default function App() {
               onCharacterSelect={(id) => { setSelectedCharacter(id); }}
               onEventClick={handleEventClick}
               onVerseClick={handleVerseClick}
-              artwork={characterArtwork[selectedCharacter]}
+              artwork={characterArtworkAll[selectedCharacter]}
               mbtiData={mbtiData[selectedCharacter]}
             />
           </div>
@@ -2576,7 +2620,7 @@ export default function App() {
               eras={eras}
               onCharacterSelect={(id) => { setSelectedCharacter(id); setShowPopup(isMobile ? 'character' : null); }}
               onVerseClick={handleVerseClick}
-              artwork={eventArtwork[selectedEvent]}
+              artwork={eventArtworkAll[selectedEvent]}
             />
           </div>
         </>,
@@ -2614,8 +2658,8 @@ export default function App() {
             setShowTimeline(false);
             setShowPopup('event');
           }}
-          characterArtwork={characterArtwork}
-          eventArtwork={eventArtwork}
+          characterArtwork={characterArtworkUrls}
+          eventArtwork={eventArtworkUrls}
         />,
         document.body
       )}
@@ -2697,13 +2741,16 @@ export default function App() {
 // ==================== 인물 상세 컴포넌트 ====================
 function CharacterDetail({ character, lang, relatedEvents, relatedHymns, relatedRelationships, relatedLocations, selectedCharacter, onCharacterSelect, onEventClick, onVerseClick, artwork, mbtiData }) {
   const nodeColor = getNodeColor(character, true, true);
+  const artworkItems = normalizeArtworkEntry(artwork);
+  const hasArtwork = artworkItems.length > 0;
+  const fallbackGradient = character.testament === 'old'
+    ? 'linear-gradient(135deg, #2c3e50 0%, #4ca1af 50%, #c9d6ff 100%)'
+    : 'linear-gradient(135deg, #43cea2 0%, #185a9d 50%, #a855f7 100%)';
 
   // 기본 아트워크 (예술 작품이 없는 경우)
-  const defaultArtwork = !artwork ? {
+  const defaultArtwork = !hasArtwork ? {
     isDefault: true,
-    gradient: character.testament === 'old'
-      ? 'linear-gradient(135deg, #2c3e50 0%, #4ca1af 50%, #c9d6ff 100%)'
-      : 'linear-gradient(135deg, #43cea2 0%, #185a9d 50%, #a855f7 100%)',
+    gradient: fallbackGradient,
     icon: character.testament === 'old' ? '📜' : '✝️'
   } : null;
 
@@ -2718,17 +2765,58 @@ function CharacterDetail({ character, lang, relatedEvents, relatedHymns, related
         position: 'relative',
     boxSizing: 'border-box'
       }}>
-        {artwork ? (
-          <img
-            src={artwork.url}
-            alt={artwork.title}
-            style={{
-              width: '100%',
-              height: '160px',
-              objectFit: 'cover'
-            }}
-            onError={(e) => { e.target.style.display = 'none'; }}
-          />
+                {hasArtwork ? (
+          <div style={{
+            display: 'flex',
+            overflowX: 'auto',
+            scrollSnapType: 'x mandatory',
+            scrollBehavior: 'smooth'
+          }}>
+            {artworkItems.map((item, index) => {
+              const title = item.title || (lang === 'ko' ? character.name_ko : character.name_en);
+              const subtitle = [item.artist, item.year].filter(Boolean).join(', ');
+              return (
+                <div
+                  key={`${item.url}-${index}`}
+                  style={{
+                    minWidth: '100%',
+                    flexShrink: 0,
+                    position: 'relative',
+                    scrollSnapAlign: 'start'
+                  }}
+                >
+                  <div style={{
+                    width: '100%',
+                    height: '160px',
+                    background: fallbackGradient
+                  }}>
+                    <img
+                      src={item.url}
+                      alt={title}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover'
+                      }}
+                      onError={(e) => { e.target.style.display = 'none'; }}
+                    />
+                  </div>
+                  <div style={{
+                    position: 'absolute',
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    padding: '8px 12px',
+                    background: 'linear-gradient(transparent, rgba(0,0,0,0.9))',
+                    fontSize: '0.75rem'
+                  }}>
+                    <div style={{ fontWeight: '600' }}>{title}</div>
+                    {subtitle && <div style={{ opacity: 0.7 }}>{subtitle}</div>}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         ) : (
           <div style={{
             width: '100%',
@@ -2742,18 +2830,18 @@ function CharacterDetail({ character, lang, relatedEvents, relatedHymns, related
             {defaultArtwork.icon}
           </div>
         )}
-        {artwork && (
+        {hasArtwork && artworkItems.length > 1 && (
           <div style={{
             position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            padding: '8px 12px',
-            background: 'linear-gradient(transparent, rgba(0,0,0,0.9))',
-            fontSize: '0.75rem'
+            top: 8,
+            right: 8,
+            padding: '2px 8px',
+            borderRadius: '10px',
+            background: 'rgba(0,0,0,0.6)',
+            border: '1px solid rgba(255,255,255,0.2)',
+            fontSize: '0.65rem'
           }}>
-            <div style={{ fontWeight: '600' }}>{artwork.title}</div>
-            <div style={{ opacity: 0.7 }}>{artwork.artist}, {artwork.year}</div>
+            {artworkItems.length} images
           </div>
         )}
       </div>
@@ -3020,6 +3108,9 @@ function CharacterDetail({ character, lang, relatedEvents, relatedHymns, related
 // ==================== 이벤트 상세 컴포넌트 ====================
 function EventDetail({ event, lang, eras, onCharacterSelect, artwork, onVerseClick }) {
   const era = eras.find(e => e.id === event.era);
+  const artworkItems = normalizeArtworkEntry(artwork);
+  const hasArtwork = artworkItems.length > 0;
+  const fallbackGradient = 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)';
 
   return (
     <>
@@ -3032,42 +3123,83 @@ function EventDetail({ event, lang, eras, onCharacterSelect, artwork, onVerseCli
         position: 'relative',
     boxSizing: 'border-box'
       }}>
-        {artwork ? (
-          <img
-            src={artwork.url}
-            alt={artwork.title}
-            style={{
-              width: '100%',
-              height: '160px',
-              objectFit: 'cover'
-            }}
-            onError={(e) => { e.target.style.display = 'none'; }}
-          />
+                {hasArtwork ? (
+          <div style={{
+            display: 'flex',
+            overflowX: 'auto',
+            scrollSnapType: 'x mandatory',
+            scrollBehavior: 'smooth'
+          }}>
+            {artworkItems.map((item, index) => {
+              const title = item.title || (lang === 'ko' ? event.name_ko : event.name_en);
+              const subtitle = [item.artist, item.year].filter(Boolean).join(', ');
+              return (
+                <div
+                  key={`${item.url}-${index}`}
+                  style={{
+                    minWidth: '100%',
+                    flexShrink: 0,
+                    position: 'relative',
+                    scrollSnapAlign: 'start'
+                  }}
+                >
+                  <div style={{
+                    width: '100%',
+                    height: '160px',
+                    background: fallbackGradient
+                  }}>
+                    <img
+                      src={item.url}
+                      alt={title}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover'
+                      }}
+                      onError={(e) => { e.target.style.display = 'none'; }}
+                    />
+                  </div>
+                  <div style={{
+                    position: 'absolute',
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    padding: '8px 12px',
+                    background: 'linear-gradient(transparent, rgba(0,0,0,0.9))',
+                    fontSize: '0.75rem'
+                  }}>
+                    <div style={{ fontWeight: '600' }}>{title}</div>
+                    {subtitle && <div style={{ opacity: 0.7 }}>{subtitle}</div>}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         ) : (
           <div style={{
             width: '100%',
             height: '160px',
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)',
+            background: fallbackGradient,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             fontSize: '4rem'
           }}>
-            {event.icon || '📖'}
+            {event.icon || '?'}
           </div>
         )}
-        {artwork && (
+        {hasArtwork && artworkItems.length > 1 && (
           <div style={{
             position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            padding: '8px 12px',
-            background: 'linear-gradient(transparent, rgba(0,0,0,0.9))',
-            fontSize: '0.75rem'
+            top: 8,
+            right: 8,
+            padding: '2px 8px',
+            borderRadius: '10px',
+            background: 'rgba(0,0,0,0.6)',
+            border: '1px solid rgba(255,255,255,0.2)',
+            fontSize: '0.65rem'
           }}>
-            <div style={{ fontWeight: '600' }}>{artwork.title}</div>
-            <div style={{ opacity: 0.7 }}>{artwork.artist}, {artwork.year}</div>
+            {artworkItems.length} images
           </div>
         )}
       </div>
