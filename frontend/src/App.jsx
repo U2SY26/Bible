@@ -706,6 +706,7 @@ export default function App() {
   const [animationTime, setAnimationTime] = useState(0);
   const [showFilters, setShowFilters] = useState(!isMobile);
   const [showTimeline, setShowTimeline] = useState(false);
+  const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
   const [nodeScale, setNodeScale] = useState(1.0);
   const [showMBTI, setShowMBTI] = useState(false);
   const [userMBTI, setUserMBTI] = useState('');
