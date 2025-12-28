@@ -227,24 +227,20 @@ const styles = {
     boxSizing: 'border-box'
   },
   header: {
-    padding: '8px 10px',
+    padding: '6px 8px',
     background: 'linear-gradient(180deg, rgba(20,20,35,0.98) 0%, rgba(15,15,30,0.95) 100%)',
     borderBottom: '1px solid rgba(100,126,234,0.3)',
     zIndex: 100,
-    boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
-    position: 'relative',
-    width: '100%',
-    boxSizing: 'border-box'
+    boxShadow: '0 4px 20px rgba(0,0,0,0.5)'
   },
   headerTop: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    gap: '6px',
-    flexWrap: 'nowrap'
+    gap: '4px'
   },
   title: {
-    fontSize: '0.85rem',
+    fontSize: '0.75rem',
     fontWeight: '700',
     background: 'linear-gradient(135deg, #ffd700 0%, #ff6b6b 50%, #a855f7 100%)',
     WebkitBackgroundClip: 'text',
@@ -252,22 +248,21 @@ const styles = {
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
-    flexShrink: 1,
-    minWidth: 0
+    flex: '0 1 auto',
+    minWidth: '30px'
   },
   filterToggle: {
-    padding: '4px 8px',
-    borderRadius: '14px',
+    padding: '3px 5px',
+    borderRadius: '10px',
     border: '1px solid rgba(102,126,234,0.5)',
     background: 'linear-gradient(135deg, rgba(102,126,234,0.3), rgba(118,75,162,0.3))',
     color: '#fff',
     cursor: 'pointer',
-    fontSize: '0.6rem',
+    fontSize: '0.55rem',
     display: 'flex',
     alignItems: 'center',
-    gap: '2px',
-    whiteSpace: 'nowrap',
-    flexShrink: 0
+    gap: '1px',
+    whiteSpace: 'nowrap'
   },
   filterSection: {
     display: 'grid',
@@ -1635,7 +1630,7 @@ export default function App() {
         <div style={styles.headerTop}>
           <h1 style={styles.title}>성경 인물 관계도</h1>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'nowrap', flexShrink: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
             <button
               style={{
                 ...styles.filterToggle,
