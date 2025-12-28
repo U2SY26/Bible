@@ -144,22 +144,42 @@ function TimelineMap({
                   width: nodeSize,
                   height: nodeSize,
                   borderRadius: '50%',
-                  background: characterArtwork[char.id]
-                    ? `url(${characterArtwork[char.id]}) center/cover`
-                    : 'linear-gradient(135deg, #ffd700, #ff8c00)',
+                  background: 'linear-gradient(135deg, #ffd700, #ff8c00)',
                   border: hoveredNode === char.id ? '3px solid #ffd700' : '2px solid #ffd70066',
                   boxShadow: hoveredNode === char.id ? '0 0 15px rgba(255,215,0,0.5)' : 'none',
                   transition: 'all 0.2s',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  margin: '0 auto'
+                  margin: '0 auto',
+                  overflow: 'hidden',
+                  position: 'relative'
                 }}>
-                  {!characterArtwork[char.id] && (
-                    <span style={{ fontSize: nodeSize * 0.4 }}>
-                      {char.id === 'god' ? '👑' : char.id === 'jesus' ? '✝️' : '🕊️'}
-                    </span>
-                  )}
+                  {characterArtwork[char.id] ? (
+                    <img
+                      src={characterArtwork[char.id]}
+                      alt={char.name_ko}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        borderRadius: '50%'
+                      }}
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                        e.target.nextSibling.style.display = 'flex';
+                      }}
+                    />
+                  ) : null}
+                  <span style={{
+                    display: characterArtwork[char.id] ? 'none' : 'flex',
+                    position: 'absolute',
+                    fontSize: nodeSize * 0.4,
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    {char.id === 'god' ? '👑' : char.id === 'jesus' ? '✝️' : '🕊️'}
+                  </span>
                 </div>
                 <div style={{
                   fontSize: '0.55rem',
@@ -227,26 +247,46 @@ function TimelineMap({
                       width: nodeSize,
                       height: nodeSize,
                       borderRadius: '8px',
-                      background: characterArtwork[char.id]
-                        ? `url(${characterArtwork[char.id]}) center/cover`
-                        : `linear-gradient(135deg, ${era.color}, ${era.color}88)`,
+                      background: `linear-gradient(135deg, ${era.color}, ${era.color}88)`,
                       border: hoveredNode === char.id ? `3px solid ${era.color}` : `1px solid ${era.color}66`,
                       boxShadow: hoveredNode === char.id ? `0 0 12px ${era.color}50` : 'none',
                       transition: 'all 0.2s',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      margin: '0 auto'
+                      margin: '0 auto',
+                      overflow: 'hidden',
+                      position: 'relative'
                     }}>
-                      {!characterArtwork[char.id] && (
-                        <span style={{
-                          fontSize: '0.5rem',
-                          color: '#fff',
-                          textShadow: '0 1px 2px rgba(0,0,0,0.8)'
-                        }}>
-                          {(lang === 'ko' ? char.name_ko : char.name_en).slice(0, 2)}
-                        </span>
-                      )}
+                      {characterArtwork[char.id] ? (
+                        <img
+                          src={characterArtwork[char.id]}
+                          alt={char.name_ko}
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover',
+                            borderRadius: '6px'
+                          }}
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                            e.target.nextSibling.style.display = 'flex';
+                          }}
+                        />
+                      ) : null}
+                      <span style={{
+                        display: characterArtwork[char.id] ? 'none' : 'flex',
+                        position: 'absolute',
+                        fontSize: '0.5rem',
+                        color: '#fff',
+                        textShadow: '0 1px 2px rgba(0,0,0,0.8)',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: '100%',
+                        height: '100%'
+                      }}>
+                        {(lang === 'ko' ? char.name_ko : char.name_en).slice(0, 2)}
+                      </span>
                     </div>
                     <div style={{
                       fontSize: '0.5rem',
