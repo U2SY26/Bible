@@ -275,40 +275,46 @@ const styles = {
     boxSizing: 'border-box'
   },
   header: {
-    padding: '6px 8px',
-    background: 'linear-gradient(180deg, rgba(20,20,35,0.98) 0%, rgba(15,15,30,0.95) 100%)',
-    borderBottom: '1px solid rgba(100,126,234,0.3)',
+    padding: '12px 16px',
+    background: 'linear-gradient(180deg, rgba(15,10,25,0.98) 0%, rgba(25,15,40,0.95) 100%)',
+    borderBottom: '2px solid rgba(255,215,0,0.4)',
     zIndex: 100,
-    boxShadow: '0 4px 20px rgba(0,0,0,0.5)'
+    boxShadow: '0 4px 30px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,215,0,0.1)'
   },
   headerTop: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    gap: '4px'
+    gap: '8px'
   },
   title: {
-    fontSize: '0.7rem',
-    fontWeight: '700',
-    background: 'linear-gradient(135deg, #ffd700 0%, #ff6b6b 50%, #a855f7 100%)',
+    fontSize: '1.3rem',
+    fontWeight: '800',
+    background: 'linear-gradient(135deg, #ffd700 0%, #fff5cc 30%, #ffd700 50%, #ffec80 70%, #ffd700 100%)',
     WebkitBackgroundClip: 'text',
     WebkitTextFillColor: 'transparent',
+    textShadow: '0 0 30px rgba(255,215,0,0.5)',
     whiteSpace: 'nowrap',
-    lineHeight: 1
+    lineHeight: 1,
+    letterSpacing: '0.05em',
+    fontFamily: '"Noto Serif KR", "Georgia", serif'
   },
   filterToggle: {
-    padding: '4px 6px',
-    borderRadius: '12px',
-    border: '1px solid rgba(102,126,234,0.5)',
-    background: 'linear-gradient(135deg, rgba(102,126,234,0.3), rgba(118,75,162,0.3))',
-    color: '#fff',
+    padding: '8px 12px',
+    borderRadius: '8px',
+    border: '1px solid rgba(255,215,0,0.3)',
+    background: 'linear-gradient(135deg, rgba(40,30,60,0.9), rgba(30,20,50,0.9))',
+    color: '#ffd700',
     cursor: 'pointer',
-    fontSize: '0.6rem',
+    fontSize: '0.85rem',
+    fontWeight: '600',
     display: 'inline-flex',
     alignItems: 'center',
-    gap: '2px',
+    gap: '4px',
     whiteSpace: 'nowrap',
-    lineHeight: 1
+    lineHeight: 1,
+    boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+    transition: 'all 0.2s ease'
   },
   filterSection: {
     display: 'grid',
@@ -1332,46 +1338,25 @@ export default function App() {
     // 핀치 줌 종료
     lastTouchDistance.current = null;
 
-    // ref를 사용해서 드래그 대상 확인 (상태 업데이트 타이밍 문제 해결)
-    const currentDragTarget = dragTargetRef.current;
-
-    if (currentDragTarget && dragStartPos.current && dragStartTime.current) {
-      const clientX = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
-      const clientY = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
-      const totalMove = Math.abs(clientX - dragStartPos.current.x) + Math.abs(clientY - dragStartPos.current.y);
-      const duration = Date.now() - dragStartTime.current;
-
-      // 클릭으로 판정 (이동량 적고 시간 짧음)
-      if (totalMove < 15 && duration < 400) {
-        // 토글: 같은 인물 클릭시 선택 해제
-        if (selectedCharacter === currentDragTarget) {
-          setSelectedCharacter(null);
-        } else {
-          setSelectedCharacter(currentDragTarget);
-        }
-      }
-    } else if (isDragging) {
-      // 빈 공간 클릭시 선택 해제
+    // 빈 공간 클릭시 선택 해제 (드래그가 아닌 경우만)
+    if (isDragging && !dragTargetRef.current) {
       const clientX = e.changedTouches ? e.changedTouches[0]?.clientX : e.clientX;
       const clientY = e.changedTouches ? e.changedTouches[0]?.clientY : e.clientY;
       if (clientX !== undefined && clientY !== undefined && lastMouse) {
         const totalMove = Math.abs(clientX - lastMouse.x) + Math.abs(clientY - lastMouse.y);
-        if (totalMove < 10) {
-          // 팝업이 없고 드래그가 아닌 클릭이면 선택 해제
-          if (!showPopup) {
-            setSelectedCharacter(null);
-            setSelectedEvent(null);
-          }
+        if (totalMove < 10 && !showPopup) {
+          setSelectedCharacter(null);
+          setSelectedEvent(null);
         }
       }
     }
 
     setDragTarget(null);
-    dragTargetRef.current = null; // ref도 초기화
+    dragTargetRef.current = null;
     setIsDragging(false);
     dragStartPos.current = null;
     dragStartTime.current = null;
-  }, [isDragging, selectedCharacter, lastMouse, showPopup]);
+  }, [isDragging, lastMouse, showPopup]);
 
   const handleWheel = useCallback((e) => {
     e.preventDefault();
@@ -1707,9 +1692,9 @@ export default function App() {
       {/* 헤더 */}
       <header style={styles.header}>
         <div style={styles.headerTop}>
-          <h1 style={styles.title}>성경 인물 관계도</h1>
+          <h1 style={styles.title}>✝ 성경 인물 관계도</h1>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <button
               style={{
                 ...styles.filterToggle,
