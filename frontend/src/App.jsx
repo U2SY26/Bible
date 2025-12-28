@@ -226,29 +226,37 @@ const styles = {
     boxSizing: 'border-box'
   },
   header: {
-    padding: '10px 20px',
+    padding: '10px 16px',
     background: 'linear-gradient(180deg, rgba(20,20,35,0.98) 0%, rgba(15,15,30,0.95) 100%)',
     borderBottom: '1px solid rgba(100,126,234,0.3)',
     zIndex: 100,
-    boxShadow: '0 4px 20px rgba(0,0,0,0.5)'
+    boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
+    width: '100%',
+    boxSizing: 'border-box',
+    overflow: 'hidden'
   },
   headerTop: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    gap: '12px'
+    gap: '8px',
+    width: '100%'
   },
   title: {
-    fontSize: '1.2rem',
+    fontSize: '1rem',
     fontWeight: '700',
     background: 'linear-gradient(135deg, #ffd700 0%, #ff6b6b 50%, #a855f7 100%)',
     WebkitBackgroundClip: 'text',
     WebkitTextFillColor: 'transparent',
     whiteSpace: 'nowrap',
-    textShadow: '0 0 30px rgba(255,215,0,0.3)'
+    textShadow: '0 0 30px rgba(255,215,0,0.3)',
+    flexShrink: 1,
+    minWidth: 0,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis'
   },
   filterToggle: {
-    padding: '6px 10px',
+    padding: '5px 8px',
     borderRadius: '20px',
     border: '1px solid rgba(102,126,234,0.5)',
     background: 'linear-gradient(135deg, rgba(102,126,234,0.3), rgba(118,75,162,0.3))',
@@ -1629,7 +1637,7 @@ export default function App() {
         <div style={styles.headerTop}>
           <h1 style={styles.title}>성경 인물 관계도</h1>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'nowrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'nowrap', flexShrink: 0 }}>
             <button
               style={{
                 ...styles.filterToggle,
