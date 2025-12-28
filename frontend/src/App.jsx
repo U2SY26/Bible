@@ -19,6 +19,7 @@ import {
 import { characterArtwork, eventArtwork } from './data/artwork.js';
 import bibleData from './data/bible.json';
 import { bibleBooks as bibleBooksMeta, findBookByName } from './data/bible-books.js';
+import TimelineMap from './TimelineMap.jsx';
 
 // ==================== MBTI 데이터 (확장) ====================
 const mbtiData = {
@@ -226,11 +227,13 @@ const styles = {
     boxSizing: 'border-box'
   },
   header: {
-    padding: '8px 12px',
+    padding: '8px 10px',
     background: 'linear-gradient(180deg, rgba(20,20,35,0.98) 0%, rgba(15,15,30,0.95) 100%)',
     borderBottom: '1px solid rgba(100,126,234,0.3)',
     zIndex: 100,
     boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
+    position: 'relative',
+    width: '100%',
     boxSizing: 'border-box'
   },
   headerTop: {
@@ -241,29 +244,28 @@ const styles = {
     flexWrap: 'nowrap'
   },
   title: {
-    fontSize: '0.9rem',
+    fontSize: '0.85rem',
     fontWeight: '700',
     background: 'linear-gradient(135deg, #ffd700 0%, #ff6b6b 50%, #a855f7 100%)',
     WebkitBackgroundClip: 'text',
     WebkitTextFillColor: 'transparent',
     whiteSpace: 'nowrap',
-    flexShrink: 1,
-    minWidth: '60px',
     overflow: 'hidden',
-    textOverflow: 'ellipsis'
+    textOverflow: 'ellipsis',
+    flexShrink: 1,
+    minWidth: 0
   },
   filterToggle: {
-    padding: '4px 6px',
-    borderRadius: '16px',
+    padding: '4px 8px',
+    borderRadius: '14px',
     border: '1px solid rgba(102,126,234,0.5)',
     background: 'linear-gradient(135deg, rgba(102,126,234,0.3), rgba(118,75,162,0.3))',
     color: '#fff',
     cursor: 'pointer',
-    fontSize: '0.65rem',
+    fontSize: '0.6rem',
     display: 'flex',
     alignItems: 'center',
     gap: '2px',
-    transition: 'all 0.3s ease',
     whiteSpace: 'nowrap',
     flexShrink: 0
   },
@@ -1672,7 +1674,7 @@ export default function App() {
               }}
               onClick={() => setShowFilters(!showFilters)}
             >
-              {showFilters ? '▲' : '▼'}
+              {showFilters ? '접기' : '필터'}
             </button>
           </div>
         </div>
@@ -2605,7 +2607,7 @@ export default function App() {
 
       {/* 타임라인 뷰어 - Portal로 분리 */}
       {showTimeline && createPortal(
-        <TimelineViewer
+        <TimelineMap
           characters={allCharacters}
           events={events}
           eras={eras}
@@ -3915,7 +3917,7 @@ function BibleViewer({ bibleViewer, setBibleViewer, bibleData, isMobile }) {
       {/* 헤더 */}
       <div style={viewerStyles.header}>
         <div style={viewerStyles.titleSection}>
-          <span style={{ fontSize: '1.5rem' }}>📖</span>
+          <span style={{ fontSize: '1.5rem' }}>📖 성경</span>
           <select
             value={bookId}
             onChange={(e) => handleBookChange(e.target.value)}
