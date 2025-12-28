@@ -28,12 +28,13 @@ const normalizeArtworkEntry = (entry) => {
   return Array.isArray(entry) ? entry.filter(Boolean) : [entry];
 };
 
-const mergeArtworkMaps = (manual, generated) => {
-  const merged = { ...(generated || {}) };
-  Object.entries(manual || {}).forEach(([id, entry]) => {
-    const manualList = normalizeArtworkEntry(entry);
-    const existingList = normalizeArtworkEntry(merged[id]);
-    const combined = [...manualList, ...existingList];
+const mergeArtworkMaps = (primary, secondary) => {
+  const merged = { ...(secondary || {}) };
+  Object.entries(primary || {}).forEach(([id, entry]) => {
+    const primaryList = normalizeArtworkEntry(entry);
+    const secondaryList = normalizeArtworkEntry(merged[id]);
+    // Primary source comes first
+    const combined = [...primaryList, ...secondaryList];
     const seen = new Set();
     const unique = [];
     combined.forEach((item) => {
@@ -61,11 +62,15 @@ const mapArtworkUrls = (artworkMap) => {
 
 const generatedCharacterArtwork = artworkGenerated.characterArtwork || {};
 const generatedEventArtwork = artworkGenerated.eventArtwork || {};
-// Merge all artwork sources: manual > missing > generated
-const characterArtworkMerged = mergeArtworkMaps(characterArtwork, missingCharacterArtwork);
-const characterArtworkAll = mergeArtworkMaps(characterArtworkMerged, generatedCharacterArtwork);
-const eventArtworkMerged = mergeArtworkMaps(eventArtwork, missingEventArtwork);
-const eventArtworkAll = mergeArtworkMaps(eventArtworkMerged, generatedEventArtwork);
+// Merge all artwork sources: generated > missing > manual (generated has working URLs)
+const characterArtworkAll = mergeArtworkMaps(
+  generatedCharacterArtwork,
+  mergeArtworkMaps(missingCharacterArtwork, characterArtwork)
+);
+const eventArtworkAll = mergeArtworkMaps(
+  generatedEventArtwork,
+  mergeArtworkMaps(missingEventArtwork, eventArtwork)
+);
 const characterArtworkUrls = mapArtworkUrls(characterArtworkAll);
 const eventArtworkUrls = mapArtworkUrls(eventArtworkAll);
 
