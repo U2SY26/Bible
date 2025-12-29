@@ -542,6 +542,160 @@ export const missingCharacterArtwork = {
       artist: 'Beatus of Liébana',
       year: '975'
     }
+  ],
+
+  // ==================== 추가 누락 인물 ====================
+  amon: [
+    {
+      url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Nuremberg_chronicles_f_73v_2.png/400px-Nuremberg_chronicles_f_73v_2.png',
+      title: 'King Amon of Judah',
+      artist: 'Nuremberg Chronicle',
+      year: '1493'
+    }
+  ],
+
+  barak: [
+    {
+      url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Schnorr_von_Carolsfeld_Bibel_in_Bildern_1860_056.png/400px-Schnorr_von_Carolsfeld_Bibel_in_Bildern_1860_056.png',
+      title: 'Deborah and Barak',
+      artist: 'Julius Schnorr von Carolsfeld',
+      year: '1860'
+    },
+    {
+      url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Francesco_Solimena_-_Deborah_and_Barak_-_WGA21611.jpg/400px-Francesco_Solimena_-_Deborah_and_Barak_-_WGA21611.jpg',
+      title: 'Deborah and Barak',
+      artist: 'Francesco Solimena',
+      year: '1700'
+    }
+  ],
+
+  bernice: [
+    {
+      url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Tissot_Paul_before_Agrippa.jpg/400px-Tissot_Paul_before_Agrippa.jpg',
+      title: 'Paul before Agrippa and Bernice',
+      artist: 'James Tissot',
+      year: '1902'
+    }
+  ],
+
+  bezalel: [
+    {
+      url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Dore_Bible_-_Bezaleel.jpg/400px-Dore_Bible_-_Bezaleel.jpg',
+      title: 'Bezalel',
+      artist: 'Gustave Doré',
+      year: '1866'
+    },
+    {
+      url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Tissot_The_Ark_and_the_Mercy_Seat.jpg/400px-Tissot_The_Ark_and_the_Mercy_Seat.jpg',
+      title: 'The Ark built by Bezalel',
+      artist: 'James Tissot',
+      year: '1902'
+    }
+  ],
+
+  claudius_lysias: [
+    {
+      url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Nikolai_Bodarevsky_001.jpg/400px-Nikolai_Bodarevsky_001.jpg',
+      title: 'Paul before Roman Tribune',
+      artist: 'Nikolai Bodarevsky',
+      year: '1875'
+    }
+  ],
+
+  elihu: [
+    {
+      url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/William_Blake_-_Job_Rebuked_by_His_Friends_-_WGA02219.jpg/400px-William_Blake_-_Job_Rebuked_by_His_Friends_-_WGA02219.jpg',
+      title: 'Job with his Friends including Elihu',
+      artist: 'William Blake',
+      year: '1805'
+    },
+    {
+      url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Schnorr_von_Carolsfeld_Bibel_in_Bildern_1860_108.png/400px-Schnorr_von_Carolsfeld_Bibel_in_Bildern_1860_108.png',
+      title: 'Job and His Friends',
+      artist: 'Julius Schnorr von Carolsfeld',
+      year: '1860'
+    }
+  ],
+
+  eunice: [
+    {
+      url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Rembrandt_-_An_Old_Woman_Reading_-_WGA19184.jpg/400px-Rembrandt_-_An_Old_Woman_Reading_-_WGA19184.jpg',
+      title: 'Timothy mother Eunice teaching Scripture',
+      artist: 'Rembrandt',
+      year: '1655'
+    }
+  ],
+
+  geshem: [
+    {
+      url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Gustave_dore_crusades_nehemiah_viewing_secretly_the_ruins_of_the_walls_of_jerusalem.jpg/400px-Gustave_dore_crusades_nehemiah_viewing_secretly_the_ruins_of_the_walls_of_jerusalem.jpg',
+      title: 'Nehemiah and his opponents including Geshem',
+      artist: 'Gustave Doré',
+      year: '1866'
+    }
+  ],
+
+  herod_agrippa_ii: [
+    {
+      url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Tissot_Paul_before_Agrippa.jpg/400px-Tissot_Paul_before_Agrippa.jpg',
+      title: 'Paul before Herod Agrippa II',
+      artist: 'James Tissot',
+      year: '1902'
+    },
+    {
+      url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Nikolai_Bodarevsky_001.jpg/400px-Nikolai_Bodarevsky_001.jpg',
+      title: 'Paul Defense before Agrippa',
+      artist: 'Nikolai Bodarevsky',
+      year: '1875'
+    }
+  ],
+
+  oholiab: [
+    {
+      url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Dore_Bible_-_Bezaleel.jpg/400px-Dore_Bible_-_Bezaleel.jpg',
+      title: 'Bezalel and Oholiab building the Tabernacle',
+      artist: 'Gustave Doré',
+      year: '1866'
+    }
+  ],
+
+  trophimus: [
+    {
+      url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Gustave_Dore_-_Paul%27s_Shipwreck.jpg/400px-Gustave_Dore_-_Paul%27s_Shipwreck.jpg',
+      title: 'Paul companions including Trophimus',
+      artist: 'Gustave Doré',
+      year: '1866'
+    }
+  ],
+
+  jacob: [
+    {
+      url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Rembrandt_-_Jacob_Wrestling_with_the_Angel_-_Google_Art_Project.jpg/400px-Rembrandt_-_Jacob_Wrestling_with_the_Angel_-_Google_Art_Project.jpg',
+      title: 'Jacob Wrestling with the Angel',
+      artist: 'Rembrandt',
+      year: '1659'
+    },
+    {
+      url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Gustave_Dore_-_Jacob_Wrestling_with_the_Angel.jpg/400px-Gustave_Dore_-_Jacob_Wrestling_with_the_Angel.jpg',
+      title: 'Jacob Wrestling with the Angel',
+      artist: 'Gustave Doré',
+      year: '1866'
+    }
+  ],
+
+  daniel: [
+    {
+      url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Peter_Paul_Rubens_-_Daniel_in_the_Lions%27_Den_-_WGA20206.jpg/400px-Peter_Paul_Rubens_-_Daniel_in_the_Lions%27_Den_-_WGA20206.jpg',
+      title: 'Daniel in the Lions Den',
+      artist: 'Peter Paul Rubens',
+      year: '1615'
+    },
+    {
+      url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Briton_Riviere_-_Daniel%27s_Answer_to_the_King.jpg/400px-Briton_Riviere_-_Daniel%27s_Answer_to_the_King.jpg',
+      title: 'Daniel Answer to the King',
+      artist: 'Briton Rivière',
+      year: '1892'
+    }
   ]
 };
 
