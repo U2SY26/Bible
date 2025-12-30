@@ -2693,6 +2693,11 @@ export default function App() {
             setSelectedCharacter(id);
             setShowTimeline(false);
             if (isMobile) setBottomSheetHeight(40);
+            // 선택된 인물과 연결된 노드들 화면에 맞추기
+            setTimeout(() => {
+              const connectedIds = [id, ...getConnectedCharacters(id)];
+              fitToNodes(connectedIds);
+            }, 100);
           }}
           onEventSelect={(id) => {
             setSelectedEvent(id);
