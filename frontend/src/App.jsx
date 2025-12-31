@@ -755,6 +755,38 @@ export default function App() {
   const pulseRef = useRef(null);
   const dragStartPos = useRef(null);
   const dragStartTime = useRef(null);
+  const historyStateRef = useRef(0); // 히스토리 상태 카운터
+
+  // 브라우저 뒤로가기 버튼 처리
+  useEffect(() => {
+    const handlePopState = (e) => {
+      // 뒤로가기 시 열린 것들을 순서대로 닫기
+      if (bibleViewer.show) {
+        setBibleViewer(prev => ({ ...prev, show: false }));
+      } else if (showPopup) {
+        setShowPopup(null);
+      } else if (showTimeline) {
+        setShowTimeline(false);
+      } else if (selectedEvent) {
+        setSelectedEvent(null);
+      } else if (selectedCharacter) {
+        setSelectedCharacter(null);
+        if (isMobile) setBottomSheetHeight(0);
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [bibleViewer.show, showPopup, showTimeline, selectedEvent, selectedCharacter, isMobile]);
+
+  // 상태 변경 시 히스토리에 추가
+  useEffect(() => {
+    const hasOpenState = selectedCharacter || selectedEvent || showTimeline || showPopup || bibleViewer.show;
+    if (hasOpenState) {
+      historyStateRef.current += 1;
+      window.history.pushState({ stateId: historyStateRef.current }, '');
+    }
+  }, [selectedCharacter, selectedEvent, showTimeline, showPopup, bibleViewer.show]);
 
   // 펄스 애니메이션 (throttled for mobile)
   useEffect(() => {    let lastTime = 0;
