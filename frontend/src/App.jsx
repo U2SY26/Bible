@@ -2730,8 +2730,6 @@ export default function App() {
       }}>
         <a href="https://yunaipartner.vercel.app/" target="_blank" rel="noopener noreferrer" style={{ color: '#ffd700', textDecoration: 'none' }}>YUN AI Partner</a>
         <span style={{ margin: '0 6px', opacity: 0.3 }}>|</span>
-        <a href="https://clm-2.vercel.app/access" target="_blank" rel="noopener noreferrer" style={{ color: '#88ccff', textDecoration: 'none' }}>APS/MES/PLM MVP</a>
-        <span style={{ margin: '0 6px', opacity: 0.3 }}>|</span>
         유투디아 · 최유이 · 749-58-00902
         <span style={{ margin: '0 6px', opacity: 0.3 }}>|</span>
         <a href="https://yunaipartner.vercel.app/#/privacy" target="_blank" rel="noopener noreferrer" style={{ color: 'rgba(255,255,255,0.6)', textDecoration: 'none' }}>개인정보처리방침</a>
