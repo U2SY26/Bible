@@ -23,6 +23,270 @@ import bibleData from './data/bible.json';
 import { bibleBooks as bibleBooksMeta, findBookByName } from './data/bible-books.js';
 import TimelineMap from './TimelineMap.jsx';
 
+// ==================== 다국어 번역 시스템 ====================
+const translations = {
+  ko: {
+    // 메인 UI
+    title: '✝ 성경 인물 관계도',
+    timeline: '📅 타임라인',
+    bible: '📖 성경',
+    bibleSociety: '📚 성서공회',
+    filter: '필터',
+    hide: '접기',
+    search: '검색...',
+    searchFull: '인물 검색... (이름/라벨/설명)',
+    recentSearch: '최근 검색',
+    searchResults: '검색 결과',
+    reset: '초기화',
+    size: '크기',
+    all: '전체',
+    oldTestament: '구약',
+    newTestament: '신약',
+    allBooks: '전체 성경',
+    allEras: '전체 시대',
+    oldTestamentGroup: '구약',
+    newTestamentGroup: '신약',
+
+    // 필터 & 카테고리
+    quickFilter: '필터',
+    characters: '인물',
+    events: '사건',
+    relationships: '관계',
+
+    // MBTI
+    mbtiTitle: '성경 인물 MBTI',
+    mbtiSubtitle: '나와 닮은 성경 인물 찾기',
+    startQuiz: '테스트 시작하기',
+    myMbti: '내 MBTI 입력',
+    yourType: '당신의 유형',
+    similarCharacters: '나와 닮은 성경 인물',
+    yes: '네 ✓',
+    no: '아니오 ✗',
+
+    // 인물 상세
+    importance: '중요도',
+    testament: '시대',
+    description: '설명',
+    relatedVerses: '관련 성경 구절',
+    relatedEvents: '관련 사건',
+    relatedHymns: '관련 찬송가',
+    relatedLocations: '관련 장소',
+    relatedCharacters: '관련 인물',
+    clickToRead: '클릭하여 성경 읽기',
+    chapter: '장',
+    verse: '절',
+
+    // 사건 상세
+    eventParticipants: '참여 인물',
+    eventDescription: '사건 설명',
+
+    // 성경 뷰어
+    bibleViewer: '성경 읽기',
+    prevChapter: '이전 장',
+    nextChapter: '다음 장',
+    close: '닫기',
+
+    // 타임라인
+    timelineTitle: '성경 타임라인',
+    era: '시대',
+    bc: 'BC',
+    ad: 'AD',
+
+    // 기타
+    loading: '로딩 중...',
+    noResults: '결과 없음',
+    showMore: '더 보기',
+    showLess: '접기',
+    artwork: '관련 미술 작품',
+
+    // MBTI 유형 설명
+    mbtiTypes: {
+      ISTJ: '신뢰할 수 있는 청지기',
+      ISFJ: '헌신적인 수호자',
+      INFJ: '예언적 조언자',
+      INTJ: '비전의 설계자',
+      ISTP: '실용적 장인',
+      ISFP: '온유한 예술가',
+      INFP: '이상주의적 치유자',
+      INTP: '지혜로운 분석가',
+      ESTP: '행동하는 모험가',
+      ESFP: '열정의 연예인',
+      ENFP: '영감을 주는 옹호자',
+      ENTP: '혁신적 발명가',
+      ESTJ: '효율적 관리자',
+      ESFJ: '돌보는 제공자',
+      ENFJ: '카리스마 멘토',
+      ENTJ: '대담한 지휘관'
+    },
+
+    // MBTI 퀴즈 질문
+    mbtiQuestions: [
+      { q: '사람들과 함께할 때 에너지가 충전되나요?', e: 'E', i: 'I' },
+      { q: '미래의 가능성보다 현재의 사실을 중시하나요?', e: 'S', i: 'N' },
+      { q: '결정할 때 감정보다 논리를 우선하나요?', e: 'T', i: 'F' },
+      { q: '계획된 일정을 선호하나요?', e: 'J', i: 'P' }
+    ]
+  },
+  en: {
+    // Main UI
+    title: '✝ Bible Character Graph',
+    timeline: '📅 Timeline',
+    bible: '📖 Bible',
+    bibleSociety: '📚 Bible Society',
+    filter: 'Filter',
+    hide: 'Hide',
+    search: 'Search...',
+    searchFull: 'Search characters... (name/label/desc)',
+    recentSearch: 'Recent searches',
+    searchResults: 'Search results',
+    reset: 'Reset',
+    size: 'Size',
+    all: 'All',
+    oldTestament: 'Old Testament',
+    newTestament: 'New Testament',
+    allBooks: 'All Books',
+    allEras: 'All Eras',
+    oldTestamentGroup: 'Old Testament',
+    newTestamentGroup: 'New Testament',
+
+    // Filter & Categories
+    quickFilter: 'Filter',
+    characters: 'Characters',
+    events: 'Events',
+    relationships: 'Relationships',
+
+    // MBTI
+    mbtiTitle: 'Bible Character MBTI',
+    mbtiSubtitle: 'Find Bible characters like you',
+    startQuiz: 'Start Quiz',
+    myMbti: 'Enter My MBTI',
+    yourType: 'Your Type',
+    similarCharacters: 'Similar Bible Characters',
+    yes: 'Yes ✓',
+    no: 'No ✗',
+
+    // Character Detail
+    importance: 'Importance',
+    testament: 'Testament',
+    description: 'Description',
+    relatedVerses: 'Related Bible Verses',
+    relatedEvents: 'Related Events',
+    relatedHymns: 'Related Hymns',
+    relatedLocations: 'Related Locations',
+    relatedCharacters: 'Related Characters',
+    clickToRead: 'Click to read Bible',
+    chapter: 'Chapter',
+    verse: 'Verse',
+
+    // Event Detail
+    eventParticipants: 'Participants',
+    eventDescription: 'Event Description',
+
+    // Bible Viewer
+    bibleViewer: 'Bible Reader',
+    prevChapter: 'Previous',
+    nextChapter: 'Next',
+    close: 'Close',
+
+    // Timeline
+    timelineTitle: 'Bible Timeline',
+    era: 'Era',
+    bc: 'BC',
+    ad: 'AD',
+
+    // Misc
+    loading: 'Loading...',
+    noResults: 'No results',
+    showMore: 'Show more',
+    showLess: 'Show less',
+    artwork: 'Related Artwork',
+
+    // MBTI Type Descriptions
+    mbtiTypes: {
+      ISTJ: 'The Reliable Steward',
+      ISFJ: 'The Devoted Guardian',
+      INFJ: 'The Prophetic Counselor',
+      INTJ: 'The Visionary Architect',
+      ISTP: 'The Practical Craftsman',
+      ISFP: 'The Gentle Artist',
+      INFP: 'The Idealistic Healer',
+      INTP: 'The Wise Analyst',
+      ESTP: 'The Active Adventurer',
+      ESFP: 'The Passionate Entertainer',
+      ENFP: 'The Inspiring Advocate',
+      ENTP: 'The Innovative Inventor',
+      ESTJ: 'The Efficient Manager',
+      ESFJ: 'The Caring Provider',
+      ENFJ: 'The Charismatic Mentor',
+      ENTJ: 'The Bold Commander'
+    },
+
+    // MBTI Quiz Questions
+    mbtiQuestions: [
+      { q: 'Do you feel energized when with people?', e: 'E', i: 'I' },
+      { q: 'Do you focus on facts rather than possibilities?', e: 'S', i: 'N' },
+      { q: 'Do you prioritize logic over feelings when deciding?', e: 'T', i: 'F' },
+      { q: 'Do you prefer a planned schedule?', e: 'J', i: 'P' }
+    ]
+  }
+};
+
+// 번역 헬퍼 함수
+const t = (lang, key) => translations[lang]?.[key] || translations.ko[key] || key;
+
+// ==================== AdSense 광고 컴포넌트 ====================
+const AdSenseUnit = ({ slot, format = 'auto', responsive = true, style = {} }) => {
+  const adRef = useRef(null);
+
+  useEffect(() => {
+    try {
+      if (typeof window !== 'undefined' && window.adsbygoogle && adRef.current) {
+        // Check if the ad has already been initialized
+        if (!adRef.current.dataset.adsbygoogleStatus) {
+          (window.adsbygoogle = window.adsbygoogle || []).push({});
+        }
+      }
+    } catch (error) {
+      console.log('AdSense error:', error);
+    }
+  }, []);
+
+  return (
+    <ins
+      ref={adRef}
+      className="adsbygoogle"
+      style={{
+        display: 'block',
+        minHeight: '90px',
+        ...style
+      }}
+      data-ad-client="ca-pub-2988937021017804"
+      data-ad-slot={slot}
+      data-ad-format={format}
+      data-full-width-responsive={responsive ? 'true' : 'false'}
+    />
+  );
+};
+
+// AdSense 배너 광고 (페이지 상단/하단용)
+const AdBanner = ({ position = 'bottom' }) => {
+  return (
+    <div style={{
+      width: '100%',
+      maxWidth: '728px',
+      margin: '0 auto',
+      padding: position === 'bottom' ? '16px 0 0' : '0 0 16px',
+      textAlign: 'center'
+    }}>
+      <AdSenseUnit
+        slot="AUTO_AD_SLOT"  // Replace with actual slot ID from AdSense dashboard
+        format="horizontal"
+        style={{ minHeight: '90px' }}
+      />
+    </div>
+  );
+};
+
 const normalizeArtworkEntry = (entry) => {
   if (!entry) return [];
   return Array.isArray(entry) ? entry.filter(Boolean) : [entry];
@@ -650,12 +914,12 @@ const PERFORMANCE_CONFIG = {
 
 // ==================== 빠른 필터 카테고리 ====================
 const QUICK_FILTERS = [
-  { id: 'patriarch', label: '족장', keywords: ['족장', 'patriarch', '아브라함', '이삭', '야곱'] },
-  { id: 'prophet', label: '선지자', keywords: ['선지자', 'prophet', '예언자'] },
-  { id: 'king', label: '왕', keywords: ['왕', 'king', '다윗', '솔로몬'] },
-  { id: 'apostle', label: '사도', keywords: ['사도', 'apostle', '제자'] },
-  { id: 'woman', label: '여성', keywords: ['여성', '여인', 'woman', '어머니'] },
-  { id: 'angel', label: '천사', keywords: ['천사', 'angel', '미가엘', '가브리엘'] },
+  { id: 'patriarch', label_ko: '족장', label_en: 'Patriarch', keywords: ['족장', 'patriarch', '아브라함', '이삭', '야곱'] },
+  { id: 'prophet', label_ko: '선지자', label_en: 'Prophet', keywords: ['선지자', 'prophet', '예언자'] },
+  { id: 'king', label_ko: '왕', label_en: 'King', keywords: ['왕', 'king', '다윗', '솔로몬'] },
+  { id: 'apostle', label_ko: '사도', label_en: 'Apostle', keywords: ['사도', 'apostle', '제자'] },
+  { id: 'woman', label_ko: '여성', label_en: 'Woman', keywords: ['여성', '여인', 'woman', '어머니'] },
+  { id: 'angel', label_ko: '천사', label_en: 'Angel', keywords: ['천사', 'angel', '미가엘', '가브리엘'] },
 ];
 
 // ==================== 검색 유틸리티 ====================
@@ -699,11 +963,30 @@ const multiFieldSearch = (character, query, lang) => {
   return { match: false, priority: 0 };
 };
 
+// 브라우저 언어 자동 감지
+const detectBrowserLanguage = () => {
+  // 저장된 언어 설정 확인
+  if (typeof window !== 'undefined') {
+    const stored = localStorage.getItem('bible-graph-lang');
+    if (stored && ['ko', 'en'].includes(stored)) return stored;
+  }
+
+  // 브라우저 언어 감지
+  const browserLang = (typeof navigator !== 'undefined')
+    ? (navigator.language || navigator.userLanguage || 'ko')
+    : 'ko';
+  const langCode = browserLang.split('-')[0].toLowerCase();
+
+  // 영어 우선 표시 언어 (영어권 + 유럽 주요국)
+  const englishPreferred = ['en', 'es', 'fr', 'de', 'pt', 'it', 'nl', 'ru', 'pl', 'sv', 'da', 'no', 'fi', 'cs', 'hu', 'ro', 'el', 'tr', 'ar', 'he', 'hi', 'th', 'vi', 'id', 'ms'];
+
+  return englishPreferred.includes(langCode) ? 'en' : 'ko';
+};
 
 export default function App() {
   const isMobile = useIsMobile();
   const viewportHeight = useViewportHeight();
-  const [lang, setLang] = useState('ko');
+  const [lang, setLang] = useState(detectBrowserLanguage);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTestament, setSelectedTestament] = useState('both');
   const [selectedBook, setSelectedBook] = useState('all');
@@ -756,6 +1039,13 @@ export default function App() {
   const dragStartPos = useRef(null);
   const dragStartTime = useRef(null);
   const historyStateRef = useRef(0); // 히스토리 상태 카운터
+
+  // 언어 설정 저장
+  useEffect(() => {
+    localStorage.setItem('bible-graph-lang', lang);
+    // HTML lang 속성 업데이트
+    document.documentElement.lang = lang === 'en' ? 'en' : 'ko';
+  }, [lang]);
 
   // 브라우저 뒤로가기 버튼 처리
   useEffect(() => {
@@ -1724,476 +2014,633 @@ export default function App() {
     height: '100%'
   } : {};
 
+  // 모던 헤더 스타일
+  const headerStyles = {
+    navbar: {
+      background: 'rgba(8, 8, 20, 0.85)',
+      backdropFilter: 'blur(20px)',
+      WebkitBackdropFilter: 'blur(20px)',
+      borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
+      padding: isMobile ? '8px 12px' : '10px 20px',
+      position: 'sticky',
+      top: 0,
+      zIndex: 100,
+    },
+    navContent: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      maxWidth: '1400px',
+      margin: '0 auto',
+      gap: '12px',
+    },
+    logo: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '8px',
+      cursor: 'pointer',
+    },
+    logoIcon: {
+      fontSize: isMobile ? '1.4rem' : '1.6rem',
+    },
+    logoText: {
+      fontSize: isMobile ? '0.9rem' : '1.1rem',
+      fontWeight: '700',
+      background: 'linear-gradient(135deg, #fff 0%, #a0a0a0 100%)',
+      WebkitBackgroundClip: 'text',
+      WebkitTextFillColor: 'transparent',
+      letterSpacing: '-0.02em',
+    },
+    navButtons: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: isMobile ? '4px' : '6px',
+    },
+    navBtn: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: '4px',
+      padding: isMobile ? '6px 10px' : '8px 14px',
+      borderRadius: '8px',
+      border: '1px solid rgba(255, 255, 255, 0.08)',
+      background: 'rgba(255, 255, 255, 0.04)',
+      color: 'rgba(255, 255, 255, 0.8)',
+      fontSize: isMobile ? '0.7rem' : '0.8rem',
+      fontWeight: '500',
+      cursor: 'pointer',
+      transition: 'all 0.2s ease',
+      textDecoration: 'none',
+    },
+    navBtnActive: {
+      background: 'rgba(99, 102, 241, 0.2)',
+      borderColor: 'rgba(99, 102, 241, 0.4)',
+      color: '#a5b4fc',
+    },
+    langBtn: {
+      padding: isMobile ? '6px 8px' : '8px 12px',
+      borderRadius: '8px',
+      border: '1px solid rgba(255, 255, 255, 0.1)',
+      background: lang === 'en' ? 'rgba(99, 102, 241, 0.2)' : 'rgba(34, 197, 94, 0.15)',
+      color: lang === 'en' ? '#a5b4fc' : '#86efac',
+      fontSize: isMobile ? '0.7rem' : '0.75rem',
+      fontWeight: '600',
+      cursor: 'pointer',
+      transition: 'all 0.2s ease',
+    },
+    searchBar: {
+      flex: 1,
+      maxWidth: '320px',
+      position: 'relative',
+    },
+    searchInput: {
+      width: '100%',
+      padding: '8px 12px 8px 36px',
+      borderRadius: '10px',
+      border: '1px solid rgba(255, 255, 255, 0.08)',
+      background: 'rgba(255, 255, 255, 0.04)',
+      color: '#fff',
+      fontSize: '0.85rem',
+      outline: 'none',
+      transition: 'all 0.2s ease',
+    },
+    searchIcon: {
+      position: 'absolute',
+      left: '12px',
+      top: '50%',
+      transform: 'translateY(-50%)',
+      color: 'rgba(255, 255, 255, 0.4)',
+      fontSize: '0.9rem',
+      pointerEvents: 'none',
+    },
+    filterBar: {
+      background: 'rgba(8, 8, 20, 0.6)',
+      borderBottom: '1px solid rgba(255, 255, 255, 0.04)',
+      padding: '10px 20px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: '8px',
+      flexWrap: 'wrap',
+    },
+    filterSelect: {
+      padding: '6px 12px',
+      borderRadius: '6px',
+      border: '1px solid rgba(255, 255, 255, 0.1)',
+      background: 'rgba(255, 255, 255, 0.05)',
+      color: '#fff',
+      fontSize: '0.75rem',
+      outline: 'none',
+      cursor: 'pointer',
+      minWidth: '100px',
+    },
+    filterChip: {
+      padding: '5px 12px',
+      borderRadius: '16px',
+      border: '1px solid rgba(255, 255, 255, 0.1)',
+      background: 'rgba(255, 255, 255, 0.04)',
+      color: 'rgba(255, 255, 255, 0.7)',
+      fontSize: '0.7rem',
+      fontWeight: '500',
+      cursor: 'pointer',
+      transition: 'all 0.2s ease',
+    },
+    filterChipActive: {
+      background: 'linear-gradient(135deg, rgba(251, 191, 36, 0.25), rgba(245, 158, 11, 0.25))',
+      borderColor: 'rgba(251, 191, 36, 0.5)',
+      color: '#fbbf24',
+    },
+  };
+
   return (
     <div style={isMobile ? styles.containerMobile : styles.container}>
-      {/* 헤더 */}
-      <header style={styles.header}>
-        <div style={styles.headerTop}>
-          <h1 style={styles.title}>✝ 성경 인물 관계도</h1>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <button
-              style={{
-                ...styles.filterToggle,
-                background: showTimeline
-                  ? 'linear-gradient(135deg, rgba(56,178,172,0.5), rgba(49,151,149,0.5))'
-                  : 'linear-gradient(135deg, rgba(56,178,172,0.3), rgba(49,151,149,0.3))',
-                borderColor: 'rgba(56,178,172,0.5)'
-              }}
-              onClick={() => setShowTimeline(!showTimeline)}
-            >📅 타임라인</button>
-            <button
-              style={{
-                ...styles.filterToggle,
-                background: 'linear-gradient(135deg, rgba(255,215,0,0.3), rgba(255,140,0,0.3))',
-                borderColor: 'rgba(255,215,0,0.5)'
-              }}
-              onClick={() => setBibleViewer({
-                show: true,
-                bookId: 'gen',
-                bookName: '창세기',
-                chapter: 1,
-                highlightVerse: null,
-                totalChapters: 50
-              })}
-            >📖 성경</button>
-            <a
-              href="https://www.bskorea.or.kr/index.php"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                ...styles.filterToggle,
-                background: 'linear-gradient(135deg, rgba(0,100,180,0.3), rgba(0,60,120,0.3))',
-                borderColor: 'rgba(0,100,180,0.5)',
-                textDecoration: 'none',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >📚 성서공회</a>
-            <button
-              style={{
-                ...styles.filterToggle,
-                background: showFilters
-                  ? 'linear-gradient(135deg, rgba(102,126,234,0.5), rgba(118,75,162,0.5))'
-                  : styles.filterToggle.background
-              }}
-              onClick={() => setShowFilters(!showFilters)}
-            >
-              {showFilters ? '접기' : '필터'}
-            </button>
+      {/* 모던 네비게이션 바 */}
+      <nav style={headerStyles.navbar}>
+        <div style={headerStyles.navContent}>
+          {/* 로고 */}
+          <div style={headerStyles.logo} onClick={handleReset}>
+            <span style={headerStyles.logoIcon}>✝️</span>
+            <span style={headerStyles.logoText}>
+              {lang === 'ko' ? '성경 인물 관계도' : 'Bible Graph'}
+            </span>
           </div>
-        </div>
 
-        {showFilters && (
-          <div style={isMobile ? styles.filterSection : styles.filterSectionDesktop}>
-            {/* 검색 입력 + 자동완성 드롭다운 */}
-            <div style={{ position: 'relative' }}>
+          {/* 데스크톱: 검색바 */}
+          {!isMobile && (
+            <div style={headerStyles.searchBar}>
+              <span style={headerStyles.searchIcon}>🔍</span>
               <input
                 ref={searchInputRef}
                 type="text"
-                placeholder={isMobile ? "검색..." : "인물 검색... (이름/라벨/설명)"}
+                placeholder={t(lang, 'searchFull')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => setSearchFocused(true)}
                 onBlur={() => setTimeout(() => setSearchFocused(false), 200)}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    handleSearchSubmit(searchQuery);
-                  } else if (e.key === 'Escape') {
-                    setSearchFocused(false);
-                  }
+                  if (e.key === 'Enter') handleSearchSubmit(searchQuery);
+                  else if (e.key === 'Escape') setSearchFocused(false);
                 }}
-                style={{
-                  ...styles.searchInput,
-                  width: '100%'
-                }}
+                style={headerStyles.searchInput}
               />
+            </div>
+          )}
 
-              {/* 자동완성 드롭다운 */}
-              {searchFocused && (autocompleteResults.length > 0 || recentSearches.length > 0) && (
-                <div style={{
-                  position: 'absolute',
-                  top: '100%',
-                  left: 0,
-                  right: 0,
-                  marginTop: '4px',
-                  background: 'linear-gradient(135deg, rgba(20,20,50,0.98), rgba(30,30,60,0.98))',
-                  borderRadius: '12px',
-                  border: '1px solid rgba(102,126,234,0.4)',
-                  boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
-                  zIndex: 200,
-                  maxHeight: '300px',
-                  overflowY: 'auto'
-                }}>
-                  {/* 최근 검색 */}
-                  {!searchQuery && recentSearches.length > 0 && (
-                    <div style={{ padding: '8px' }}>
-                      <div style={{ fontSize: '0.7rem', opacity: 0.5, marginBottom: '6px', paddingLeft: '8px' }}>
-                        최근 검색
-                      </div>
-                      {recentSearches.map((recent, i) => (
-                        <div
-                          key={i}
-                          style={{
-                            padding: '8px 12px',
-                            cursor: 'pointer',
-                            borderRadius: '8px',
-                            fontSize: '0.85rem',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px',
-                            transition: 'background 0.2s'
-                          }}
-                          onMouseEnter={(e) => e.target.style.background = 'rgba(102,126,234,0.2)'}
-                          onMouseLeave={(e) => e.target.style.background = 'transparent'}
-                          onClick={() => {
-                            setSearchQuery(recent);
-                            handleSearchSubmit(recent);
-                          }}
-                        >
-                          <span style={{ opacity: 0.5 }}>🕐</span>
-                          {recent}
-                        </div>
-                      ))}
-                    </div>
-                  )}
+          {/* 네비게이션 버튼들 */}
+          <div style={headerStyles.navButtons}>
+            <button
+              style={{
+                ...headerStyles.navBtn,
+                ...(showTimeline ? headerStyles.navBtnActive : {})
+              }}
+              onClick={() => setShowTimeline(!showTimeline)}
+            >
+              📅 {!isMobile && (lang === 'ko' ? '타임라인' : 'Timeline')}
+            </button>
 
-                  {/* 자동완성 결과 */}
-                  {autocompleteResults.length > 0 && (
-                    <div style={{ padding: '8px' }}>
-                      {searchQuery && (
-                        <div style={{ fontSize: '0.7rem', opacity: 0.5, marginBottom: '6px', paddingLeft: '8px' }}>
-                          검색 결과
-                        </div>
-                      )}
-                      {autocompleteResults.map((char) => (
-                        <div
-                          key={char.id}
-                          style={{
-                            padding: '10px 12px',
-                            cursor: 'pointer',
-                            borderRadius: '8px',
-                            fontSize: '0.85rem',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '10px',
-                            transition: 'background 0.2s'
-                          }}
-                          onMouseEnter={(e) => e.target.style.background = 'rgba(102,126,234,0.2)'}
-                          onMouseLeave={(e) => e.target.style.background = 'transparent'}
-                          onClick={() => handleAutocompleteSelect(char.id)}
-                        >
-                          <span style={{
-                            width: '24px',
-                            height: '24px',
-                            borderRadius: '50%',
-                            background: char.testament === 'old' ? 'rgba(74,144,217,0.4)' : 'rgba(224,86,253,0.4)',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            fontSize: '0.75rem',
-                            flexShrink: 0
-                          }}>
-                            {char.testament === 'old' ? '구' : '신'}
-                          </span>
-                          <div style={{ flex: 1, minWidth: 0 }}>
-                            <div style={{ fontWeight: '500' }}>
-                              {lang === 'ko' ? char.name_ko : char.name_en}
-                            </div>
-                            {char.labels && char.labels[0] && (
-                              <div style={{ fontSize: '0.7rem', opacity: 0.6, marginTop: '2px' }}>
-                                {char.labels[0]}
-                              </div>
-                            )}
-                          </div>
-                          <span style={{ opacity: 0.4, fontSize: '0.75rem' }}>
-                            ★{char.importance}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+            <button
+              style={headerStyles.navBtn}
+              onClick={() => setBibleViewer({
+                show: true,
+                bookId: 'gen',
+                bookName: lang === 'ko' ? '창세기' : 'Genesis',
+                chapter: 1,
+                highlightVerse: null,
+                totalChapters: 50
+              })}
+            >
+              📖 {!isMobile && (lang === 'ko' ? '성경' : 'Bible')}
+            </button>
+
+            <button
+              style={headerStyles.langBtn}
+              onClick={() => setLang(lang === 'ko' ? 'en' : 'ko')}
+            >
+              🌐 {lang === 'ko' ? 'EN' : 'KO'}
+            </button>
+
+            <button
+              style={{
+                ...headerStyles.navBtn,
+                ...(showFilters ? headerStyles.navBtnActive : {})
+              }}
+              onClick={() => setShowFilters(!showFilters)}
+            >
+              {showFilters ? '✕' : '☰'}
+            </button>
+          </div>
+        </div>
+
+        {/* 모바일: 검색바 */}
+        {isMobile && (
+          <div style={{ marginTop: '8px', position: 'relative' }}>
+            <span style={headerStyles.searchIcon}>🔍</span>
+            <input
+              ref={searchInputRef}
+              type="text"
+              placeholder={t(lang, 'search')}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onFocus={() => setSearchFocused(true)}
+              onBlur={() => setTimeout(() => setSearchFocused(false), 200)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') handleSearchSubmit(searchQuery);
+                else if (e.key === 'Escape') setSearchFocused(false);
+              }}
+              style={{ ...headerStyles.searchInput, width: '100%' }}
+            />
+          </div>
+        )}
+      </nav>
+
+      {/* 필터 바 */}
+      {showFilters && (
+        <div style={headerStyles.filterBar}>
+          {/* 구약/신약 필터 */}
+          <select
+            value={selectedTestament}
+            onChange={(e) => setSelectedTestament(e.target.value)}
+            style={headerStyles.filterSelect}
+          >
+            <option value="both">{t(lang, 'all')}</option>
+            <option value="old">{t(lang, 'oldTestament')}</option>
+            <option value="new">{t(lang, 'newTestament')}</option>
+          </select>
+
+          {/* 성경 책 필터 */}
+          <select
+            value={selectedBook}
+            onChange={(e) => setSelectedBook(e.target.value)}
+            style={headerStyles.filterSelect}
+          >
+            <option value="all">{t(lang, 'allBooks')}</option>
+            <optgroup label={t(lang, 'oldTestamentGroup')}>
+              {bibleBooks.old.map(book => (
+                <option key={book.id} value={book.id}>
+                  {lang === 'ko' ? book.name_ko : book.name_en}
+                </option>
+              ))}
+            </optgroup>
+            <optgroup label={t(lang, 'newTestamentGroup')}>
+              {bibleBooks.new.map(book => (
+                <option key={book.id} value={book.id}>
+                  {lang === 'ko' ? book.name_ko : book.name_en}
+                </option>
+              ))}
+            </optgroup>
+          </select>
+
+          {/* 시대 필터 */}
+          <select
+            value={selectedEra}
+            onChange={(e) => setSelectedEra(e.target.value)}
+            style={headerStyles.filterSelect}
+          >
+            <option value="all">{t(lang, 'allEras')}</option>
+            {eras.map(era => (
+              <option key={era.id} value={era.id}>
+                {lang === 'ko' ? era.name_ko : era.name_en}
+              </option>
+            ))}
+          </select>
+
+          {/* 빠른 필터 칩 */}
+          {QUICK_FILTERS.map(filter => (
+            <button
+              key={filter.id}
+              onClick={() => setActiveQuickFilter(activeQuickFilter === filter.id ? null : filter.id)}
+              style={{
+                ...headerStyles.filterChip,
+                ...(activeQuickFilter === filter.id ? headerStyles.filterChipActive : {})
+              }}
+            >
+              {lang === 'ko' ? filter.label_ko : filter.label_en}
+            </button>
+          ))}
+
+          {/* MBTI 버튼 */}
+          <button
+            onClick={() => setShowMBTI(!showMBTI)}
+            style={{
+              ...headerStyles.filterChip,
+              ...(showMBTI ? { background: 'rgba(251, 191, 36, 0.2)', borderColor: 'rgba(251, 191, 36, 0.4)', color: '#fbbf24' } : {})
+            }}
+          >
+            🧠 MBTI
+          </button>
+
+          {/* 초기화 버튼 */}
+          <button
+            onClick={handleReset}
+            style={{
+              ...headerStyles.filterChip,
+              background: 'rgba(239, 68, 68, 0.1)',
+              borderColor: 'rgba(239, 68, 68, 0.3)',
+              color: 'rgba(252, 165, 165, 0.9)'
+            }}
+          >
+            ↺ {t(lang, 'reset')}
+          </button>
+        </div>
+      )}
+
+      {/* 검색 자동완성 드롭다운 */}
+      {searchFocused && (autocompleteResults.length > 0 || recentSearches.length > 0) && (
+        <div style={{
+          position: 'fixed',
+          top: isMobile ? '110px' : '60px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: isMobile ? 'calc(100% - 32px)' : '400px',
+          maxWidth: '400px',
+          background: 'linear-gradient(135deg, rgba(20,20,50,0.98), rgba(30,30,60,0.98))',
+          borderRadius: '12px',
+          border: '1px solid rgba(102,126,234,0.4)',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+          zIndex: 1000,
+          maxHeight: '300px',
+          overflowY: 'auto',
+          backdropFilter: 'blur(20px)'
+        }}>
+          {/* 최근 검색 */}
+          {!searchQuery && recentSearches.length > 0 && (
+            <div style={{ padding: '8px' }}>
+              <div style={{ fontSize: '0.7rem', opacity: 0.5, marginBottom: '6px', paddingLeft: '8px' }}>
+                {t(lang, 'recentSearch')}
+              </div>
+              {recentSearches.map((recent, i) => (
+                <div
+                  key={i}
+                  style={{
+                    padding: '8px 12px',
+                    cursor: 'pointer',
+                    borderRadius: '8px',
+                    fontSize: '0.85rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    transition: 'background 0.2s'
+                  }}
+                  onMouseEnter={(e) => e.target.style.background = 'rgba(102,126,234,0.2)'}
+                  onMouseLeave={(e) => e.target.style.background = 'transparent'}
+                  onClick={() => {
+                    setSearchQuery(recent);
+                    handleSearchSubmit(recent);
+                  }}
+                >
+                  <span style={{ opacity: 0.5 }}>🕐</span>
+                  {recent}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* 자동완성 결과 */}
+          {autocompleteResults.length > 0 && (
+            <div style={{ padding: '8px' }}>
+              {searchQuery && (
+                <div style={{ fontSize: '0.7rem', opacity: 0.5, marginBottom: '6px', paddingLeft: '8px' }}>
+                  {t(lang, 'searchResults')}
                 </div>
               )}
-            </div>
-
-            <select value={selectedTestament} onChange={(e) => setSelectedTestament(e.target.value)} style={styles.select}>
-              <option value="both">전체</option>
-              <option value="old">구약</option>
-              <option value="new">신약</option>
-            </select>
-
-            <select value={selectedBook} onChange={(e) => setSelectedBook(e.target.value)} style={styles.select}>
-              <option value="all">전체 성경</option>
-              <optgroup label="구약">
-                {bibleBooks.old.map(book => (
-                  <option key={book.id} value={book.id}>{book.name_ko}</option>
-                ))}
-              </optgroup>
-              <optgroup label="신약">
-                {bibleBooks.new.map(book => (
-                  <option key={book.id} value={book.id}>{book.name_ko}</option>
-                ))}
-              </optgroup>
-            </select>
-
-            <select value={selectedEra} onChange={(e) => setSelectedEra(e.target.value)} style={styles.select}>
-              <option value="all">전체 시대</option>
-              {eras.map(era => (
-                <option key={era.id} value={era.id}>{era.name_ko}</option>
-              ))}
-            </select>
-
-            {/* 두 번째 행: 크기, MBTI, 언어, 초기화 */}
-            {!isMobile && (
-              <div style={{
-                gridColumn: 'span 4',
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr 1fr 1fr',
-                gap: '12px',
-                alignItems: 'center'
-              }}>
-                <div style={styles.sliderContainer}>
-                  <span>크기</span>
-                  <input
-                    type="range"
-                    min="0.4"
-                    max="2.5"
-                    step="0.1"
-                    value={nodeScale}
-                    onChange={(e) => setNodeScale(parseFloat(e.target.value))}
-                    style={styles.slider}
-                  />
-                  <span style={{ minWidth: '35px' }}>{Math.round(nodeScale * 100)}%</span>
-                </div>
-
-                <button
+              {autocompleteResults.map((char) => (
+                <div
+                  key={char.id}
                   style={{
-                    ...styles.button,
-                    width: '100%',
-                    background: showMBTI
-                      ? 'linear-gradient(135deg, rgba(255,215,0,0.4), rgba(255,107,107,0.4))'
-                      : styles.button.background,
-                    border: showMBTI ? '2px solid rgba(255,215,0,0.5)' : styles.button.border
+                    padding: '10px 12px',
+                    cursor: 'pointer',
+                    borderRadius: '8px',
+                    fontSize: '0.85rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    transition: 'background 0.2s'
                   }}
-                  onClick={() => setShowMBTI(!showMBTI)}
+                  onMouseEnter={(e) => e.target.style.background = 'rgba(102,126,234,0.2)'}
+                  onMouseLeave={(e) => e.target.style.background = 'transparent'}
+                  onClick={() => handleAutocompleteSelect(char.id)}
                 >
-                  🧠 MBTI
-                </button>
-
-                <button
-                  style={{
-                    ...styles.button,
-                    width: '100%',
-                    background: lang === 'en' ? 'linear-gradient(135deg, rgba(102,126,234,0.4), rgba(118,75,162,0.4))' : styles.button.background
-                  }}
-                  onClick={() => setLang(lang === 'ko' ? 'en' : 'ko')}
-                >
-                  {lang === 'ko' ? 'EN' : 'KO'}
-                </button>
-
-                <button style={{ ...styles.button, width: '100%' }} onClick={handleReset}>초기화</button>
-              </div>
-            )}
-
-            {/* 모바일용 버튼들 */}
-            {isMobile && (
-              <>
-                <button
-                  style={{
-                    ...styles.button,
-                    background: lang === 'en' ? 'linear-gradient(135deg, rgba(102,126,234,0.4), rgba(118,75,162,0.4))' : styles.button.background
-                  }}
-                  onClick={() => setLang(lang === 'ko' ? 'en' : 'ko')}
-                >
-                  {lang === 'ko' ? 'EN' : 'KO'}
-                </button>
-                <button style={styles.button} onClick={handleReset}>초기화</button>
-              </>
-            )}
-          </div>
-        )}
-
-        {/* 빠른 필터 - 한 줄에 모두 보이도록 작게 */}
-        {showFilters && (
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '4px',
-            marginTop: '8px',
-            paddingTop: '8px',
-            borderTop: '1px solid rgba(255,255,255,0.05)'
-          }}>
-            <span style={{ fontSize: '0.65rem', opacity: 0.5, marginRight: '2px' }}>필터</span>
-            {QUICK_FILTERS.map(filter => (
-              <button
-                key={filter.id}
-                onClick={() => setActiveQuickFilter(activeQuickFilter === filter.id ? null : filter.id)}
-                style={{
-                  padding: '8px 12px',
-                  borderRadius: '10px',
-                  border: activeQuickFilter === filter.id
-                    ? '2px solid rgba(255,215,0,0.8)'
-                    : '1px solid rgba(102,126,234,0.4)',
-                  background: activeQuickFilter === filter.id
-                    ? 'linear-gradient(135deg, rgba(255,215,0,0.3), rgba(255,107,107,0.3))'
-                    : 'linear-gradient(135deg, rgba(102,126,234,0.2), rgba(118,75,162,0.2))',
-                  color: '#fff',
-                  cursor: 'pointer',
-                  fontSize: '0.75rem',
-                  fontWeight: activeQuickFilter === filter.id ? '600' : '500',
-                  transition: 'all 0.2s ease',
-                  boxShadow: activeQuickFilter === filter.id
-                    ? '0 0 10px rgba(255,215,0,0.6), 0 0 20px rgba(255,215,0,0.3)'
-                    : '0 2px 8px rgba(0,0,0,0.2)'
-                }}
-              >
-                {filter.label}
-              </button>
-            ))}
-            {activeQuickFilter && (
-              <span style={{ fontSize: '0.6rem', opacity: 0.5, marginLeft: '4px' }}>
-                ({filteredCharacters.length})
-              </span>
-            )}
-          </div>
-        )}
-
-        {/* 사건 타임라인 - 빠른필터 아래, 여러 줄 + 스크롤 */}
-        {showFilters && (
-          <div style={{
-            display: 'flex',
-            alignItems: 'flex-start',
-            gap: '6px',
-            marginTop: '8px',
-            paddingTop: '8px',
-            borderTop: '1px solid rgba(255,255,255,0.05)',
-            flexWrap: 'wrap',
-            maxHeight: isMobile ? '160px' : '140px',
-            overflowY: 'auto',
-            scrollbarWidth: 'thin'
-          }}>
-            <span style={{ fontSize: '0.65rem', opacity: 0.5, marginRight: '2px', flexShrink: 0 }}>사건</span>
-            {eventsByChronology.map(event => (
-              <div
-                key={event.id}
-                style={{
-                  padding: '8px 12px',
-                  background: selectedEvent === event.id
-                    ? 'linear-gradient(135deg, rgba(255,215,0,0.4), rgba(255,107,107,0.4))'
-                    : 'linear-gradient(135deg, rgba(102,126,234,0.2), rgba(118,75,162,0.2))',
-                  borderRadius: '10px',
-                  cursor: 'pointer',
-                  fontSize: '0.75rem',
-                  whiteSpace: 'nowrap',
-                  border: selectedEvent === event.id
-                    ? '2px solid rgba(255,215,0,0.8)'
-                    : '1px solid rgba(102,126,234,0.4)',
-                  transition: 'all 0.2s ease',
-                  boxShadow: selectedEvent === event.id
-                    ? '0 0 10px rgba(255,215,0,0.6), 0 0 20px rgba(255,215,0,0.3)'
-                    : '0 2px 8px rgba(0,0,0,0.2)'
-                }}
-                onClick={() => {
-                  // 토글: 같은 사건 클릭시 선택 해제
-                  if (selectedEvent === event.id) {
-                    setSelectedEvent(null);
-                    setShowPopup(null);
-                  } else {
-                    handleEventClick(event.id);
-                  }
-                }}
-              >
-                {event.icon} {lang === 'ko' ? event.name_ko : event.name_en}
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* MBTI 섹션 */}
-        {showMBTI && showFilters && !isMobile && (
-          <div style={{
-            marginTop: '12px',
-            padding: '16px',
-            background: 'linear-gradient(135deg, rgba(255,215,0,0.1), rgba(255,107,107,0.1))',
-            borderRadius: '14px',
-            border: '1px solid rgba(255,215,0,0.3)'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-              <span style={{ fontSize: '0.9rem' }}>나의 MBTI:</span>
-              <input
-                type="text"
-                value={userMBTI}
-                onChange={(e) => setUserMBTI(e.target.value.toUpperCase().slice(0, 4))}
-                placeholder="예: INFJ"
-                maxLength={4}
-                style={{
-                  ...styles.searchInput,
-                  width: '80px',
-                  textAlign: 'center',
-                  textTransform: 'uppercase'
-                }}
-              />
-              <span style={{ fontSize: '0.8rem', opacity: 0.7 }}>또는</span>
-              <button
-                style={{ ...styles.button, fontSize: '0.8rem', padding: '8px 12px' }}
-                onClick={() => { setMbtiQuizStep(0); setMbtiAnswers(['','','','']); setShowPopup('mbtiQuiz'); }}
-              >
-                간단 테스트
-              </button>
-            </div>
-
-            {mbtiMatches.length > 0 && (
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                {mbtiMatches.slice(0, 5).map(match => (
-                  <div
-                    key={match.id}
-                    onClick={() => handleCharacterClick(match.id)}
-                    style={{
-                      padding: '8px 14px',
-                      background: `linear-gradient(135deg, rgba(255,215,0,${match.similarity/200}), rgba(255,107,107,${match.similarity/200}))`,
-                      borderRadius: '20px',
-                      cursor: 'pointer',
-                      border: '1px solid rgba(255,215,0,0.4)',
-                      fontSize: '0.85rem'
-                    }}
-                  >
-                    <span style={{ fontWeight: '600' }}>{lang === 'ko' ? match.character.name_ko : match.character.name_en}</span>
-                    <span style={{ opacity: 0.8, marginLeft: '6px' }}>({match.mbti} · {match.similarity}%)</span>
+                  <span style={{
+                    width: '24px',
+                    height: '24px',
+                    borderRadius: '50%',
+                    background: char.testament === 'old' ? 'rgba(74,144,217,0.4)' : 'rgba(224,86,253,0.4)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '0.75rem',
+                    flexShrink: 0
+                  }}>
+                    {char.testament === 'old' ? (lang === 'ko' ? '구' : 'OT') : (lang === 'ko' ? '신' : 'NT')}
+                  </span>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontWeight: '500' }}>
+                      {lang === 'ko' ? char.name_ko : char.name_en}
+                    </div>
+                    {char.labels && char.labels[0] && (
+                      <div style={{ fontSize: '0.7rem', opacity: 0.6, marginTop: '2px' }}>
+                        {char.labels[0]}
+                      </div>
+                    )}
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
+                  <span style={{ opacity: 0.4, fontSize: '0.75rem' }}>
+                    ★{char.importance}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
-        {isFiltering && showFilters && (
-          <div style={styles.characterList}>
-            {filteredCharacters.slice(0, 40).map(char => (
-              <span
-                key={char.id}
-                style={{
-                  ...styles.characterChip,
-                  background: selectedCharacter === char.id
-                    ? 'linear-gradient(135deg, rgba(102,126,234,0.6), rgba(118,75,162,0.6))'
-                    : styles.characterChip.background,
-                  borderColor: selectedCharacter === char.id ? '#667eea' : 'rgba(102,126,234,0.35)',
-                  transform: selectedCharacter === char.id ? 'scale(1.05)' : 'scale(1)'
-                }}
-                onClick={() => handleCharacterClick(char.id)}
-              >
-                {lang === 'ko' ? char.name_ko : char.name_en}
-              </span>
-            ))}
-            {filteredCharacters.length > 40 && (
-              <span style={{ ...styles.characterChip, opacity: 0.6, cursor: 'default' }}>
-                +{filteredCharacters.length - 40}명
-              </span>
-            )}
-          </div>
-        )}
-      </header>
+      {/* 사건 타임라인 바 */}
+      {showFilters && (
+        <div style={{
+          padding: '8px 16px',
+          background: 'rgba(0, 0, 0, 0.2)',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '6px',
+          alignItems: 'center',
+          maxHeight: isMobile ? '120px' : '80px',
+          overflowY: 'auto'
+        }}>
+          <span style={{ fontSize: '0.7rem', opacity: 0.5, marginRight: '4px' }}>
+            {lang === 'ko' ? '사건' : 'Events'}
+          </span>
+          {eventsByChronology.map(event => (
+            <button
+              key={event.id}
+              onClick={() => {
+                if (selectedEvent === event.id) {
+                  setSelectedEvent(null);
+                  setShowPopup(null);
+                } else {
+                  handleEventClick(event.id);
+                }
+              }}
+              style={{
+                padding: '4px 10px',
+                borderRadius: '12px',
+                fontSize: '0.7rem',
+                border: selectedEvent === event.id
+                  ? '1px solid rgba(251, 191, 36, 0.6)'
+                  : '1px solid rgba(255, 255, 255, 0.1)',
+                background: selectedEvent === event.id
+                  ? 'rgba(251, 191, 36, 0.2)'
+                  : 'rgba(255, 255, 255, 0.04)',
+                color: selectedEvent === event.id ? '#fbbf24' : 'rgba(255, 255, 255, 0.7)',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              {event.icon} {lang === 'ko' ? event.name_ko : event.name_en}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* MBTI 섹션 */}
+      {showMBTI && showFilters && (
+        <div style={{
+          padding: '12px 16px',
+          background: 'linear-gradient(135deg, rgba(251, 191, 36, 0.08), rgba(239, 68, 68, 0.08))',
+          borderBottom: '1px solid rgba(251, 191, 36, 0.2)',
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '12px',
+          alignItems: 'center'
+        }}>
+          <span style={{ fontSize: '0.8rem', color: '#fbbf24' }}>
+            {lang === 'ko' ? '나의 MBTI:' : 'My MBTI:'}
+          </span>
+          <input
+            type="text"
+            value={userMBTI}
+            onChange={(e) => setUserMBTI(e.target.value.toUpperCase().slice(0, 4))}
+            placeholder={lang === 'ko' ? "예: INFJ" : "e.g., INFJ"}
+            maxLength={4}
+            style={{
+              padding: '6px 12px',
+              borderRadius: '8px',
+              border: '1px solid rgba(251, 191, 36, 0.3)',
+              background: 'rgba(0, 0, 0, 0.3)',
+              color: '#fff',
+              width: '70px',
+              textAlign: 'center',
+              textTransform: 'uppercase',
+              fontSize: '0.85rem'
+            }}
+          />
+          <button
+            style={{
+              padding: '6px 12px',
+              borderRadius: '8px',
+              border: '1px solid rgba(251, 191, 36, 0.3)',
+              background: 'rgba(251, 191, 36, 0.1)',
+              color: '#fbbf24',
+              cursor: 'pointer',
+              fontSize: '0.8rem'
+            }}
+            onClick={() => { setMbtiQuizStep(0); setMbtiAnswers(['','','','']); setShowPopup('mbtiQuiz'); }}
+          >
+            {lang === 'ko' ? '간단 테스트' : 'Quick Test'}
+          </button>
+
+          {mbtiMatches.length > 0 && (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginLeft: '8px' }}>
+              {mbtiMatches.slice(0, 5).map(match => (
+                <span
+                  key={match.id}
+                  onClick={() => handleCharacterClick(match.id)}
+                  style={{
+                    padding: '4px 10px',
+                    background: `rgba(251, 191, 36, ${match.similarity/250})`,
+                    borderRadius: '12px',
+                    cursor: 'pointer',
+                    border: '1px solid rgba(251, 191, 36, 0.3)',
+                    fontSize: '0.75rem',
+                    color: '#fff'
+                  }}
+                >
+                  {lang === 'ko' ? match.character.name_ko : match.character.name_en} ({match.similarity}%)
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* 필터 결과 캐릭터 리스트 */}
+      {isFiltering && showFilters && (
+        <div style={{
+          padding: '8px 16px',
+          background: 'rgba(0, 0, 0, 0.15)',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '6px',
+          maxHeight: '100px',
+          overflowY: 'auto'
+        }}>
+          {filteredCharacters.slice(0, 40).map(char => (
+            <span
+              key={char.id}
+              onClick={() => handleCharacterClick(char.id)}
+              style={{
+                padding: '4px 10px',
+                borderRadius: '10px',
+                fontSize: '0.75rem',
+                cursor: 'pointer',
+                border: selectedCharacter === char.id
+                  ? '1px solid rgba(102, 126, 234, 0.6)'
+                  : '1px solid rgba(255, 255, 255, 0.1)',
+                background: selectedCharacter === char.id
+                  ? 'rgba(102, 126, 234, 0.3)'
+                  : 'rgba(255, 255, 255, 0.04)',
+                color: selectedCharacter === char.id ? '#a5b4fc' : 'rgba(255, 255, 255, 0.7)',
+                transition: 'all 0.2s ease'
+              }}
+            >
+              {lang === 'ko' ? char.name_ko : char.name_en}
+            </span>
+          ))}
+          {filteredCharacters.length > 40 && (
+            <span style={{
+              padding: '4px 10px',
+              borderRadius: '10px',
+              fontSize: '0.75rem',
+              opacity: 0.5,
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              background: 'rgba(255, 255, 255, 0.04)'
+            }}>
+              +{filteredCharacters.length - 40}{lang === 'ko' ? '명' : ' more'}
+            </span>
+          )}
+        </div>
+      )}
+
+      {/* 상단 광고 배너 영역 */}
+      <div style={{
+        width: '100%',
+        maxWidth: '728px',
+        margin: '0 auto',
+        padding: '8px 16px',
+        background: 'linear-gradient(135deg, rgba(20,20,40,0.9), rgba(30,25,50,0.9))',
+        borderBottom: '1px solid rgba(255,215,0,0.1)',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: '100px'
+      }}>
+        <AdSenseUnit
+          slot="TOP_BANNER_AD"
+          format="horizontal"
+          style={{ width: '100%', minHeight: '90px' }}
+        />
+      </div>
 
       {/* 메인 콘텐츠 */}
       <div style={isMobile ? styles.mainContentMobile : styles.mainContent}>
@@ -2706,6 +3153,7 @@ export default function App() {
           bibleViewer={bibleViewer}
           setBibleViewer={setBibleViewer}
           bibleData={bibleData}
+          lang={lang}
           isMobile={isMobile}
         />,
         document.body
@@ -2743,23 +3191,45 @@ export default function App() {
       )}
 
       {/* MBTI 퀴즈 팝업 - Portal로 분리 */}
-      {/* 푸터 - 사업자 정보 (한 줄) */}
-      <footer style={{
+      {/* 하단 광고 배너 + 푸터 */}
+      <div style={{
         position: 'fixed',
         bottom: 0,
         left: 0,
         right: 0,
-        background: 'rgba(10,5,20,0.95)',
-        borderTop: '1px solid rgba(255,215,0,0.15)',
-        padding: '6px 12px',
         zIndex: 90,
-        fontSize: '0.55rem',
-        color: 'rgba(255,255,255,0.5)',
-        textAlign: 'center',
-        whiteSpace: 'nowrap',
-        overflow: 'hidden',
-        textOverflow: 'ellipsis'
+        background: 'linear-gradient(to top, rgba(10,5,20,0.98), rgba(20,15,35,0.95))',
+        borderTop: '1px solid rgba(255,215,0,0.15)'
       }}>
+        {/* 하단 광고 배너 */}
+        <div style={{
+          width: '100%',
+          maxWidth: '728px',
+          margin: '0 auto',
+          padding: '8px 16px',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '60px'
+        }}>
+          <AdSenseUnit
+            slot="BOTTOM_BANNER_AD"
+            format="horizontal"
+            style={{ width: '100%', minHeight: '50px' }}
+          />
+        </div>
+
+        {/* 푸터 - 사업자 정보 */}
+        <footer style={{
+          padding: '6px 12px',
+          fontSize: '0.55rem',
+          color: 'rgba(255,255,255,0.5)',
+          textAlign: 'center',
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          borderTop: '1px solid rgba(255,255,255,0.05)'
+        }}>
         <a href="https://yunaipartner.vercel.app/" target="_blank" rel="noopener noreferrer" style={{ color: '#ffd700', textDecoration: 'none' }}>YUN AI Partner</a>
         <span style={{ margin: '0 6px', opacity: 0.3 }}>|</span>
         유투디아 · 최유이 · 749-58-00902
@@ -2767,7 +3237,8 @@ export default function App() {
         <a href="https://yunaipartner.vercel.app/#/privacy" target="_blank" rel="noopener noreferrer" style={{ color: 'rgba(255,255,255,0.6)', textDecoration: 'none' }}>개인정보처리방침</a>
         <span style={{ margin: '0 6px', opacity: 0.3 }}>|</span>
         © {new Date().getFullYear()}
-      </footer>
+        </footer>
+      </div>
 
       {showPopup === 'mbtiQuiz' && createPortal(
         <>
@@ -2807,7 +3278,7 @@ export default function App() {
                 }}
                 onClick={() => handleMBTIQuizAnswer(mbtiQuestions[mbtiQuizStep].e)}
               >
-                네 ✓
+                {t(lang, 'yes')}
               </button>
               <button
                 style={{
@@ -2819,7 +3290,7 @@ export default function App() {
                 }}
                 onClick={() => handleMBTIQuizAnswer(mbtiQuestions[mbtiQuizStep].i)}
               >
-                아니오 ✗
+                {t(lang, 'no')}
               </button>
             </div>
 
@@ -3008,7 +3479,7 @@ function CharacterDetail({ character, lang, relatedEvents, relatedHymns, related
               background: character.testament === 'old' ? 'rgba(74, 144, 217, 0.3)' : 'rgba(224, 86, 253, 0.3)',
               border: `1px solid ${character.testament === 'old' ? 'rgba(74,144,217,0.5)' : 'rgba(224,86,253,0.5)'}`
             }}>
-              {character.testament === 'old' ? '구약' : character.testament === 'new' ? '신약' : '구약+신약'}
+              {character.testament === 'old' ? t(lang, 'oldTestament') : character.testament === 'new' ? t(lang, 'newTestament') : (lang === 'ko' ? '구약+신약' : 'OT+NT')}
             </span>
             <span style={{
               ...styles.badge,
@@ -3105,7 +3576,7 @@ function CharacterDetail({ character, lang, relatedEvents, relatedHymns, related
                   background: 'rgba(255,215,0,0.2)',
                   padding: '2px 6px',
                   borderRadius: '4px'
-                }}>클릭하여 성경 읽기</span>
+                }}>{t(lang, 'clickToRead')}</span>
               </strong>
               <p style={{ marginTop: 6, fontStyle: 'italic', opacity: 0.85, fontSize: '0.85rem', lineHeight: 1.5 }}>
                 "{lang === 'ko' ? verse.text_ko : verse.text_en}"
@@ -3118,7 +3589,7 @@ function CharacterDetail({ character, lang, relatedEvents, relatedHymns, related
       {relatedEvents.length > 0 && (
         <div style={styles.card}>
           <h4 style={{ marginBottom: 12, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span>📌</span> 관련 사건 ({relatedEvents.length}개)
+            <span>📌</span> {t(lang, 'relatedEvents')} ({relatedEvents.length})
           </h4>
           {relatedEvents.slice(0, 5).map(event => (
             <div
@@ -3145,7 +3616,7 @@ function CharacterDetail({ character, lang, relatedEvents, relatedHymns, related
       {relatedHymns.length > 0 && (
         <div style={styles.card}>
           <h4 style={{ marginBottom: 12, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span>🎵</span> 관련 찬송가
+            <span>🎵</span> {t(lang, 'relatedHymns')}
           </h4>
           {relatedHymns.slice(0, 4).map(hymn => (
             <div key={hymn.id} style={{
@@ -3174,7 +3645,7 @@ function CharacterDetail({ character, lang, relatedEvents, relatedHymns, related
       {relatedLocations && relatedLocations.length > 0 && (
         <div style={styles.card}>
           <h4 style={{ marginBottom: 12, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span>📍</span> 관련 장소 ({relatedLocations.length}곳)
+            <span>📍</span> {t(lang, 'relatedLocations')} ({relatedLocations.length})
           </h4>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
             {relatedLocations.slice(0, 8).map(loc => (
@@ -3202,7 +3673,7 @@ function CharacterDetail({ character, lang, relatedEvents, relatedHymns, related
       {relatedRelationships.length > 0 && (
         <div style={styles.card}>
           <h4 style={{ marginBottom: 12, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span>👥</span> 관련 인물 ({relatedRelationships.length}명)
+            <span>👥</span> {t(lang, 'relatedCharacters')} ({relatedRelationships.length})
           </h4>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
             {relatedRelationships.slice(0, 12).map((rel, i) => {
@@ -3226,6 +3697,21 @@ function CharacterDetail({ character, lang, relatedEvents, relatedHymns, related
           </div>
         </div>
       )}
+
+      {/* AdSense 광고 - 인물 상세 하단 */}
+      <div style={{
+        marginTop: '16px',
+        padding: '12px',
+        background: 'rgba(0,0,0,0.2)',
+        borderRadius: '12px',
+        border: '1px dashed rgba(255,255,255,0.1)'
+      }}>
+        <AdSenseUnit
+          slot="CHARACTER_DETAIL_AD"
+          format="auto"
+          style={{ minHeight: '100px' }}
+        />
+      </div>
 
       {/* 전체화면 아트워크 뷰어 */}
       {fullscreenArtwork && createPortal(
@@ -3494,7 +3980,7 @@ function EventDetail({ event, lang, eras, onCharacterSelect, artwork, onVerseCli
       {event.characters && event.characters.length > 0 && (
         <div style={styles.card}>
           <h4 style={{ marginBottom: 12, fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span>👥</span> 관련 인물
+            <span>👥</span> {t(lang, 'eventParticipants')}
           </h4>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
             {event.characters.map(charId => {
@@ -3519,6 +4005,21 @@ function EventDetail({ event, lang, eras, onCharacterSelect, artwork, onVerseCli
           📍 {event.location}
         </p>
       )}
+
+      {/* AdSense 광고 - 사건 상세 하단 */}
+      <div style={{
+        marginTop: '16px',
+        padding: '12px',
+        background: 'rgba(0,0,0,0.2)',
+        borderRadius: '12px',
+        border: '1px dashed rgba(255,255,255,0.1)'
+      }}>
+        <AdSenseUnit
+          slot="EVENT_DETAIL_AD"
+          format="auto"
+          style={{ minHeight: '100px' }}
+        />
+      </div>
 
       {/* 전체화면 아트워크 뷰어 */}
       {fullscreenArtwork && createPortal(
@@ -4015,7 +4516,7 @@ function TimelineViewer({ characters, events, eras, relationships, lang, isMobil
 }
 
 // ==================== 성경 뷰어 컴포넌트 ====================
-function BibleViewer({ bibleViewer, setBibleViewer, bibleData, isMobile }) {
+function BibleViewer({ bibleViewer, setBibleViewer, bibleData, lang, isMobile }) {
   const { bookId, bookName, chapter, highlightVerse, totalChapters } = bibleViewer;
   const verseRefs = useRef({});
   const containerRef = useRef(null);
@@ -4300,24 +4801,24 @@ function BibleViewer({ bibleViewer, setBibleViewer, bibleData, isMobile }) {
       {/* 헤더 */}
       <div style={viewerStyles.header}>
         <div style={viewerStyles.titleSection}>
-          <span style={{ fontSize: '1.5rem' }}>📖 성경</span>
+          <span style={{ fontSize: '1.5rem' }}>{t(lang, 'bible')}</span>
           <select
             value={bookId}
             onChange={(e) => handleBookChange(e.target.value)}
             style={viewerStyles.select}
           >
-            <optgroup label="구약 성경">
+            <optgroup label={lang === 'ko' ? "구약 성경" : "Old Testament"}>
               {allBooks.filter(b => b.testament === 'old').map(b => (
                 <option key={b.id} value={b.id}>{b.name}</option>
               ))}
             </optgroup>
-            <optgroup label="신약 성경">
+            <optgroup label={lang === 'ko' ? "신약 성경" : "New Testament"}>
               {allBooks.filter(b => b.testament === 'new').map(b => (
                 <option key={b.id} value={b.id}>{b.name}</option>
               ))}
             </optgroup>
           </select>
-          <span style={{ color: '#ffd700', fontWeight: '600' }}>{chapter}장</span>
+          <span style={{ color: '#ffd700', fontWeight: '600' }}>{lang === 'ko' ? `${chapter}장` : `Ch. ${chapter}`}</span>
         </div>
 
         <div style={viewerStyles.nav}>
@@ -4329,7 +4830,7 @@ function BibleViewer({ bibleViewer, setBibleViewer, bibleData, isMobile }) {
             onClick={() => chapter > 1 && handleChapterChange(chapter - 1)}
             disabled={chapter <= 1}
           >
-            ◀ 이전
+            ◀ {t(lang, 'prevChapter')}
           </button>
           <button
             style={{
@@ -4339,7 +4840,7 @@ function BibleViewer({ bibleViewer, setBibleViewer, bibleData, isMobile }) {
             onClick={() => chapter < totalChapters && handleChapterChange(chapter + 1)}
             disabled={chapter >= totalChapters}
           >
-            다음 ▶
+            {t(lang, 'nextChapter')} ▶
           </button>
           <button
             style={{
@@ -4351,10 +4852,10 @@ function BibleViewer({ bibleViewer, setBibleViewer, bibleData, isMobile }) {
             }}
             onClick={handleSpeak}
           >
-            {isSpeaking ? '⏹ 중지' : '🔊 듣기'}
+            {isSpeaking ? (lang === 'ko' ? '⏹ 중지' : '⏹ Stop') : (lang === 'ko' ? '🔊 듣기' : '🔊 Listen')}
           </button>
           <button style={viewerStyles.closeButton} onClick={handleClose}>
-            ✕ 닫기
+            ✕ {t(lang, 'close')}
           </button>
         </div>
       </div>
@@ -4362,7 +4863,7 @@ function BibleViewer({ bibleViewer, setBibleViewer, bibleData, isMobile }) {
       {/* 본문 */}
       <div style={viewerStyles.content} ref={containerRef}>
         <h2 style={viewerStyles.chapterTitle}>
-          {bookName} {chapter}장
+          {bookName} {lang === 'ko' ? `${chapter}장` : `Chapter ${chapter}`}
         </h2>
 
         <div>
@@ -4387,6 +4888,21 @@ function BibleViewer({ bibleViewer, setBibleViewer, bibleData, isMobile }) {
               {v.text}
             </p>
           ))}
+        </div>
+
+        {/* AdSense 광고 - 성경 본문 하단 */}
+        <div style={{
+          marginTop: '24px',
+          padding: '12px',
+          background: 'rgba(0,0,0,0.3)',
+          borderRadius: '12px',
+          border: '1px dashed rgba(255,255,255,0.1)'
+        }}>
+          <AdSenseUnit
+            slot="BIBLE_VIEWER_AD"
+            format="auto"
+            style={{ minHeight: '100px' }}
+          />
         </div>
       </div>
 
