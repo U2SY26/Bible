@@ -2028,16 +2028,13 @@ export default function App() {
       position: 'sticky',
       top: 0,
       zIndex: 100,
-      width: '100%',
       boxSizing: 'border-box',
-      overflow: 'hidden',
     },
     navContent: {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
-      maxWidth: '100%',
-      margin: '0 auto',
+      width: '100%',
       gap: '8px',
     },
     logo: {
@@ -2213,28 +2210,14 @@ export default function App() {
               }}
               onClick={() => setShowTimeline(!showTimeline)}
             >
-              📅 {!isMobile && (lang === 'ko' ? '타임라인' : 'Timeline')}
-            </button>
-
-            <button
-              style={headerStyles.navBtn}
-              onClick={() => setBibleViewer({
-                show: true,
-                bookId: 'gen',
-                bookName: lang === 'ko' ? '창세기' : 'Genesis',
-                chapter: 1,
-                highlightVerse: null,
-                totalChapters: 50
-              })}
-            >
-              📖 {!isMobile && (lang === 'ko' ? '성경' : 'Bible')}
+              📅 타임라인
             </button>
 
             <button
               style={headerStyles.langBtn}
               onClick={() => setLang(lang === 'ko' ? 'en' : 'ko')}
             >
-              🌐 {lang === 'ko' ? 'EN' : 'KO'}
+              {lang === 'ko' ? '🌐 EN' : '🌐 KO'}
             </button>
 
             <button
@@ -3004,7 +2987,7 @@ export default function App() {
           {!isMobile && (
             <div style={{
               position: 'absolute',
-              bottom: 60,
+              bottom: 120,
               right: selectedCharacter ? 360 : 25,
               background: 'linear-gradient(135deg, rgba(20,20,40,0.95), rgba(15,15,35,0.95))',
               padding: '10px 14px',
