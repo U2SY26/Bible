@@ -2024,18 +2024,21 @@ export default function App() {
       backdropFilter: 'blur(20px)',
       WebkitBackdropFilter: 'blur(20px)',
       borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
-      padding: isMobile ? '8px 12px' : '10px 20px',
+      padding: isMobile ? '8px 12px' : '10px 16px',
       position: 'sticky',
       top: 0,
       zIndex: 100,
+      width: '100%',
+      boxSizing: 'border-box',
+      overflow: 'hidden',
     },
     navContent: {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
-      maxWidth: '1400px',
+      maxWidth: '100%',
       margin: '0 auto',
-      gap: '12px',
+      gap: '8px',
     },
     logo: {
       display: 'flex',
@@ -2058,6 +2061,7 @@ export default function App() {
       display: 'flex',
       alignItems: 'center',
       gap: isMobile ? '4px' : '6px',
+      flexShrink: 0,
     },
     navBtn: {
       display: 'flex',
@@ -2096,8 +2100,9 @@ export default function App() {
       flexShrink: 0,
     },
     searchBar: {
-      flex: 1,
-      maxWidth: '320px',
+      flex: '1 1 auto',
+      minWidth: '150px',
+      maxWidth: '350px',
       position: 'relative',
     },
     searchInput: {
@@ -2539,21 +2544,22 @@ export default function App() {
         </div>
       )}
 
-      {/* 사건 타임라인 바 */}
+      {/* 사건 타임라인 바 - 높이 2배 */}
       {showFilters && (
         <div style={{
-          padding: '8px 12px',
-          background: 'rgba(0, 0, 0, 0.2)',
+          padding: '10px 12px',
+          background: 'rgba(0, 0, 0, 0.25)',
           borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
           display: 'flex',
           flexDirection: 'row',
           flexWrap: 'wrap',
           gap: '6px',
-          alignItems: 'center',
-          maxHeight: isMobile ? '100px' : '70px',
+          alignItems: 'flex-start',
+          alignContent: 'flex-start',
+          maxHeight: isMobile ? '180px' : '130px',
           overflowY: 'auto'
         }}>
-          <span style={{ fontSize: '0.65rem', opacity: 0.5, marginRight: '4px', flex: 'none' }}>
+          <span style={{ fontSize: '0.65rem', opacity: 0.5, marginRight: '4px', flex: 'none', paddingTop: '4px' }}>
             {lang === 'ko' ? '사건' : 'Events'}
           </span>
           {eventsByChronology.map(event => (
@@ -2568,16 +2574,16 @@ export default function App() {
                 }
               }}
               style={{
-                padding: '3px 8px',
-                borderRadius: '10px',
-                fontSize: '0.65rem',
+                padding: '4px 10px',
+                borderRadius: '12px',
+                fontSize: '0.7rem',
                 border: selectedEvent === event.id
                   ? '1px solid rgba(251, 191, 36, 0.6)'
-                  : '1px solid rgba(255, 255, 255, 0.08)',
+                  : '1px solid rgba(255, 255, 255, 0.1)',
                 background: selectedEvent === event.id
                   ? 'rgba(251, 191, 36, 0.2)'
-                  : 'rgba(255, 255, 255, 0.03)',
-                color: selectedEvent === event.id ? '#fbbf24' : 'rgba(255, 255, 255, 0.6)',
+                  : 'rgba(255, 255, 255, 0.04)',
+                color: selectedEvent === event.id ? '#fbbf24' : 'rgba(255, 255, 255, 0.7)',
                 cursor: 'pointer',
                 whiteSpace: 'nowrap',
                 width: 'auto',
@@ -2994,32 +3000,33 @@ export default function App() {
             >-</button>
           </div>
 
-          {/* 범례 */}
+          {/* 범례 - 하단 광고 위로 이동 */}
           {!isMobile && (
             <div style={{
               position: 'absolute',
-              bottom: 25,
+              bottom: 60,
               right: selectedCharacter ? 360 : 25,
               background: 'linear-gradient(135deg, rgba(20,20,40,0.95), rgba(15,15,35,0.95))',
-              padding: '12px 18px',
-              borderRadius: '14px',
+              padding: '10px 14px',
+              borderRadius: '12px',
               border: '1px solid rgba(102,126,234,0.3)',
-              fontSize: '0.75rem',
+              fontSize: '0.7rem',
               display: 'flex',
-              gap: '16px',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.4)'
+              gap: '14px',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
+              zIndex: 100
             }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#4a90d9', boxShadow: '0 0 8px rgba(74,144,217,0.5)' }}/>
-                <span style={{ opacity: 0.8 }}>구약</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                <div style={{ width: 9, height: 9, borderRadius: '50%', background: '#4a90d9', boxShadow: '0 0 6px rgba(74,144,217,0.5)' }}/>
+                <span style={{ opacity: 0.8 }}>{lang === 'ko' ? '구약' : 'OT'}</span>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#e056fd', boxShadow: '0 0 8px rgba(224,86,253,0.5)' }}/>
-                <span style={{ opacity: 0.8 }}>신약</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                <div style={{ width: 9, height: 9, borderRadius: '50%', background: '#e056fd', boxShadow: '0 0 6px rgba(224,86,253,0.5)' }}/>
+                <span style={{ opacity: 0.8 }}>{lang === 'ko' ? '신약' : 'NT'}</span>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <div style={{ width: 10, height: 10, borderRadius: '50%', background: 'linear-gradient(135deg, #ff6b6b, #ffd700, #667eea)', boxShadow: '0 0 8px rgba(255,215,0,0.5)' }}/>
-                <span style={{ opacity: 0.8 }}>주요인물</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                <div style={{ width: 9, height: 9, borderRadius: '50%', background: 'linear-gradient(135deg, #ff6b6b, #ffd700, #667eea)', boxShadow: '0 0 6px rgba(255,215,0,0.5)' }}/>
+                <span style={{ opacity: 0.8 }}>{lang === 'ko' ? '주요인물' : 'Key'}</span>
               </div>
             </div>
           )}
