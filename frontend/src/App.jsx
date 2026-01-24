@@ -528,8 +528,8 @@ const styles = {
   containerMobile: {
     width: '100%',
     maxWidth: '100vw',
-    height: '100%',
-    minHeight: '-webkit-fill-available', // iOS Safari 대응
+    height: '100vh',
+    height: '100dvh',  // 동적 뷰포트 높이 (모던 브라우저)
     background: '#000',
     fontFamily: "'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif",
     color: '#fff',
@@ -642,14 +642,16 @@ const styles = {
     boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
   },
   mainContent: {
-    flex: 1,
+    flex: '1 1 0',
+    minHeight: 0,
     display: 'flex',
     overflow: 'hidden',
     position: 'relative',
     boxSizing: 'border-box'
   },
   mainContentMobile: {
-    flex: 1,
+    flex: '1 1 0',
+    minHeight: 0,
     display: 'flex',
     flexDirection: 'column',
     overflow: 'hidden',
@@ -657,19 +659,20 @@ const styles = {
     boxSizing: 'border-box'
   },
   graphContainer: {
-    flex: 1,
+    flex: '1 1 0',
+    minHeight: 0,
     position: 'relative',
     overflow: 'hidden',
     background: '#000'
   },
   graphContainerMobile: {
     width: '100%',
-    height: '100%',  // 전체 화면으로 확장
-    flex: 1,
+    flex: '1 1 0',
+    minHeight: 0,
     position: 'relative',
     overflow: 'hidden',
     background: '#000',
-    touchAction: 'none',  // 캔버스 내 터치는 직접 처리
+    touchAction: 'none',
     WebkitUserSelect: 'none',
     userSelect: 'none'
   },
@@ -2703,23 +2706,7 @@ export default function App() {
         </div>
       )}
 
-      {/* 상단 광고 배너 영역 */}
-      <div style={{
-        width: '100%',
-        maxWidth: '728px',
-        margin: '0 auto',
-        background: 'rgba(15, 15, 30, 0.95)',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        overflow: 'hidden'
-      }}>
-        <AdSenseUnit
-          slot="TOP_BANNER_AD"
-          format="horizontal"
-          style={{ width: '100%', maxHeight: '90px' }}
-        />
-      </div>
+      {/* 상단 광고 - 그래프 위 오버레이 (덜 방해되게) */}
 
       {/* 메인 콘텐츠 */}
       <div style={isMobile ? styles.mainContentMobile : styles.mainContent}>
@@ -3270,50 +3257,30 @@ export default function App() {
       )}
 
       {/* MBTI 퀴즈 팝업 - Portal로 분리 */}
-      {/* 하단 광고 배너 + 푸터 */}
+      {/* 하단 푸터 (광고 제거, 푸터만) */}
       <div style={{
         position: 'fixed',
         bottom: 0,
         left: 0,
         right: 0,
         zIndex: 90,
-        background: 'linear-gradient(to top, rgba(10,5,20,0.98), rgba(20,15,35,0.95))',
-        borderTop: '1px solid rgba(255,215,0,0.15)'
+        background: 'rgba(10,5,20,0.95)',
+        borderTop: '1px solid rgba(255,215,0,0.1)'
       }}>
-        {/* 하단 광고 배너 */}
-        <div style={{
-          width: '100%',
-          maxWidth: '728px',
-          margin: '0 auto',
-          padding: '8px 16px',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          minHeight: '60px'
-        }}>
-          <AdSenseUnit
-            slot="BOTTOM_BANNER_AD"
-            format="horizontal"
-            style={{ width: '100%', minHeight: '50px' }}
-          />
-        </div>
-
-        {/* 푸터 - 사업자 정보 */}
         <footer style={{
-          padding: '6px 12px',
-          fontSize: '0.55rem',
-          color: 'rgba(255,255,255,0.5)',
+          padding: '4px 12px',
+          fontSize: '0.5rem',
+          color: 'rgba(255,255,255,0.4)',
           textAlign: 'center',
           whiteSpace: 'nowrap',
           overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          borderTop: '1px solid rgba(255,255,255,0.05)'
+          textOverflow: 'ellipsis'
         }}>
         <a href="https://yunaipartner.vercel.app/" target="_blank" rel="noopener noreferrer" style={{ color: '#ffd700', textDecoration: 'none' }}>YUN AI Partner</a>
         <span style={{ margin: '0 6px', opacity: 0.3 }}>|</span>
         유투디아 · 최유이 · 749-58-00902
         <span style={{ margin: '0 6px', opacity: 0.3 }}>|</span>
-        <a href="https://yunaipartner.vercel.app/#/privacy" target="_blank" rel="noopener noreferrer" style={{ color: 'rgba(255,255,255,0.6)', textDecoration: 'none' }}>개인정보처리방침</a>
+        <a href="https://yunaipartner.vercel.app/#/privacy" target="_blank" rel="noopener noreferrer" style={{ color: 'rgba(255,255,255,0.5)', textDecoration: 'none' }}>개인정보처리방침</a>
         <span style={{ margin: '0 6px', opacity: 0.3 }}>|</span>
         © {new Date().getFullYear()}
         </footer>
