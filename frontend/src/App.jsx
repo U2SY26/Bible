@@ -2083,6 +2083,13 @@ export default function App() {
       whiteSpace: 'nowrap',
       flexShrink: 0,
     },
+    iconBtn: {
+      width: isMobile ? '28px' : '30px',
+      height: isMobile ? '28px' : '30px',
+      padding: 0,
+      fontSize: isMobile ? '0.8rem' : '0.85rem',
+      lineHeight: 1,
+    },
     navBtnActive: {
       background: 'rgba(99, 102, 241, 0.2)',
       borderColor: 'rgba(99, 102, 241, 0.4)',
@@ -2228,6 +2235,7 @@ export default function App() {
             <button
               style={{
                 ...headerStyles.navBtn,
+                ...headerStyles.iconBtn,
                 ...(showFilters ? headerStyles.navBtnActive : {})
               }}
               onClick={() => setShowFilters(!showFilters)}

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_colors.dart';
-import '../../providers/data_providers.dart';
 import '../../providers/filter_provider.dart';
-import '../../providers/selection_provider.dart';
 import '../graph/graph_screen.dart';
+import '../timeline/timeline_screen.dart';
+import '../bible_reader/bible_reader_screen.dart';
+import '../search/search_screen.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -23,9 +24,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         index: _selectedIndex,
         children: const [
           GraphScreen(),
-          _TimelinePlaceholder(),
-          _BiblePlaceholder(),
-          _SearchPlaceholder(),
+          TimelineScreen(),
+          BibleReaderScreen(),
+          SearchScreen(),
         ],
       ),
       bottomNavigationBar: _buildBottomNav(),
@@ -109,7 +110,7 @@ class _NavItem extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
           color: isSelected
-              ? AppColors.primary.withOpacity(0.2)
+              ? AppColors.primary.withValues(alpha: 0.2)
               : Colors.transparent,
           borderRadius: BorderRadius.circular(12),
         ),
@@ -132,64 +133,6 @@ class _NavItem extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-// Placeholder screens
-class _TimelinePlaceholder extends StatelessWidget {
-  const _TimelinePlaceholder();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.timeline, size: 64, color: AppColors.textMuted),
-          SizedBox(height: 16),
-          Text('타임라인', style: TextStyle(color: AppColors.textSecondary)),
-          Text('(개발 중)', style: TextStyle(color: AppColors.textMuted)),
-        ],
-      ),
-    );
-  }
-}
-
-class _BiblePlaceholder extends StatelessWidget {
-  const _BiblePlaceholder();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.menu_book, size: 64, color: AppColors.textMuted),
-          SizedBox(height: 16),
-          Text('성경', style: TextStyle(color: AppColors.textSecondary)),
-          Text('(개발 중)', style: TextStyle(color: AppColors.textMuted)),
-        ],
-      ),
-    );
-  }
-}
-
-class _SearchPlaceholder extends StatelessWidget {
-  const _SearchPlaceholder();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.search, size: 64, color: AppColors.textMuted),
-          SizedBox(height: 16),
-          Text('검색', style: TextStyle(color: AppColors.textSecondary)),
-          Text('(개발 중)', style: TextStyle(color: AppColors.textMuted)),
-        ],
       ),
     );
   }
