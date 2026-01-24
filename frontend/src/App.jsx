@@ -2035,9 +2035,9 @@ export default function App() {
       alignItems: 'center',
       justifyContent: 'space-between',
       width: '100%',
-      gap: '8px',
-      flexWrap: 'wrap',
-      rowGap: isMobile ? '6px' : '8px',
+      gap: isMobile ? '6px' : '8px',
+      flexWrap: 'nowrap',
+      minWidth: 0,
     },
     logo: {
       display: 'flex',
@@ -2060,23 +2060,22 @@ export default function App() {
       display: 'flex',
       alignItems: 'center',
       gap: isMobile ? '4px' : '6px',
-      flexShrink: 1,
+      flexShrink: 0,
       minWidth: 0,
-      flexWrap: 'wrap',
+      flexWrap: 'nowrap',
       justifyContent: 'flex-end',
-      rowGap: isMobile ? '4px' : '6px',
     },
     navBtn: {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
       gap: '4px',
-      padding: isMobile ? '6px 8px' : '7px 10px',
+      padding: isMobile ? '6px 8px' : '6px 9px',
       borderRadius: '8px',
       border: '1px solid rgba(255, 255, 255, 0.08)',
       background: 'rgba(255, 255, 255, 0.04)',
       color: 'rgba(255, 255, 255, 0.8)',
-      fontSize: isMobile ? '0.65rem' : '0.72rem',
+      fontSize: isMobile ? '0.65rem' : '0.7rem',
       fontWeight: '500',
       cursor: 'pointer',
       transition: 'all 0.2s ease',
@@ -2090,12 +2089,12 @@ export default function App() {
       color: '#a5b4fc',
     },
     langBtn: {
-      padding: isMobile ? '6px 8px' : '7px 9px',
+      padding: isMobile ? '6px 8px' : '6px 8px',
       borderRadius: '8px',
       border: '1px solid rgba(255, 255, 255, 0.1)',
       background: lang === 'en' ? 'rgba(99, 102, 241, 0.2)' : 'rgba(34, 197, 94, 0.15)',
       color: lang === 'en' ? '#a5b4fc' : '#86efac',
-      fontSize: isMobile ? '0.65rem' : '0.68rem',
+      fontSize: isMobile ? '0.65rem' : '0.66rem',
       fontWeight: '600',
       cursor: 'pointer',
       transition: 'all 0.2s ease',
@@ -2103,9 +2102,9 @@ export default function App() {
       flexShrink: 0,
     },
     searchBar: {
-      flex: '1 1 220px',
-      minWidth: isMobile ? '100%' : '120px',
-      maxWidth: isMobile ? '100%' : '320px',
+      flex: '1 1 200px',
+      minWidth: isMobile ? '100%' : '110px',
+      maxWidth: isMobile ? '100%' : '280px',
       position: 'relative',
     },
     searchInput: {
@@ -3007,11 +3006,11 @@ export default function App() {
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
                 <div style={{ width: 9, height: 9, borderRadius: '50%', background: '#4a90d9', boxShadow: '0 0 6px rgba(74,144,217,0.5)' }}/>
-                <span style={{ opacity: 0.8 }}>{lang === 'ko' ? '구약' : 'OT'}</span>
+                <span style={{ opacity: 0.8 }}>{lang === 'ko' ? '구약' : 'Old Testament'}</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
                 <div style={{ width: 9, height: 9, borderRadius: '50%', background: '#e056fd', boxShadow: '0 0 6px rgba(224,86,253,0.5)' }}/>
-                <span style={{ opacity: 0.8 }}>{lang === 'ko' ? '신약' : 'NT'}</span>
+                <span style={{ opacity: 0.8 }}>{lang === 'ko' ? '신약' : 'New Testament'}</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
                 <div style={{ width: 9, height: 9, borderRadius: '50%', background: 'linear-gradient(135deg, #ff6b6b, #ffd700, #667eea)', boxShadow: '0 0 6px rgba(255,215,0,0.5)' }}/>
