@@ -2116,34 +2116,40 @@ export default function App() {
     filterBar: {
       background: 'rgba(8, 8, 20, 0.6)',
       borderBottom: '1px solid rgba(255, 255, 255, 0.04)',
-      padding: '10px 20px',
+      padding: isMobile ? '8px 12px' : '10px 20px',
       display: 'flex',
+      flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'center',
-      gap: '8px',
+      justifyContent: isMobile ? 'flex-start' : 'center',
+      gap: isMobile ? '6px' : '8px',
       flexWrap: 'wrap',
+      overflowX: isMobile ? 'auto' : 'visible',
     },
     filterSelect: {
-      padding: '6px 12px',
+      padding: isMobile ? '5px 8px' : '6px 12px',
       borderRadius: '6px',
       border: '1px solid rgba(255, 255, 255, 0.1)',
       background: 'rgba(255, 255, 255, 0.05)',
       color: '#fff',
-      fontSize: '0.75rem',
+      fontSize: isMobile ? '0.65rem' : '0.75rem',
       outline: 'none',
       cursor: 'pointer',
-      minWidth: '100px',
+      minWidth: 'auto',
+      maxWidth: isMobile ? '90px' : '120px',
+      flexShrink: 0,
     },
     filterChip: {
-      padding: '5px 12px',
+      padding: isMobile ? '4px 8px' : '5px 12px',
       borderRadius: '16px',
       border: '1px solid rgba(255, 255, 255, 0.1)',
       background: 'rgba(255, 255, 255, 0.04)',
       color: 'rgba(255, 255, 255, 0.7)',
-      fontSize: '0.7rem',
+      fontSize: isMobile ? '0.6rem' : '0.7rem',
       fontWeight: '500',
       cursor: 'pointer',
       transition: 'all 0.2s ease',
+      whiteSpace: 'nowrap',
+      flexShrink: 0,
     },
     filterChipActive: {
       background: 'linear-gradient(135deg, rgba(251, 191, 36, 0.25), rgba(245, 158, 11, 0.25))',
@@ -2255,23 +2261,54 @@ export default function App() {
 
       {/* 필터 바 */}
       {showFilters && (
-        <div style={headerStyles.filterBar}>
-          {/* 구약/신약 필터 */}
+        <div style={{
+          background: 'rgba(8, 8, 20, 0.6)',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.04)',
+          padding: isMobile ? '10px 12px' : '10px 20px',
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'flex-start',
+          gap: '8px',
+          flexWrap: 'wrap',
+          overflowX: 'auto'
+        }}>
+          {/* 드롭다운들 */}
           <select
             value={selectedTestament}
             onChange={(e) => setSelectedTestament(e.target.value)}
-            style={headerStyles.filterSelect}
+            style={{
+              padding: '6px 10px',
+              borderRadius: '8px',
+              border: '1px solid rgba(255, 255, 255, 0.15)',
+              background: 'rgba(255, 255, 255, 0.08)',
+              color: '#fff',
+              fontSize: '0.75rem',
+              cursor: 'pointer',
+              width: 'auto',
+              flex: 'none'
+            }}
           >
             <option value="both">{t(lang, 'all')}</option>
             <option value="old">{t(lang, 'oldTestament')}</option>
             <option value="new">{t(lang, 'newTestament')}</option>
           </select>
 
-          {/* 성경 책 필터 */}
           <select
             value={selectedBook}
             onChange={(e) => setSelectedBook(e.target.value)}
-            style={headerStyles.filterSelect}
+            style={{
+              padding: '6px 10px',
+              borderRadius: '8px',
+              border: '1px solid rgba(255, 255, 255, 0.15)',
+              background: 'rgba(255, 255, 255, 0.08)',
+              color: '#fff',
+              fontSize: '0.75rem',
+              cursor: 'pointer',
+              width: 'auto',
+              flex: 'none',
+              maxWidth: '120px'
+            }}
           >
             <option value="all">{t(lang, 'allBooks')}</option>
             <optgroup label={t(lang, 'oldTestamentGroup')}>
@@ -2290,11 +2327,21 @@ export default function App() {
             </optgroup>
           </select>
 
-          {/* 시대 필터 */}
           <select
             value={selectedEra}
             onChange={(e) => setSelectedEra(e.target.value)}
-            style={headerStyles.filterSelect}
+            style={{
+              padding: '6px 10px',
+              borderRadius: '8px',
+              border: '1px solid rgba(255, 255, 255, 0.15)',
+              background: 'rgba(255, 255, 255, 0.08)',
+              color: '#fff',
+              fontSize: '0.75rem',
+              cursor: 'pointer',
+              width: 'auto',
+              flex: 'none',
+              maxWidth: '100px'
+            }}
           >
             <option value="all">{t(lang, 'allEras')}</option>
             {eras.map(era => (
@@ -2304,14 +2351,30 @@ export default function App() {
             ))}
           </select>
 
+          {/* 구분선 */}
+          <span style={{ width: '1px', height: '20px', background: 'rgba(255,255,255,0.1)', margin: '0 4px' }} />
+
           {/* 빠른 필터 칩 */}
           {QUICK_FILTERS.map(filter => (
             <button
               key={filter.id}
               onClick={() => setActiveQuickFilter(activeQuickFilter === filter.id ? null : filter.id)}
               style={{
-                ...headerStyles.filterChip,
-                ...(activeQuickFilter === filter.id ? headerStyles.filterChipActive : {})
+                padding: '5px 12px',
+                borderRadius: '16px',
+                border: activeQuickFilter === filter.id
+                  ? '1px solid rgba(251, 191, 36, 0.5)'
+                  : '1px solid rgba(255, 255, 255, 0.1)',
+                background: activeQuickFilter === filter.id
+                  ? 'rgba(251, 191, 36, 0.2)'
+                  : 'rgba(255, 255, 255, 0.04)',
+                color: activeQuickFilter === filter.id ? '#fbbf24' : 'rgba(255, 255, 255, 0.7)',
+                fontSize: '0.7rem',
+                fontWeight: '500',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+                width: 'auto',
+                flex: 'none'
               }}
             >
               {lang === 'ko' ? filter.label_ko : filter.label_en}
@@ -2322,8 +2385,17 @@ export default function App() {
           <button
             onClick={() => setShowMBTI(!showMBTI)}
             style={{
-              ...headerStyles.filterChip,
-              ...(showMBTI ? { background: 'rgba(251, 191, 36, 0.2)', borderColor: 'rgba(251, 191, 36, 0.4)', color: '#fbbf24' } : {})
+              padding: '5px 12px',
+              borderRadius: '16px',
+              border: showMBTI ? '1px solid rgba(251, 191, 36, 0.5)' : '1px solid rgba(255, 255, 255, 0.1)',
+              background: showMBTI ? 'rgba(251, 191, 36, 0.2)' : 'rgba(255, 255, 255, 0.04)',
+              color: showMBTI ? '#fbbf24' : 'rgba(255, 255, 255, 0.7)',
+              fontSize: '0.7rem',
+              fontWeight: '500',
+              cursor: 'pointer',
+              whiteSpace: 'nowrap',
+              width: 'auto',
+              flex: 'none'
             }}
           >
             🧠 MBTI
@@ -2333,10 +2405,17 @@ export default function App() {
           <button
             onClick={handleReset}
             style={{
-              ...headerStyles.filterChip,
+              padding: '5px 12px',
+              borderRadius: '16px',
+              border: '1px solid rgba(239, 68, 68, 0.3)',
               background: 'rgba(239, 68, 68, 0.1)',
-              borderColor: 'rgba(239, 68, 68, 0.3)',
-              color: 'rgba(252, 165, 165, 0.9)'
+              color: 'rgba(252, 165, 165, 0.9)',
+              fontSize: '0.7rem',
+              fontWeight: '500',
+              cursor: 'pointer',
+              whiteSpace: 'nowrap',
+              width: 'auto',
+              flex: 'none'
             }}
           >
             ↺ {t(lang, 'reset')}
@@ -2456,17 +2535,18 @@ export default function App() {
       {/* 사건 타임라인 바 */}
       {showFilters && (
         <div style={{
-          padding: '8px 16px',
+          padding: '8px 12px',
           background: 'rgba(0, 0, 0, 0.2)',
           borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
           display: 'flex',
+          flexDirection: 'row',
           flexWrap: 'wrap',
           gap: '6px',
           alignItems: 'center',
-          maxHeight: isMobile ? '120px' : '80px',
+          maxHeight: isMobile ? '100px' : '70px',
           overflowY: 'auto'
         }}>
-          <span style={{ fontSize: '0.7rem', opacity: 0.5, marginRight: '4px' }}>
+          <span style={{ fontSize: '0.65rem', opacity: 0.5, marginRight: '4px', flex: 'none' }}>
             {lang === 'ko' ? '사건' : 'Events'}
           </span>
           {eventsByChronology.map(event => (
@@ -2481,19 +2561,20 @@ export default function App() {
                 }
               }}
               style={{
-                padding: '4px 10px',
-                borderRadius: '12px',
-                fontSize: '0.7rem',
+                padding: '3px 8px',
+                borderRadius: '10px',
+                fontSize: '0.65rem',
                 border: selectedEvent === event.id
                   ? '1px solid rgba(251, 191, 36, 0.6)'
-                  : '1px solid rgba(255, 255, 255, 0.1)',
+                  : '1px solid rgba(255, 255, 255, 0.08)',
                 background: selectedEvent === event.id
                   ? 'rgba(251, 191, 36, 0.2)'
-                  : 'rgba(255, 255, 255, 0.04)',
-                color: selectedEvent === event.id ? '#fbbf24' : 'rgba(255, 255, 255, 0.7)',
+                  : 'rgba(255, 255, 255, 0.03)',
+                color: selectedEvent === event.id ? '#fbbf24' : 'rgba(255, 255, 255, 0.6)',
                 cursor: 'pointer',
-                transition: 'all 0.2s ease',
-                whiteSpace: 'nowrap'
+                whiteSpace: 'nowrap',
+                width: 'auto',
+                flex: 'none'
               }}
             >
               {event.icon} {lang === 'ko' ? event.name_ko : event.name_en}
@@ -2627,18 +2708,16 @@ export default function App() {
         width: '100%',
         maxWidth: '728px',
         margin: '0 auto',
-        padding: '8px 16px',
-        background: 'linear-gradient(135deg, rgba(20,20,40,0.9), rgba(30,25,50,0.9))',
-        borderBottom: '1px solid rgba(255,215,0,0.1)',
+        background: 'rgba(15, 15, 30, 0.95)',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        minHeight: '100px'
+        overflow: 'hidden'
       }}>
         <AdSenseUnit
           slot="TOP_BANNER_AD"
           format="horizontal"
-          style={{ width: '100%', minHeight: '90px' }}
+          style={{ width: '100%', maxHeight: '90px' }}
         />
       </div>
 
