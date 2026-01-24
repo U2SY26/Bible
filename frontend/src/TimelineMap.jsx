@@ -48,6 +48,11 @@ function TimelineMap({
   }, [onClose]);
 
   const nodeSize = isMobile ? 45 : 55;
+  const labels = {
+    title: lang === 'ko' ? '성경 인물 타임라인' : 'Bible Character Timeline',
+    subtitle: lang === 'ko' ? '시대별 인물 목록' : 'Characters by Era',
+    eternal: lang === 'ko' ? '✨ 영원' : '✨ Eternal'
+  };
 
   return (
     <div style={{
@@ -70,10 +75,10 @@ function TimelineMap({
       }}>
         <div>
           <h2 style={{ margin: 0, fontSize: '1rem', color: '#ffd700' }}>
-            성경 인물 타임라인
+            {labels.title}
           </h2>
           <span style={{ fontSize: '0.6rem', color: '#666' }}>
-            시대별 인물 목록
+            {labels.subtitle}
           </span>
         </div>
         <button
@@ -118,7 +123,7 @@ function TimelineMap({
             borderLeft: '3px solid #ffd700'
           }}>
             <div style={{ fontSize: '0.7rem', color: '#ffd700', fontWeight: 600 }}>
-              ✨ 영원
+              {labels.eternal}
             </div>
           </div>
 

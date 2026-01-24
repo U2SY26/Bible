@@ -2059,7 +2059,7 @@ export default function App() {
     navButtons: {
       display: 'flex',
       alignItems: 'center',
-      gap: isMobile ? '4px' : '6px',
+      gap: isMobile ? '3px' : '4px',
       flexShrink: 0,
       minWidth: 0,
       flexWrap: 'nowrap',
@@ -2070,7 +2070,7 @@ export default function App() {
       alignItems: 'center',
       justifyContent: 'center',
       gap: '4px',
-      padding: isMobile ? '6px 8px' : '6px 9px',
+      padding: isMobile ? '6px 6px' : '6px 6px',
       borderRadius: '8px',
       border: '1px solid rgba(255, 255, 255, 0.08)',
       background: 'rgba(255, 255, 255, 0.04)',
@@ -2089,7 +2089,7 @@ export default function App() {
       color: '#a5b4fc',
     },
     langBtn: {
-      padding: isMobile ? '6px 8px' : '6px 8px',
+      padding: isMobile ? '6px 6px' : '6px 6px',
       borderRadius: '8px',
       border: '1px solid rgba(255, 255, 255, 0.1)',
       background: lang === 'en' ? 'rgba(99, 102, 241, 0.2)' : 'rgba(34, 197, 94, 0.15)',
@@ -2215,7 +2215,7 @@ export default function App() {
               }}
               onClick={() => setShowTimeline(!showTimeline)}
             >
-              📅 타임라인
+              {t(lang, 'timeline')}
             </button>
 
             <button
@@ -4225,7 +4225,7 @@ function TimelineViewer({ characters, events, eras, relationships, lang, isMobil
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent'
         }}>
-          📅 성경 타임라인
+          📅 {t(lang, 'timelineTitle')}
         </h2>
         <button
           onClick={onClose}

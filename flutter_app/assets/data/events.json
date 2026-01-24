@@ -1,0 +1,3210 @@
+{
+  "events": [
+    {
+      "id": "creation",
+      "name_ko": "천지 창조",
+      "name_en": "Creation",
+      "year": -4000,
+      "era": "creation",
+      "books": [
+        "gen"
+      ],
+      "verses": [
+        "창세기 1:1-31",
+        "창세기 2:1-3"
+      ],
+      "verse_text_ko": "태초에 하나님이 천지를 창조하시니라",
+      "verse_text_en": "In the beginning God created the heavens and the earth",
+      "description_ko": "하나님이 6일 동안 천지만물을 창조하시고 7일째 안식하심",
+      "description_en": "God created the heavens, earth, and all living things in six days and rested on the seventh",
+      "characters": [
+        "god"
+      ],
+      "location": "에덴",
+      "icon": "🌍",
+      "commentary_ko": "창조 기사는 하나님의 전능하심과 만물의 근원되심을 선포합니다. 말씀으로 무에서 유를 창조하신 하나님의 능력이 나타납니다."
+    },
+    {
+      "id": "fall_of_man",
+      "name_ko": "인간의 타락",
+      "name_en": "Fall of Man",
+      "year": -4000,
+      "era": "creation",
+      "books": [
+        "gen"
+      ],
+      "verses": [
+        "창세기 3:1-24"
+      ],
+      "verse_text_ko": "선악을 알게 하는 나무의 열매는 먹지 말라",
+      "verse_text_en": "You must not eat from the tree of the knowledge of good and evil",
+      "description_ko": "아담과 하와가 뱀의 유혹에 넘어가 선악과를 먹고 에덴에서 쫓겨남",
+      "description_en": "Adam and Eve ate the forbidden fruit after being tempted by the serpent and were expelled from Eden",
+      "characters": [
+        "adam",
+        "eve",
+        "god"
+      ],
+      "location": "에덴동산",
+      "icon": "🍎",
+      "commentary_ko": "인류 최초의 죄로 인해 죽음이 세상에 들어왔습니다. 그러나 하나님은 여자의 후손이 뱀의 머리를 상하게 할 것을 약속하셨습니다(원시복음)."
+    },
+    {
+      "id": "cain_abel",
+      "name_ko": "가인과 아벨",
+      "name_en": "Cain and Abel",
+      "year": -3900,
+      "era": "creation",
+      "books": [
+        "gen"
+      ],
+      "verses": [
+        "창세기 4:1-16"
+      ],
+      "verse_text_ko": "가인이 그의 아우 아벨을 쳐죽이니라",
+      "verse_text_en": "Cain attacked his brother Abel and killed him",
+      "description_ko": "가인이 질투로 아벨을 살해한 최초의 살인 사건",
+      "description_en": "Cain killed his brother Abel out of jealousy - the first murder",
+      "characters": [
+        "cain",
+        "abel",
+        "adam",
+        "eve"
+      ],
+      "location": "에덴 동쪽",
+      "icon": "⚔️",
+      "commentary_ko": "하나님께서는 제물보다 마음을 보십니다. 가인의 제물이 거부된 것은 그의 마음이 바르지 않았기 때문입니다."
+    },
+    {
+      "id": "flood",
+      "name_ko": "노아의 홍수",
+      "name_en": "Noah's Flood",
+      "year": -2350,
+      "era": "flood",
+      "books": [
+        "gen"
+      ],
+      "verses": [
+        "창세기 6:5-8:22"
+      ],
+      "verse_text_ko": "내가 홍수를 땅에 일으켜 무릇 생명의 기운이 있는 모든 육체를 멸하리라",
+      "verse_text_en": "I am going to bring floodwaters on the earth to destroy all life",
+      "description_ko": "하나님이 타락한 세상을 홍수로 심판하시고 노아 가족만 방주로 구원하심",
+      "description_en": "God judged the corrupt world with a flood, saving only Noah and his family through the ark",
+      "characters": [
+        "noah",
+        "god"
+      ],
+      "location": "아라랏산",
+      "icon": "🌊",
+      "commentary_ko": "홍수 심판은 죄에 대한 하나님의 공의를 보여줍니다. 동시에 노아를 구원하심으로 은혜의 하나님을 계시합니다."
+    },
+    {
+      "id": "rainbow_covenant",
+      "name_ko": "무지개 언약",
+      "name_en": "Rainbow Covenant",
+      "era": "patriarchs",
+      "year": -2350,
+      "icon": "🌈",
+      "characters": [
+        "god",
+        "noah"
+      ],
+      "description_ko": "하나님이 다시는 홍수로 멸망시키지 않겠다고 무지개로 언약하심.",
+      "description_en": "God made covenant with rainbow, never to destroy by flood again.",
+      "verses": [
+        "창세기 9:12-17"
+      ],
+      "verse_text_ko": "내가 내 무지개를 구름 속에 두었나니 이것이 나와 세상 사이의 언약의 증거니라",
+      "verse_text_en": "I have set my rainbow in the clouds, and it will be the sign of the covenant.",
+      "location": "아라랏",
+      "commentary_ko": "하나님의 은혜의 첫 언약. 무지개는 하나님의 신실하심의 상징."
+    },
+    {
+      "id": "babel_tower",
+      "name_ko": "바벨탑 사건",
+      "name_en": "Tower of Babel",
+      "year": -2200,
+      "era": "flood",
+      "books": [
+        "gen"
+      ],
+      "verses": [
+        "창세기 11:1-9"
+      ],
+      "verse_text_ko": "자, 우리가 하늘에 닿도록 탑을 쌓아 우리 이름을 내자",
+      "verse_text_en": "Come, let us build ourselves a city, with a tower that reaches to the heavens",
+      "description_ko": "인류가 하늘에 닿는 탑을 쌓으려 하자 하나님이 언어를 혼잡케 하심",
+      "description_en": "Humans tried to build a tower to heaven; God confused their languages",
+      "characters": [
+        "god"
+      ],
+      "location": "시날 평지",
+      "icon": "🗼",
+      "commentary_ko": "인간의 교만과 하나님을 대적하려는 시도에 대한 심판입니다. 다양한 언어와 민족의 기원을 설명합니다."
+    },
+    {
+      "id": "abraham_call",
+      "name_ko": "아브라함의 소명",
+      "name_en": "Call of Abraham",
+      "era": "patriarchs",
+      "year": -2000,
+      "icon": "🚶",
+      "characters": [
+        "abraham"
+      ],
+      "description_ko": "하나님이 아브람을 부르시어 약속의 땅으로 가라고 명하심.",
+      "description_en": "God called Abram to leave his country for the promised land.",
+      "verses": [
+        "창세기 12:1-3"
+      ],
+      "verse_text_ko": "네가 축복의 근원이 될지라 땅의 모든 족속이 너로 말미암아 복을 얻을 것이라",
+      "verse_text_en": "You will be a blessing... all peoples on earth will be blessed through you.",
+      "location": "하란 → 가나안",
+      "commentary_ko": "구원 역사의 새 출발. 믿음의 조상 아브라함의 부르심."
+    },
+    {
+      "id": "sodom_gomorrah",
+      "name_ko": "소돔과 고모라 멸망",
+      "name_en": "Destruction of Sodom and Gomorrah",
+      "year": -2067,
+      "era": "patriarchs",
+      "books": [
+        "gen"
+      ],
+      "verses": [
+        "창세기 18:16-19:29"
+      ],
+      "verse_text_ko": "여호와께서 하늘 곧 여호와에게로부터 유황과 불을 소돔과 고모라에 비같이 내리사",
+      "verse_text_en": "The LORD rained down burning sulfur on Sodom and Gomorrah",
+      "description_ko": "죄악이 관영한 소돔과 고모라를 유황불로 심판하시고 롯만 구원하심",
+      "description_en": "God destroyed Sodom and Gomorrah with fire and brimstone but saved Lot",
+      "characters": [
+        "abraham",
+        "lot",
+        "god"
+      ],
+      "location": "소돔, 고모라",
+      "icon": "🔥",
+      "commentary_ko": "죄에 대한 하나님의 심판을 보여주는 대표적 사건입니다. 아브라함의 중보기도도 기록되어 있습니다."
+    },
+    {
+      "id": "isaac_sacrifice",
+      "name_ko": "이삭 번제 사건",
+      "name_en": "Sacrifice of Isaac",
+      "year": -2054,
+      "era": "patriarchs",
+      "books": [
+        "gen"
+      ],
+      "verses": [
+        "창세기 22:1-19"
+      ],
+      "verse_text_ko": "네 아들 네 사랑하는 독자 이삭을 데리고 모리아 땅으로 가서 번제로 드리라",
+      "verse_text_en": "Take your son, your only son Isaac, whom you love, and sacrifice him as a burnt offering",
+      "description_ko": "아브라함이 이삭을 번제로 드리려 하자 하나님이 대신 숫양을 예비하심",
+      "description_en": "Abraham was willing to sacrifice Isaac but God provided a ram instead",
+      "characters": [
+        "abraham",
+        "isaac",
+        "god"
+      ],
+      "location": "모리아산",
+      "icon": "🐏",
+      "commentary_ko": "아브라함 믿음의 절정입니다. 이삭은 그리스도의 예표이며, 여호와 이레(공급하시는 하나님)가 선포됩니다."
+    },
+    {
+      "id": "jacob_esau_birthright",
+      "name_ko": "장자권 매매",
+      "name_en": "Esau Sells Birthright",
+      "year": -2006,
+      "era": "patriarchs",
+      "books": [
+        "gen"
+      ],
+      "verses": [
+        "창세기 25:29-34"
+      ],
+      "verse_text_ko": "에서가 장자의 명분을 업신여겼더라",
+      "verse_text_en": "So Esau despised his birthright",
+      "description_ko": "에서가 배고픔에 장자권을 팥죽 한 그릇에 야곱에게 팔아넘김",
+      "description_en": "Esau sold his birthright to Jacob for a bowl of stew",
+      "characters": [
+        "jacob",
+        "esau"
+      ],
+      "location": "가나안",
+      "icon": "🍲",
+      "commentary_ko": "영적인 것을 육적인 것과 바꾼 에서의 어리석음을 보여줍니다. 세속적인 자의 경고가 됩니다(히 12:16)."
+    },
+    {
+      "id": "jacob_ladder",
+      "name_ko": "야곱의 사닥다리",
+      "name_en": "Jacob's Ladder",
+      "era": "patriarchs",
+      "year": -1760,
+      "icon": "🪜",
+      "characters": [
+        "jacob",
+        "god"
+      ],
+      "description_ko": "야곱이 벧엘에서 하늘에 닿은 사닥다리와 천사들을 꿈에 봄.",
+      "description_en": "Jacob dreamed of ladder to heaven with angels at Bethel.",
+      "verses": [
+        "창세기 28:10-22"
+      ],
+      "verse_text_ko": "이것은 하나님의 집이요 이는 하늘의 문이로다",
+      "verse_text_en": "This is the house of God; this is the gate of heaven.",
+      "location": "벧엘",
+      "commentary_ko": "하나님과 인간의 연결. 예수님이 이 사닥다리의 성취."
+    },
+    {
+      "id": "jacob_wrestling",
+      "name_ko": "야곱의 씨름",
+      "name_en": "Jacob Wrestles with God",
+      "era": "patriarchs",
+      "year": -1739,
+      "icon": "🤼",
+      "characters": [
+        "jacob",
+        "god"
+      ],
+      "description_ko": "야곱이 얍복 강가에서 천사와 밤새 씨름하고 이스라엘이란 이름을 받음.",
+      "description_en": "Jacob wrestled with angel at Jabbok, received name Israel.",
+      "verses": [
+        "창세기 32:22-32"
+      ],
+      "verse_text_ko": "네 이름을 이스라엘이라 하라 네가 하나님과 사람들과 겨루어 이겼음이니라",
+      "verse_text_en": "Your name will be Israel, because you have struggled with God and men and overcome.",
+      "location": "브니엘(얍복 강)",
+      "commentary_ko": "야곱의 변화. 하나님을 붙잡고 축복을 구함."
+    },
+    {
+      "id": "joseph_sold",
+      "name_ko": "요셉이 팔려감",
+      "name_en": "Joseph Sold by Brothers",
+      "era": "patriarchs",
+      "year": -1728,
+      "icon": "💔",
+      "characters": [
+        "joseph",
+        "judah",
+        "reuben"
+      ],
+      "description_ko": "요셉의 형들이 시기하여 그를 이스마엘 상인에게 노예로 팜.",
+      "description_en": "Joseph's brothers sold him to Ishmaelite traders as a slave.",
+      "verses": [
+        "창세기 37:23-28"
+      ],
+      "verse_text_ko": "유다가 형제들에게 이르되... 우리가 그를 이스마엘 사람들에게 팔자",
+      "verse_text_en": "Judah said to his brothers... let's sell him to the Ishmaelites.",
+      "location": "도단",
+      "commentary_ko": "악한 의도가 하나님의 선한 계획의 일부가 됨."
+    },
+    {
+      "id": "joseph_pharaoh",
+      "name_ko": "요셉의 총리 등극",
+      "name_en": "Joseph Becomes Governor",
+      "year": -1885,
+      "era": "patriarchs",
+      "books": [
+        "gen"
+      ],
+      "verses": [
+        "창세기 41:37-57"
+      ],
+      "verse_text_ko": "애굽 온 땅을 네 손에 맡기노라",
+      "verse_text_en": "I hereby put you in charge of the whole land of Egypt",
+      "description_ko": "요셉이 바로의 꿈을 해석하고 애굽의 총리가 됨",
+      "description_en": "Joseph interpreted Pharaoh's dreams and became governor of Egypt",
+      "characters": [
+        "joseph",
+        "pharaoh_joseph"
+      ],
+      "location": "이집트",
+      "icon": "👑",
+      "commentary_ko": "고난 후의 영광입니다. 하나님의 때에 높임을 받은 요셉은 그리스도의 예표입니다."
+    },
+    {
+      "id": "moses_birth",
+      "name_ko": "모세의 탄생",
+      "name_en": "Birth of Moses",
+      "year": -1526,
+      "era": "exodus",
+      "books": [
+        "exo"
+      ],
+      "verses": [
+        "출애굽기 2:1-10"
+      ],
+      "verse_text_ko": "그가 그 아이를 보니 잘 생긴 아이라",
+      "verse_text_en": "When she saw that he was a fine child, she hid him",
+      "description_ko": "모세가 태어나 갈대 상자에 담겨 나일강에 떠내려가 바로의 딸에게 발견됨",
+      "description_en": "Moses was born, placed in a basket on the Nile, and found by Pharaoh's daughter",
+      "characters": [
+        "moses",
+        "miriam"
+      ],
+      "location": "이집트",
+      "icon": "👶",
+      "commentary_ko": "해방자 모세의 탄생입니다. 바로의 학살 명령 속에서도 하나님은 그를 보존하셨습니다."
+    },
+    {
+      "id": "burning_bush",
+      "name_ko": "불붙는 떨기나무",
+      "name_en": "Burning Bush",
+      "year": -1446,
+      "era": "exodus",
+      "type": "theophany",
+      "icon": "🔥",
+      "description_ko": "모세가 호렙산에서 불붙는 떨기나무에서 하나님을 만남.",
+      "description_en": "Moses encountered God in the burning bush at Horeb.",
+      "verse": "출 3:1-15",
+      "characters": [
+        "moses"
+      ],
+      "significance_ko": "모세의 소명과 하나님의 이름 계시",
+      "significance_en": "Moses' calling and revelation of God's name"
+    },
+    {
+      "id": "ten_plagues",
+      "name_ko": "열 가지 재앙",
+      "name_en": "Ten Plagues of Egypt",
+      "era": "exodus",
+      "year": -1446,
+      "icon": "🦟",
+      "characters": [
+        "moses",
+        "aaron",
+        "pharaoh_exodus",
+        "god"
+      ],
+      "description_ko": "하나님이 이집트에 열 가지 재앙을 내려 바로가 이스라엘을 보냄.",
+      "description_en": "God sent ten plagues on Egypt; Pharaoh released Israel.",
+      "verses": [
+        "출애굽기 7-12"
+      ],
+      "verse_text_ko": "내가 이집트 온 땅에 큰 부르짖음이 있게 하리니",
+      "verse_text_en": "There will be loud wailing throughout Egypt.",
+      "location": "이집트 전역",
+      "commentary_ko": "하나님의 권능이 이집트 신들보다 위대함을 증명함."
+    },
+    {
+      "id": "passover",
+      "name_ko": "유월절",
+      "name_en": "Passover",
+      "year": -1446,
+      "era": "exodus",
+      "books": [
+        "exo"
+      ],
+      "verses": [
+        "출애굽기 12:1-28"
+      ],
+      "verse_text_ko": "그 피를 취하여 어린 양을 먹을 집 좌우 문설주와 인방에 바르고",
+      "verse_text_en": "Take some of the blood and put it on the sides and tops of the doorframes",
+      "description_ko": "이스라엘이 어린 양의 피로 장자의 재앙을 피함",
+      "description_en": "Israel was saved from the plague of the firstborn by the blood of the lamb",
+      "characters": [
+        "moses",
+        "god"
+      ],
+      "location": "이집트",
+      "icon": "🩸",
+      "commentary_ko": "유월절 어린 양은 그리스도의 대표적 예표입니다(고전 5:7). 피로 말미암는 구원의 원형입니다."
+    },
+    {
+      "id": "exodus_event",
+      "name_ko": "출애굽",
+      "name_en": "The Exodus",
+      "year": -1446,
+      "era": "exodus",
+      "books": [
+        "exo"
+      ],
+      "verses": [
+        "출애굽기 12:31-42"
+      ],
+      "verse_text_ko": "이스라엘 자손은 라암셋을 떠나서 숙곳에 이르렀으니",
+      "verse_text_en": "The Israelites journeyed from Rameses to Sukkoth",
+      "description_ko": "이스라엘 백성이 430년 만에 이집트를 떠남",
+      "description_en": "The Israelites left Egypt after 430 years",
+      "characters": [
+        "moses",
+        "aaron",
+        "miriam",
+        "god"
+      ],
+      "location": "라암셋 → 숙곳",
+      "icon": "🚶‍♂️",
+      "commentary_ko": "구약에서 가장 중요한 구원 사건입니다. 하나님의 구속 사역의 원형으로, 그리스도의 구속을 예표합니다."
+    },
+    {
+      "id": "red_sea",
+      "name_ko": "홍해 도하",
+      "name_en": "Crossing the Red Sea",
+      "year": -1446,
+      "era": "exodus",
+      "books": [
+        "exo"
+      ],
+      "verses": [
+        "출애굽기 14:1-31"
+      ],
+      "verse_text_ko": "여호와께서 큰 동풍이 밤새도록 바닷물을 물러가게 하시니",
+      "verse_text_en": "The LORD drove the sea back with a strong east wind",
+      "description_ko": "바다가 갈라지고 이스라엘이 건넌 후 애굽 군대가 수몰됨",
+      "description_en": "The sea parted for Israel and closed on the Egyptian army",
+      "characters": [
+        "moses",
+        "god"
+      ],
+      "location": "홍해",
+      "icon": "🌊",
+      "commentary_ko": "하나님의 능력으로 불가능이 가능해졌습니다. 세례의 예표이며(고전 10:2), 완전한 구원을 상징합니다."
+    },
+    {
+      "id": "ten_commandments",
+      "name_ko": "십계명 수여",
+      "name_en": "Ten Commandments",
+      "year": -1446,
+      "era": "exodus",
+      "books": [
+        "exo"
+      ],
+      "verses": [
+        "출애굽기 20:1-17"
+      ],
+      "verse_text_ko": "나는 너를 애굽 땅, 종 되었던 집에서 인도하여 낸 네 하나님 여호와니라",
+      "verse_text_en": "I am the LORD your God, who brought you out of Egypt",
+      "description_ko": "모세가 시내산에서 하나님께 십계명을 받음",
+      "description_en": "Moses received the Ten Commandments on Mount Sinai",
+      "characters": [
+        "moses",
+        "god"
+      ],
+      "location": "시내산",
+      "icon": "📜",
+      "commentary_ko": "하나님과 이스라엘 사이의 언약의 핵심입니다. 도덕법의 기초이며 그리스도 안에서 완성됩니다(마 5:17)."
+    },
+    {
+      "id": "golden_calf",
+      "name_ko": "금송아지 숭배",
+      "name_en": "Golden Calf Worship",
+      "year": -1445,
+      "era": "exodus",
+      "type": "sin",
+      "icon": "🐂",
+      "description_ko": "모세가 산에 있는 동안 백성들이 금송아지를 만들어 숭배.",
+      "description_en": "People made and worshipped a golden calf while Moses was on the mountain.",
+      "verse": "출 32:1-35",
+      "characters": [
+        "moses",
+        "aaron"
+      ],
+      "significance_ko": "우상숭배의 죄와 심판",
+      "significance_en": "Sin of idolatry and judgment"
+    },
+    {
+      "id": "twelve_spies",
+      "name_ko": "열두 정탐꾼",
+      "name_en": "Twelve Spies",
+      "year": -1444,
+      "era": "exodus",
+      "type": "failure",
+      "icon": "🍇",
+      "description_ko": "가나안 정탐 후 열 명이 부정적 보고, 여호수아와 갈렙만 신뢰.",
+      "description_en": "Ten spies gave negative report; only Joshua and Caleb trusted God.",
+      "verse": "민 13:1-14:38",
+      "characters": [
+        "moses",
+        "joshua",
+        "caleb"
+      ],
+      "significance_ko": "40년 광야 생활의 원인",
+      "significance_en": "Cause of 40 years in the wilderness"
+    },
+    {
+      "id": "jericho",
+      "name_ko": "여리고 정복",
+      "name_en": "Fall of Jericho",
+      "year": -1406,
+      "era": "conquest",
+      "books": [
+        "jos"
+      ],
+      "verses": [
+        "여호수아 6:1-27"
+      ],
+      "verse_text_ko": "성벽이 무너져 내린지라",
+      "verse_text_en": "The wall collapsed",
+      "description_ko": "이스라엘이 여리고 성을 7일간 돌며 함성을 지르자 성벽이 무너짐",
+      "description_en": "Jericho's walls fell after Israel marched around them for seven days",
+      "characters": [
+        "joshua",
+        "rahab",
+        "god"
+      ],
+      "location": "여리고",
+      "icon": "🏰",
+      "commentary_ko": "믿음으로 승리한 첫 전투입니다. 라합의 믿음도 기록됩니다(히 11:30-31)."
+    },
+    {
+      "id": "gideon_victory",
+      "name_ko": "기드온의 승리",
+      "name_en": "Gideon's Victory",
+      "year": -1162,
+      "era": "judges",
+      "books": [
+        "jdg"
+      ],
+      "verses": [
+        "사사기 7:1-25"
+      ],
+      "verse_text_ko": "삼백 명의 핥은 자들로 내가 너희를 구원하며",
+      "verse_text_en": "With the three hundred men that lapped I will save you",
+      "description_ko": "기드온이 300명으로 미디안 대군을 물리침",
+      "description_en": "Gideon defeated the Midianite army with only 300 men",
+      "characters": [
+        "gideon",
+        "god"
+      ],
+      "location": "하롯 샘",
+      "icon": "🏺",
+      "commentary_ko": "하나님은 적은 자로 많은 자를 이기게 하십니다. 인간의 능력이 아닌 하나님의 능력으로 승리합니다."
+    },
+    {
+      "id": "samson_delilah",
+      "name_ko": "삼손과 들릴라",
+      "name_en": "Samson and Delilah",
+      "year": -1070,
+      "era": "judges",
+      "type": "tragedy",
+      "icon": "✂️",
+      "description_ko": "들릴라가 삼손의 힘의 비밀을 알아냄.",
+      "description_en": "Delilah discovered the secret of Samson's strength.",
+      "verse": "삿 16:4-21",
+      "characters": [
+        "samson",
+        "delilah"
+      ],
+      "significance_ko": "유혹에 넘어감의 위험",
+      "significance_en": "Danger of yielding to temptation"
+    },
+    {
+      "id": "samuel_call",
+      "name_ko": "사무엘의 소명",
+      "name_en": "Samuel's Calling",
+      "era": "judges",
+      "year": -1090,
+      "icon": "👂",
+      "characters": [
+        "samuel",
+        "eli"
+      ],
+      "description_ko": "소년 사무엘이 밤에 하나님의 음성을 들음.",
+      "description_en": "Young Samuel heard God's voice at night.",
+      "verses": [
+        "사무엘상 3:1-10"
+      ],
+      "verse_text_ko": "말씀하옵소서 주의 종이 듣겠나이다",
+      "verse_text_en": "Speak, for your servant is listening.",
+      "location": "실로 성전",
+      "commentary_ko": "하나님의 부르심에 응답하는 마음."
+    },
+    {
+      "id": "david_goliath",
+      "name_ko": "다윗과 골리앗",
+      "name_en": "David and Goliath",
+      "year": -1024,
+      "era": "united_kingdom",
+      "type": "victory",
+      "icon": "🪨",
+      "description_ko": "소년 다윗이 거인 골리앗을 물매로 쓰러뜨림.",
+      "description_en": "Young David defeated giant Goliath with a sling.",
+      "verse": "삼상 17:1-58",
+      "characters": [
+        "david",
+        "goliath",
+        "saul"
+      ],
+      "significance_ko": "믿음으로 거인을 이김",
+      "significance_en": "Faith overcomes giants"
+    },
+    {
+      "id": "david_anointed",
+      "name_ko": "다윗 기름부음",
+      "name_en": "David Anointed",
+      "year": -1025,
+      "era": "united_kingdom",
+      "type": "coronation",
+      "icon": "👑",
+      "description_ko": "사무엘이 이새의 막내 다윗에게 기름을 부음.",
+      "description_en": "Samuel anointed David, Jesse's youngest son.",
+      "verse": "삼상 16:1-13",
+      "characters": [
+        "samuel",
+        "david",
+        "jesse"
+      ],
+      "significance_ko": "하나님은 중심을 보심",
+      "significance_en": "God looks at the heart"
+    },
+    {
+      "id": "temple_built",
+      "name_ko": "성전 건축",
+      "name_en": "Temple Built",
+      "year": -959,
+      "era": "united_kingdom",
+      "books": [
+        "1ki",
+        "2ch"
+      ],
+      "verses": [
+        "열왕기상 6:1-38"
+      ],
+      "verse_text_ko": "여호와의 영광이 여호와의 전에 가득하였더라",
+      "verse_text_en": "The glory of the LORD filled the temple",
+      "description_ko": "솔로몬이 예루살렘에 여호와의 성전을 건축함",
+      "description_en": "Solomon built the temple of the LORD in Jerusalem",
+      "characters": [
+        "solomon",
+        "god"
+      ],
+      "location": "예루살렘",
+      "icon": "🏛️",
+      "commentary_ko": "하나님의 임재가 거하는 곳입니다. 신약에서는 성도의 몸이 성령의 전입니다(고전 6:19)."
+    },
+    {
+      "id": "kingdom_divided",
+      "name_ko": "왕국 분열",
+      "name_en": "Kingdom Divided",
+      "year": -930,
+      "era": "divided_kingdom",
+      "type": "judgment",
+      "icon": "💔",
+      "description_ko": "르호보암의 강경책으로 이스라엘이 분열됨.",
+      "description_en": "Israel divided due to Rehoboam's harsh policies.",
+      "verse": "왕상 12:1-24",
+      "characters": [
+        "rehoboam",
+        "jeroboam"
+      ],
+      "significance_ko": "솔로몬 죄의 결과",
+      "significance_en": "Consequence of Solomon's sin"
+    },
+    {
+      "id": "carmel",
+      "name_ko": "갈멜산 대결",
+      "name_en": "Mount Carmel Contest",
+      "year": -869,
+      "era": "divided_kingdom",
+      "books": [
+        "1ki"
+      ],
+      "verses": [
+        "열왕기상 18:1-46"
+      ],
+      "verse_text_ko": "여호와 그는 하나님이시로다",
+      "verse_text_en": "The LORD—he is God!",
+      "description_ko": "엘리야가 갈멜산에서 바알 선지자 450명과 대결하여 승리",
+      "description_en": "Elijah defeated 450 prophets of Baal on Mount Carmel",
+      "characters": [
+        "elijah",
+        "god",
+        "ahab"
+      ],
+      "location": "갈멜산",
+      "icon": "🔥",
+      "commentary_ko": "참 하나님이 누구인지 결정적으로 증명된 사건입니다. 하나님만이 불로 응답하셨습니다."
+    },
+    {
+      "id": "elijah_taken",
+      "name_ko": "엘리야의 승천",
+      "name_en": "Elijah Taken to Heaven",
+      "year": -850,
+      "era": "divided_kingdom",
+      "books": [
+        "2ki"
+      ],
+      "verses": [
+        "열왕기하 2:1-14"
+      ],
+      "verse_text_ko": "불 수레와 불 말들이 두 사람을 갈라놓고 엘리야가 회오리 바람으로 하늘로 올라가더라",
+      "verse_text_en": "A chariot of fire and horses of fire appeared and Elijah went up to heaven in a whirlwind",
+      "description_ko": "엘리야가 죽지 않고 불 수레를 타고 승천함",
+      "description_en": "Elijah was taken to heaven in a chariot of fire",
+      "characters": [
+        "elijah",
+        "elisha",
+        "god"
+      ],
+      "location": "요단강",
+      "icon": "🔥",
+      "commentary_ko": "죽음을 경험하지 않고 하늘로 간 두 번째 사람입니다(에녹이 첫 번째). 그리스도의 승천을 예표합니다."
+    },
+    {
+      "id": "fall_of_jerusalem",
+      "name_ko": "예루살렘 함락",
+      "name_en": "Fall of Jerusalem",
+      "year": -586,
+      "era": "exile",
+      "books": [
+        "2ki",
+        "jer",
+        "lam"
+      ],
+      "verses": [
+        "열왕기하 25:1-21"
+      ],
+      "verse_text_ko": "느부갓네살이 예루살렘에 이르러 성을 에워싸고",
+      "verse_text_en": "Nebuchadnezzar marched against Jerusalem and laid siege to it",
+      "description_ko": "바벨론에 의해 예루살렘이 함락되고 성전이 파괴됨",
+      "description_en": "Jerusalem fell to Babylon and the temple was destroyed",
+      "characters": [
+        "jeremiah",
+        "nebuchadnezzar",
+        "zedekiah"
+      ],
+      "location": "예루살렘",
+      "icon": "🔥",
+      "commentary_ko": "불순종에 대한 최종 심판입니다. 그러나 예레미야는 70년 후 회복을 예언했습니다(렘 29:10)."
+    },
+    {
+      "id": "lions_den",
+      "name_ko": "사자 굴의 다니엘",
+      "name_en": "Daniel in Lions Den",
+      "year": -539,
+      "era": "exile",
+      "books": [
+        "dan"
+      ],
+      "verses": [
+        "다니엘 6:1-28"
+      ],
+      "verse_text_ko": "하나님이 천사를 보내어 사자들의 입을 봉하셨으므로",
+      "verse_text_en": "My God sent his angel, and he shut the mouths of the lions",
+      "description_ko": "다니엘이 기도를 멈추지 않아 사자 굴에 던져졌으나 구원받음",
+      "description_en": "Daniel was thrown into the lions' den for praying but was saved",
+      "characters": [
+        "daniel",
+        "god",
+        "darius"
+      ],
+      "location": "바벨론",
+      "icon": "🦁",
+      "commentary_ko": "세상 권세보다 하나님께 충성한 다니엘의 믿음입니다. 하나님은 신실한 자를 보호하십니다."
+    },
+    {
+      "id": "fiery_furnace",
+      "name_ko": "불 풀무",
+      "name_en": "Fiery Furnace",
+      "year": -580,
+      "era": "exile",
+      "type": "miracle",
+      "icon": "🔥",
+      "description_ko": "사드락, 메삭, 아벳느고가 풀무불에서 구출됨.",
+      "description_en": "Shadrach, Meshach, Abednego delivered from fiery furnace.",
+      "verse": "단 3:1-30",
+      "characters": [
+        "shadrach",
+        "meshach",
+        "abednego",
+        "nebuchadnezzar"
+      ],
+      "significance_ko": "신앙의 승리",
+      "significance_en": "Triumph of faith"
+    },
+    {
+      "id": "esther_saves",
+      "name_ko": "에스더의 구원",
+      "name_en": "Esther Saves Her People",
+      "year": -473,
+      "era": "exile",
+      "books": [
+        "est"
+      ],
+      "verses": [
+        "에스더 4:1-17"
+      ],
+      "verse_text_ko": "죽으면 죽으리이다",
+      "verse_text_en": "If I perish, I perish",
+      "description_ko": "에스더가 목숨을 걸고 왕 앞에 나아가 유대인을 구함",
+      "description_en": "Esther risked her life to save the Jewish people",
+      "characters": [
+        "esther",
+        "mordecai",
+        "haman",
+        "ahasuerus"
+      ],
+      "location": "수산 궁전",
+      "icon": "👸",
+      "commentary_ko": "\"이 때를 위함이 아닌지\"(에 4:14). 하나님의 섭리 가운데 우리의 소명을 깨닫게 합니다."
+    },
+    {
+      "id": "temple_rebuilt",
+      "name_ko": "성전 재건",
+      "name_en": "Temple Rebuilt",
+      "year": -516,
+      "era": "return",
+      "books": [
+        "ezr",
+        "hag",
+        "zec"
+      ],
+      "verses": [
+        "에스라 6:13-22"
+      ],
+      "verse_text_ko": "이 전이 완공되니라",
+      "verse_text_en": "The temple was completed",
+      "description_ko": "스룹바벨이 이끌어 제2성전을 완공함",
+      "description_en": "Zerubbabel led the completion of the second temple",
+      "characters": [
+        "zerubbabel",
+        "joshua_priest",
+        "haggai",
+        "zechariah_prophet"
+      ],
+      "location": "예루살렘",
+      "icon": "🏛️",
+      "commentary_ko": "포로 귀환 후 첫 번째 성전보다 못하지만 하나님의 임재는 동일합니다."
+    },
+    {
+      "id": "walls_rebuilt",
+      "name_ko": "성벽 재건",
+      "name_en": "Walls Rebuilt",
+      "year": -445,
+      "era": "return",
+      "books": [
+        "neh"
+      ],
+      "verses": [
+        "느헤미야 6:15-16"
+      ],
+      "verse_text_ko": "오십이 일 만에 성벽 공사가 끝나니",
+      "verse_text_en": "The wall was completed in fifty-two days",
+      "description_ko": "느헤미야의 지도 아래 52일 만에 예루살렘 성벽 재건",
+      "description_en": "Nehemiah led the rebuilding of Jerusalem's walls in 52 days",
+      "characters": [
+        "nehemiah",
+        "god"
+      ],
+      "location": "예루살렘",
+      "icon": "🧱",
+      "commentary_ko": "기도하며 일하는 느헤미야의 모습입니다. 한 손에는 무기, 한 손에는 연장을 들고 일했습니다."
+    },
+    {
+      "id": "nativity",
+      "name_ko": "예수님의 탄생",
+      "name_en": "Birth of Jesus",
+      "year": -4,
+      "era": "new_testament",
+      "books": [
+        "mat",
+        "luk"
+      ],
+      "verses": [
+        "누가복음 2:1-20"
+      ],
+      "verse_text_ko": "오늘 다윗의 동네에 너희를 위하여 구주가 나셨으니 곧 그리스도 주시니라",
+      "verse_text_en": "Today in the town of David a Savior has been born to you; he is the Messiah, the Lord",
+      "description_ko": "동정녀 마리아가 베들레헴에서 예수님을 낳음",
+      "description_en": "Jesus was born to the Virgin Mary in Bethlehem",
+      "characters": [
+        "jesus",
+        "mary",
+        "joseph_nt"
+      ],
+      "location": "베들레헴",
+      "icon": "⭐",
+      "commentary_ko": "하나님이 인간이 되신 성육신의 사건입니다. 천사들이 목자들에게 기쁜 소식을 전했습니다."
+    },
+    {
+      "id": "baptism_jesus",
+      "name_ko": "예수님의 세례",
+      "name_en": "Baptism of Jesus",
+      "year": 26,
+      "era": "new_testament",
+      "books": [
+        "mat",
+        "mrk",
+        "luk"
+      ],
+      "verses": [
+        "마태복음 3:13-17"
+      ],
+      "verse_text_ko": "이는 내 사랑하는 아들이요 내 기뻐하는 자라",
+      "verse_text_en": "This is my Son, whom I love; with him I am well pleased",
+      "description_ko": "예수님이 요단강에서 세례 요한에게 세례를 받으심",
+      "description_en": "Jesus was baptized by John the Baptist in the Jordan River",
+      "characters": [
+        "jesus",
+        "john_baptist",
+        "holy_spirit",
+        "god"
+      ],
+      "location": "요단강",
+      "icon": "🕊️",
+      "commentary_ko": "삼위일체가 동시에 나타나신 사건입니다. 성령이 비둘기처럼 내려오시고 아버지의 음성이 들렸습니다."
+    },
+    {
+      "id": "temptation",
+      "name_ko": "예수님의 시험",
+      "name_en": "Temptation of Jesus",
+      "year": 26,
+      "era": "new_testament",
+      "books": [
+        "mat",
+        "mrk",
+        "luk"
+      ],
+      "verses": [
+        "마태복음 4:1-11"
+      ],
+      "verse_text_ko": "사단아 물러가라 기록되었으되",
+      "verse_text_en": "Away from me, Satan! For it is written",
+      "description_ko": "예수님이 40일 금식 후 마귀의 세 가지 시험을 물리치심",
+      "description_en": "Jesus overcame Satan's three temptations after 40 days of fasting",
+      "characters": [
+        "jesus",
+        "satan"
+      ],
+      "location": "유대 광야",
+      "icon": "⛰️",
+      "commentary_ko": "아담이 실패한 곳에서 예수님은 승리하셨습니다. 말씀으로 시험을 이기시는 모범을 보여주셨습니다."
+    },
+    {
+      "id": "sermon_mount",
+      "name_ko": "산상수훈",
+      "name_en": "Sermon on the Mount",
+      "year": 27,
+      "era": "new_testament",
+      "books": [
+        "mat"
+      ],
+      "verses": [
+        "마태복음 5-7장"
+      ],
+      "verse_text_ko": "심령이 가난한 자는 복이 있나니 천국이 그들의 것임이요",
+      "verse_text_en": "Blessed are the poor in spirit, for theirs is the kingdom of heaven",
+      "description_ko": "예수님이 산에서 팔복과 천국 윤리를 가르치심",
+      "description_en": "Jesus taught the Beatitudes and kingdom ethics on the mountain",
+      "characters": [
+        "jesus",
+        "peter",
+        "john_apostle",
+        "james_zebedee"
+      ],
+      "location": "갈릴리 산",
+      "icon": "⛰️",
+      "commentary_ko": "하나님 나라의 헌법입니다. 내면의 변화를 강조하며 율법의 본래 의미를 해석하셨습니다."
+    },
+    {
+      "id": "peace_storm",
+      "name_ko": "풍랑을 잠잠케 하심",
+      "name_en": "Jesus Calms the Storm",
+      "year": 28,
+      "era": "new_testament",
+      "books": [
+        "mat",
+        "mrk",
+        "luk"
+      ],
+      "verses": [
+        "마가복음 4:35-41"
+      ],
+      "verse_text_ko": "잠잠하라 고요하라",
+      "verse_text_en": "Quiet! Be still!",
+      "description_ko": "예수님이 말씀으로 풍랑을 잠잠하게 하심",
+      "description_en": "Jesus commanded the wind and waves to be still",
+      "characters": [
+        "jesus",
+        "peter",
+        "john_apostle"
+      ],
+      "location": "갈릴리 바다",
+      "icon": "⛵",
+      "commentary_ko": "자연도 순종하는 예수님의 권세입니다. 인생의 풍랑 가운데서도 주님은 함께 계십니다."
+    },
+    {
+      "id": "feeding_5000",
+      "name_ko": "오병이어",
+      "name_en": "Feeding of 5000",
+      "year": 29,
+      "era": "new_testament",
+      "type": "miracle",
+      "icon": "🐟",
+      "description_ko": "예수님이 떡 다섯 개와 물고기 두 마리로 5000명을 먹이심.",
+      "description_en": "Jesus fed 5000 with five loaves and two fish.",
+      "verse": "요 6:1-14",
+      "characters": [
+        "jesus"
+      ],
+      "significance_ko": "예수님은 생명의 떡",
+      "significance_en": "Jesus is the bread of life"
+    },
+    {
+      "id": "transfiguration",
+      "name_ko": "변화산",
+      "name_en": "Transfiguration",
+      "year": 29,
+      "era": "new_testament",
+      "type": "theophany",
+      "icon": "✨",
+      "description_ko": "예수님이 변화산에서 모세, 엘리야와 함께 나타나심.",
+      "description_en": "Jesus was transfigured with Moses and Elijah.",
+      "verse": "마 17:1-9",
+      "characters": [
+        "jesus",
+        "peter",
+        "james_son_zebedee",
+        "john"
+      ],
+      "significance_ko": "예수님의 신성 계시",
+      "significance_en": "Revelation of Jesus' divinity"
+    },
+    {
+      "id": "lazarus_raised",
+      "name_ko": "나사로 살리심",
+      "name_en": "Lazarus Raised",
+      "year": 30,
+      "era": "new_testament",
+      "type": "miracle",
+      "icon": "🪦",
+      "description_ko": "예수님이 죽은 지 4일 된 나사로를 살리심.",
+      "description_en": "Jesus raised Lazarus who had been dead four days.",
+      "verse": "요 11:1-44",
+      "characters": [
+        "jesus",
+        "lazarus",
+        "mary_bethany",
+        "martha"
+      ],
+      "significance_ko": "예수님은 부활이요 생명",
+      "significance_en": "Jesus is the resurrection and the life"
+    },
+    {
+      "id": "triumphal_entry",
+      "name_ko": "예루살렘 입성",
+      "name_en": "Triumphal Entry",
+      "year": 30,
+      "era": "new_testament",
+      "type": "prophecy_fulfillment",
+      "icon": "🌿",
+      "description_ko": "예수님이 나귀를 타고 예루살렘에 입성하심.",
+      "description_en": "Jesus entered Jerusalem riding on a donkey.",
+      "verse": "마 21:1-11",
+      "characters": [
+        "jesus"
+      ],
+      "significance_ko": "메시아 예언 성취",
+      "significance_en": "Fulfillment of Messianic prophecy"
+    },
+    {
+      "id": "last_supper",
+      "name_ko": "최후의 만찬",
+      "name_en": "Last Supper",
+      "year": 30,
+      "era": "new_testament",
+      "type": "covenant",
+      "icon": "🍞",
+      "description_ko": "예수님이 제자들과 마지막 식사를 하시며 새 언약을 세우심.",
+      "description_en": "Jesus shared a final meal with disciples and established new covenant.",
+      "verse": "눅 22:14-23",
+      "characters": [
+        "jesus",
+        "peter",
+        "john",
+        "judas_iscariot"
+      ],
+      "significance_ko": "새 언약의 제정",
+      "significance_en": "Institution of new covenant"
+    },
+    {
+      "id": "gethsemane",
+      "name_ko": "겟세마네 기도",
+      "name_en": "Gethsemane",
+      "year": 30,
+      "era": "new_testament",
+      "type": "prayer",
+      "icon": "🙏",
+      "description_ko": "예수님이 겟세마네에서 피땀 흘리며 기도하심.",
+      "description_en": "Jesus prayed in agony at Gethsemane.",
+      "verse": "눅 22:39-46",
+      "characters": [
+        "jesus",
+        "peter",
+        "james_son_zebedee",
+        "john"
+      ],
+      "significance_ko": "아버지의 뜻에 순복",
+      "significance_en": "Submission to Father's will"
+    },
+    {
+      "id": "crucifixion",
+      "name_ko": "십자가 처형",
+      "name_en": "Crucifixion",
+      "year": 30,
+      "era": "new_testament",
+      "type": "sacrifice",
+      "icon": "✝️",
+      "description_ko": "예수님이 십자가에서 인류의 죄를 위해 죽으심.",
+      "description_en": "Jesus died on the cross for the sins of humanity.",
+      "verse": "눅 23:33-49",
+      "characters": [
+        "jesus",
+        "mary_mother",
+        "john"
+      ],
+      "significance_ko": "구원의 완성",
+      "significance_en": "Completion of salvation"
+    },
+    {
+      "id": "resurrection",
+      "name_ko": "부활",
+      "name_en": "Resurrection",
+      "year": 30,
+      "era": "new_testament",
+      "type": "miracle",
+      "icon": "🌅",
+      "description_ko": "예수님이 죽은 지 사흘 만에 부활하심.",
+      "description_en": "Jesus rose from the dead on the third day.",
+      "verse": "마 28:1-10",
+      "characters": [
+        "jesus",
+        "mary_magdalene"
+      ],
+      "significance_ko": "죽음의 정복, 영생의 보장",
+      "significance_en": "Conquest of death, guarantee of eternal life"
+    },
+    {
+      "id": "ascension",
+      "name_ko": "승천",
+      "name_en": "Ascension",
+      "year": 30,
+      "era": "new_testament",
+      "type": "theophany",
+      "icon": "☁️",
+      "description_ko": "예수님이 하늘로 올라가심.",
+      "description_en": "Jesus ascended to heaven.",
+      "verse": "행 1:9-11",
+      "characters": [
+        "jesus"
+      ],
+      "significance_ko": "성령 약속과 재림 예고",
+      "significance_en": "Promise of Spirit and Second Coming"
+    },
+    {
+      "id": "pentecost",
+      "name_ko": "오순절",
+      "name_en": "Pentecost",
+      "year": 30,
+      "era": "early_church",
+      "type": "theophany",
+      "icon": "🔥",
+      "description_ko": "성령이 임하시고 교회가 시작됨.",
+      "description_en": "Holy Spirit came and the church was born.",
+      "verse": "행 2:1-41",
+      "characters": [
+        "peter",
+        "john"
+      ],
+      "significance_ko": "교회의 탄생",
+      "significance_en": "Birth of the church"
+    },
+    {
+      "id": "stephen_martyrdom",
+      "name_ko": "스데반의 순교",
+      "name_en": "Stephen's Martyrdom",
+      "year": 35,
+      "era": "early_church",
+      "type": "martyrdom",
+      "icon": "🪨",
+      "description_ko": "스데반이 최초의 그리스도인 순교자가 됨.",
+      "description_en": "Stephen became first Christian martyr.",
+      "verse": "행 7:54-60",
+      "characters": [
+        "stephen",
+        "paul"
+      ],
+      "significance_ko": "최초의 순교, 복음의 확산 시작",
+      "significance_en": "First martyrdom, beginning of gospel spread"
+    },
+    {
+      "id": "paul_conversion",
+      "name_ko": "바울의 회심",
+      "name_en": "Paul's Conversion",
+      "year": 35,
+      "era": "early_church",
+      "type": "conversion",
+      "icon": "⚡",
+      "description_ko": "다메섹으로 가던 바울이 예수님을 만남.",
+      "description_en": "Paul met Jesus on the road to Damascus.",
+      "verse": "행 9:1-19",
+      "characters": [
+        "paul",
+        "ananias_damascus"
+      ],
+      "significance_ko": "이방인 사도의 탄생",
+      "significance_en": "Birth of the apostle to Gentiles"
+    },
+    {
+      "id": "paul_shipwreck",
+      "name_ko": "바울의 난파",
+      "name_en": "Paul's Shipwreck",
+      "year": 60,
+      "era": "new_testament",
+      "books": [
+        "act"
+      ],
+      "verses": [
+        "사도행전 27:1-44"
+      ],
+      "verse_text_ko": "너희 중 생명에는 아무 손실이 없겠고 오직 배뿐이리라",
+      "verse_text_en": "Not one of you will lose a single hair from his head",
+      "description_ko": "바울이 로마로 가는 중 풍랑을 만나 멜리데 섬에 표류",
+      "description_en": "Paul was shipwrecked on his way to Rome but everyone survived",
+      "characters": [
+        "paul"
+      ],
+      "location": "지중해 → 멜리데",
+      "icon": "⛵",
+      "commentary_ko": "어려운 상황에서도 하나님의 약속을 믿고 담대했던 바울의 믿음입니다."
+    },
+    {
+      "id": "new_jerusalem",
+      "name_ko": "새 예루살렘",
+      "name_en": "New Jerusalem",
+      "year": 95,
+      "era": "new_testament",
+      "books": [
+        "rev"
+      ],
+      "verses": [
+        "요한계시록 21:1-4"
+      ],
+      "verse_text_ko": "보라 내가 만물을 새롭게 하노라",
+      "verse_text_en": "I am making everything new!",
+      "description_ko": "요한이 환상 중에 새 하늘과 새 땅, 새 예루살렘을 봄",
+      "description_en": "John saw the vision of new heaven, new earth, and New Jerusalem",
+      "characters": [
+        "john_apostle",
+        "god",
+        "jesus"
+      ],
+      "location": "밧모섬 (환상)",
+      "icon": "🏙️",
+      "commentary_ko": "성경의 마지막 약속입니다. 하나님이 우리와 함께 거하시며 모든 눈물을 씻어 주실 것입니다."
+    },
+    {
+      "id": "garden_temptation",
+      "name_ko": "에덴의 유혹",
+      "name_en": "Temptation in Eden",
+      "era": "creation",
+      "year": -4000,
+      "icon": "🐍",
+      "characters": [
+        "eve",
+        "adam"
+      ],
+      "description_ko": "뱀이 하와를 유혹하여 선악과를 먹게 함.",
+      "description_en": "The serpent tempted Eve to eat the forbidden fruit.",
+      "verses": [
+        "창세기 3:1-6"
+      ],
+      "verse_text_ko": "뱀이 여자에게 이르되 너희가 그것을 먹는 날에는 너희 눈이 밝아져 하나님과 같이 되리라",
+      "verse_text_en": "The serpent said to the woman, \"When you eat from it your eyes will be opened, and you will be like God.\"",
+      "location": "에덴동산",
+      "commentary_ko": "인류 타락의 시작. 뱀의 거짓말과 인간의 자유의지, 죄의 결과를 보여줌."
+    },
+    {
+      "id": "curse_serpent",
+      "name_ko": "뱀과 땅의 저주",
+      "name_en": "Curse on Serpent and Ground",
+      "era": "creation",
+      "year": -4000,
+      "icon": "⚡",
+      "characters": [
+        "god",
+        "adam",
+        "eve"
+      ],
+      "description_ko": "하나님이 뱀, 여자, 남자에게 저주와 심판을 선언하심.",
+      "description_en": "God declared curses on the serpent, woman, and man.",
+      "verses": [
+        "창세기 3:14-19"
+      ],
+      "verse_text_ko": "내가 너로 여자와 원수가 되게 하고 네 후손도 여자의 후손과 원수가 되게 하리니",
+      "verse_text_en": "I will put enmity between you and the woman, and between your offspring and hers.",
+      "location": "에덴동산",
+      "commentary_ko": "최초의 메시아 예언(원시복음). 여자의 후손이 뱀의 머리를 상하게 할 것임."
+    },
+    {
+      "id": "enoch_taken",
+      "name_ko": "에녹이 하늘로 들림",
+      "name_en": "Enoch Taken to Heaven",
+      "year": -3000,
+      "era": "patriarchs",
+      "type": "miracle",
+      "icon": "✨",
+      "description_ko": "에녹이 하나님과 동행하다가 죽지 않고 하늘로 들림받음.",
+      "description_en": "Enoch walked with God and was taken to heaven without dying.",
+      "verse": "창 5:24",
+      "characters": [
+        "enoch"
+      ],
+      "significance_ko": "믿음으로 사는 삶의 모범",
+      "significance_en": "Model of life lived by faith"
+    },
+    {
+      "id": "noah_ark_building",
+      "name_ko": "노아의 방주 건조",
+      "name_en": "Building the Ark",
+      "era": "creation",
+      "year": -2500,
+      "icon": "🔨",
+      "characters": [
+        "noah",
+        "shem",
+        "ham",
+        "japheth"
+      ],
+      "description_ko": "노아가 하나님의 명령에 따라 방주를 건조함.",
+      "description_en": "Noah built the ark according to God's instructions.",
+      "verses": [
+        "창세기 6:14-22"
+      ],
+      "verse_text_ko": "노아가 그와 같이 하되 하나님이 자기에게 명하신 대로 다 준행하였더라",
+      "verse_text_en": "Noah did everything just as God commanded him.",
+      "location": "알 수 없음",
+      "commentary_ko": "믿음의 순종. 100년 이상 조롱 속에서도 하나님 말씀을 따름."
+    },
+    {
+      "id": "tower_babel",
+      "name_ko": "바벨탑 사건",
+      "name_en": "Tower of Babel",
+      "era": "patriarchs",
+      "year": -2200,
+      "icon": "🗼",
+      "characters": [
+        "nimrod"
+      ],
+      "description_ko": "사람들이 하늘에 닿는 탑을 쌓다 언어가 혼잡해짐.",
+      "description_en": "People built tower to heaven; God confused their languages.",
+      "verses": [
+        "창세기 11:1-9"
+      ],
+      "verse_text_ko": "여호와께서 거기서 온 땅의 언어를 혼잡하게 하셨음이라",
+      "verse_text_en": "The LORD confused the language of the whole world.",
+      "location": "바벨(시날 평지)",
+      "commentary_ko": "인간의 교만과 하나님의 심판. 민족과 언어의 다양성의 기원."
+    },
+    {
+      "id": "lot_rescue",
+      "name_ko": "롯의 구출",
+      "name_en": "Rescue of Lot",
+      "era": "patriarchs",
+      "year": -1950,
+      "icon": "⚔️",
+      "characters": [
+        "abraham",
+        "lot"
+      ],
+      "description_ko": "아브람이 318명으로 네 왕의 연합군을 쳐서 롯을 구출함.",
+      "description_en": "Abram rescued Lot from four kings with 318 men.",
+      "verses": [
+        "창세기 14:14-16"
+      ],
+      "verse_text_ko": "아브람이 그의 집에서 길리고 연습한 자 삼백십팔 명을 거느리고 추격하여",
+      "verse_text_en": "Abram called out 318 trained men and went in pursuit.",
+      "location": "단",
+      "commentary_ko": "아브라함의 용맹과 멜기세덱의 등장. 믿음의 용기."
+    },
+    {
+      "id": "melchizedek_blessing",
+      "name_ko": "멜기세덱의 축복",
+      "name_en": "Melchizedek Blesses Abram",
+      "era": "patriarchs",
+      "year": -1950,
+      "icon": "🍞",
+      "characters": [
+        "abraham"
+      ],
+      "description_ko": "살렘 왕 멜기세덱이 아브람에게 떡과 포도주로 축복함.",
+      "description_en": "Melchizedek king of Salem blessed Abram with bread and wine.",
+      "verses": [
+        "창세기 14:18-20",
+        "히브리서 7"
+      ],
+      "verse_text_ko": "그는 지극히 높으신 하나님의 제사장이었더라",
+      "verse_text_en": "He was priest of God Most High.",
+      "location": "살렘(예루살렘)",
+      "commentary_ko": "그리스도의 예표. 왕이면서 제사장인 메시아를 상징."
+    },
+    {
+      "id": "hagar_wilderness",
+      "name_ko": "하갈의 광야 체험",
+      "name_en": "Hagar in the Wilderness",
+      "era": "patriarchs",
+      "year": -1905,
+      "icon": "💧",
+      "characters": [
+        "hagar",
+        "ishmael"
+      ],
+      "description_ko": "하갈이 광야에서 천사를 만나 위로와 약속을 받음.",
+      "description_en": "Hagar met angel in wilderness, received comfort and promise.",
+      "verses": [
+        "창세기 21:14-21"
+      ],
+      "verse_text_ko": "하나님이 그 아이의 소리를 들으시고... 네 눈을 들어 우물을 보라",
+      "verse_text_en": "God heard the boy crying, and the angel said, \"Open your eyes and you will see a well.\"",
+      "location": "브엘세바 광야",
+      "commentary_ko": "하나님은 버림받은 자들도 돌보심. 이스마엘도 큰 민족이 됨."
+    },
+    {
+      "id": "isaac_binding",
+      "name_ko": "이삭 번제 사건",
+      "name_en": "Binding of Isaac",
+      "era": "patriarchs",
+      "year": -1870,
+      "icon": "🐑",
+      "characters": [
+        "abraham",
+        "isaac",
+        "god"
+      ],
+      "description_ko": "아브라함이 이삭을 번제로 드리려 하자 하나님이 숫양을 대신 예비하심.",
+      "description_en": "Abraham prepared to sacrifice Isaac; God provided a ram instead.",
+      "verses": [
+        "창세기 22:1-19"
+      ],
+      "verse_text_ko": "아브라함이 눈을 들어 살펴본즉 한 숫양이 뒤에 있는지라",
+      "verse_text_en": "Abraham looked up and there in a thicket he saw a ram.",
+      "location": "모리아 산",
+      "commentary_ko": "아브라함의 믿음의 절정. 대속의 원리와 그리스도의 예표."
+    },
+    {
+      "id": "rebekah_found",
+      "name_ko": "리브가를 만남",
+      "name_en": "Finding Rebekah",
+      "era": "patriarchs",
+      "year": -1857,
+      "icon": "💍",
+      "characters": [
+        "eliezer_abraham",
+        "rebekah",
+        "isaac"
+      ],
+      "description_ko": "아브라함의 종이 하나님의 인도로 이삭의 아내 리브가를 찾음.",
+      "description_en": "Abraham's servant found Rebekah as Isaac's wife through God's guidance.",
+      "verses": [
+        "창세기 24"
+      ],
+      "verse_text_ko": "여호와 내 주인 아브라함의 하나님이여 오늘 나에게 순탄하게 만나게 하사",
+      "verse_text_en": "LORD, God of my master Abraham, make me successful today.",
+      "location": "나홀의 성",
+      "commentary_ko": "기도 응답과 신앙의 전승. 하나님의 섭리적 인도."
+    },
+    {
+      "id": "jacob_birthright",
+      "name_ko": "장자권 양도",
+      "name_en": "Esau Sells Birthright",
+      "era": "patriarchs",
+      "year": -1800,
+      "icon": "🍲",
+      "characters": [
+        "jacob",
+        "esau"
+      ],
+      "description_ko": "에서가 팥죽 한 그릇에 장자권을 야곱에게 팜.",
+      "description_en": "Esau sold his birthright to Jacob for a bowl of stew.",
+      "verses": [
+        "창세기 25:29-34"
+      ],
+      "verse_text_ko": "에서가 맹세하고 장자의 명분을 야곱에게 팔매",
+      "verse_text_en": "So Esau swore an oath to him, selling his birthright to Jacob.",
+      "location": "가나안",
+      "commentary_ko": "영적 가치보다 육신의 욕구를 우선한 에서의 결정."
+    },
+    {
+      "id": "joseph_prison",
+      "name_ko": "요셉의 감옥 생활",
+      "name_en": "Joseph in Prison",
+      "era": "patriarchs",
+      "year": -1720,
+      "icon": "⛓️",
+      "characters": [
+        "joseph",
+        "potiphar_wife"
+      ],
+      "description_ko": "요셉이 보디발의 아내의 거짓 고발로 감옥에 갇힘.",
+      "description_en": "Joseph imprisoned due to Potiphar's wife's false accusation.",
+      "verses": [
+        "창세기 39:19-23"
+      ],
+      "verse_text_ko": "여호와께서 요셉과 함께 하시고 그에게 인자를 더하사",
+      "verse_text_en": "The LORD was with him; he showed him kindness.",
+      "location": "이집트 감옥",
+      "commentary_ko": "고난 중에도 하나님이 함께하시며 형통하게 하심."
+    },
+    {
+      "id": "joseph_dreams_interpreted",
+      "name_ko": "바로의 꿈 해석",
+      "name_en": "Joseph Interprets Pharaoh's Dreams",
+      "era": "patriarchs",
+      "year": -1715,
+      "icon": "🌾",
+      "characters": [
+        "joseph",
+        "pharaoh_joseph"
+      ],
+      "description_ko": "요셉이 바로의 꿈을 해석하여 7년 풍년과 7년 기근을 예언함.",
+      "description_en": "Joseph interpreted Pharaoh's dreams: 7 years plenty, 7 years famine.",
+      "verses": [
+        "창세기 41:25-36"
+      ],
+      "verse_text_ko": "하나님이 행하실 일을 바로에게 알리심이니이다",
+      "verse_text_en": "God has revealed to Pharaoh what he is about to do.",
+      "location": "이집트 궁전",
+      "commentary_ko": "하나님이 주시는 지혜가 세상 권력자도 인정함."
+    },
+    {
+      "id": "joseph_reveals",
+      "name_ko": "요셉의 정체 공개",
+      "name_en": "Joseph Reveals Himself",
+      "era": "patriarchs",
+      "year": -1707,
+      "icon": "😭",
+      "characters": [
+        "joseph",
+        "judah",
+        "benjamin"
+      ],
+      "description_ko": "요셉이 형들에게 자신의 정체를 밝히고 화해함.",
+      "description_en": "Joseph revealed his identity to brothers and reconciled.",
+      "verses": [
+        "창세기 45:1-15"
+      ],
+      "verse_text_ko": "나는 요셉이니이다 내 아버지께서 아직 살아 계시니이까",
+      "verse_text_en": "I am Joseph! Is my father still living?",
+      "location": "이집트",
+      "commentary_ko": "용서와 화해의 감동적인 장면. 하나님의 섭리에 대한 이해."
+    },
+    {
+      "id": "jacob_egypt",
+      "name_ko": "야곱의 이집트 이주",
+      "name_en": "Jacob Moves to Egypt",
+      "era": "patriarchs",
+      "year": -1706,
+      "icon": "👨‍👩‍👧‍👦",
+      "characters": [
+        "jacob",
+        "joseph"
+      ],
+      "description_ko": "야곱이 온 가족과 함께 이집트로 이주함.",
+      "description_en": "Jacob moved to Egypt with his entire family.",
+      "verses": [
+        "창세기 46:1-7"
+      ],
+      "verse_text_ko": "내가 너와 함께 이집트로 내려가겠고 반드시 너를 다시 이끌어 올리리라",
+      "verse_text_en": "I will go down to Egypt with you, and I will surely bring you back again.",
+      "location": "가나안 → 고센",
+      "commentary_ko": "400년 이집트 체류의 시작. 하나님의 약속이 지켜짐."
+    },
+    {
+      "id": "moses_basket",
+      "name_ko": "갈대상자의 모세",
+      "name_en": "Moses in the Basket",
+      "era": "exodus",
+      "year": -1526,
+      "icon": "👶",
+      "characters": [
+        "moses",
+        "jochebed",
+        "miriam",
+        "pharaoh_daughter"
+      ],
+      "description_ko": "모세의 어머니가 그를 갈대상자에 넣어 나일강에 띄움.",
+      "description_en": "Moses' mother placed him in basket on the Nile.",
+      "verses": [
+        "출애굽기 2:1-10"
+      ],
+      "verse_text_ko": "그가 갈대 상자를 가져다가... 그 아기를 그 속에 두어 나일 강가 갈대 사이에 놓으니라",
+      "verse_text_en": "She got a papyrus basket... placed the child in it and put it among the reeds.",
+      "location": "이집트 나일강",
+      "commentary_ko": "하나님의 섭리. 박해 중에도 구원자를 보존하심."
+    },
+    {
+      "id": "moses_flees",
+      "name_ko": "모세의 도피",
+      "name_en": "Moses Flees to Midian",
+      "era": "exodus",
+      "year": -1486,
+      "icon": "🏃",
+      "characters": [
+        "moses"
+      ],
+      "description_ko": "모세가 이집트인을 죽이고 미디안으로 도망함.",
+      "description_en": "Moses fled to Midian after killing an Egyptian.",
+      "verses": [
+        "출애굽기 2:11-15"
+      ],
+      "verse_text_ko": "모세가 바로의 낯을 피하여 미디안 땅에 가서 거주하더니",
+      "verse_text_en": "Moses fled from Pharaoh and went to live in Midian.",
+      "location": "미디안",
+      "commentary_ko": "40년간의 광야 훈련. 하나님의 때를 기다리는 시간."
+    },
+    {
+      "id": "first_passover",
+      "name_ko": "첫 번째 유월절",
+      "name_en": "First Passover",
+      "era": "exodus",
+      "year": -1446,
+      "icon": "🐑",
+      "characters": [
+        "moses",
+        "aaron"
+      ],
+      "description_ko": "어린양의 피를 문설주에 바르고 죽음의 천사가 넘어감.",
+      "description_en": "Lamb's blood on doorposts; angel of death passed over.",
+      "verses": [
+        "출애굽기 12:1-28"
+      ],
+      "verse_text_ko": "내가 피를 볼 때에 너희를 넘어가리니 재앙이 너희에게 내리지 아니하리라",
+      "verse_text_en": "When I see the blood, I will pass over you.",
+      "location": "이집트",
+      "commentary_ko": "그리스도의 대속의 예표. 피로 말미암은 구원."
+    },
+    {
+      "id": "crossing_red_sea",
+      "name_ko": "홍해 도강",
+      "name_en": "Crossing the Red Sea",
+      "era": "exodus",
+      "year": -1446,
+      "icon": "🌊",
+      "characters": [
+        "moses",
+        "god",
+        "pharaoh_exodus"
+      ],
+      "description_ko": "하나님이 홍해를 가르시고 이스라엘이 건넘. 이집트 군대는 물에 잠김.",
+      "description_en": "God parted Red Sea; Israel crossed; Egyptian army drowned.",
+      "verses": [
+        "출애굽기 14:21-31"
+      ],
+      "verse_text_ko": "여호와께서 큰 동풍으로 밤새도록 바다를 물러가게 하시매",
+      "verse_text_en": "The LORD drove the sea back with a strong east wind all that night.",
+      "location": "홍해",
+      "commentary_ko": "가장 위대한 구원 사건 중 하나. 세례의 예표."
+    },
+    {
+      "id": "manna_quail",
+      "name_ko": "만나와 메추라기",
+      "name_en": "Manna and Quail",
+      "era": "exodus",
+      "year": -1446,
+      "icon": "🍞",
+      "characters": [
+        "moses",
+        "god"
+      ],
+      "description_ko": "하나님이 광야에서 만나와 메추라기로 백성을 먹이심.",
+      "description_en": "God provided manna and quail in the wilderness.",
+      "verses": [
+        "출애굽기 16"
+      ],
+      "verse_text_ko": "내가 너희를 위하여 하늘에서 양식을 비같이 내리리니",
+      "verse_text_en": "I will rain down bread from heaven for you.",
+      "location": "신 광야",
+      "commentary_ko": "하나님의 일용할 양식 공급. 예수님이 생명의 떡."
+    },
+    {
+      "id": "water_from_rock",
+      "name_ko": "반석에서 물",
+      "name_en": "Water from the Rock",
+      "era": "exodus",
+      "year": -1446,
+      "icon": "💧",
+      "characters": [
+        "moses"
+      ],
+      "description_ko": "모세가 반석을 쳐서 물을 냄.",
+      "description_en": "Moses struck the rock and water came out.",
+      "verses": [
+        "출애굽기 17:1-7"
+      ],
+      "verse_text_ko": "반석을 치라 그것에서 물이 나리니 백성이 마시리라",
+      "verse_text_en": "Strike the rock, and water will come out of it.",
+      "location": "르비딤",
+      "commentary_ko": "그리스도가 반석. 영적 음료를 주시는 분."
+    },
+    {
+      "id": "sinai_covenant",
+      "name_ko": "시내산 언약",
+      "name_en": "Sinai Covenant",
+      "era": "exodus",
+      "year": -1446,
+      "icon": "📜",
+      "characters": [
+        "moses",
+        "god"
+      ],
+      "description_ko": "하나님이 시내산에서 십계명과 율법을 주심.",
+      "description_en": "God gave Ten Commandments and Law at Mount Sinai.",
+      "verses": [
+        "출애굽기 19-24"
+      ],
+      "verse_text_ko": "너희는 내게 대하여 제사장 나라가 되며 거룩한 백성이 되리라",
+      "verse_text_en": "You will be for me a kingdom of priests and a holy nation.",
+      "location": "시내산",
+      "commentary_ko": "이스라엘이 하나님의 백성으로 정식 언약을 맺음."
+    },
+    {
+      "id": "tabernacle_completion",
+      "name_ko": "성막 완성",
+      "name_en": "Tabernacle Completed",
+      "era": "exodus",
+      "year": -1445,
+      "icon": "⛺",
+      "characters": [
+        "moses",
+        "bezalel",
+        "oholiab"
+      ],
+      "description_ko": "성막이 완성되고 하나님의 영광이 성막에 충만함.",
+      "description_en": "Tabernacle completed; God's glory filled the tabernacle.",
+      "verses": [
+        "출애굽기 40:33-38"
+      ],
+      "verse_text_ko": "구름이 회막을 덮고 여호와의 영광이 성막에 충만하매",
+      "verse_text_en": "The cloud covered the tent of meeting, and the glory of the LORD filled the tabernacle.",
+      "location": "시내 광야",
+      "commentary_ko": "하나님이 백성 가운데 거하시기 시작함."
+    },
+    {
+      "id": "korah_rebellion",
+      "name_ko": "고라의 반역",
+      "name_en": "Korah's Rebellion",
+      "year": -1443,
+      "era": "exodus",
+      "type": "judgment",
+      "icon": "🕳️",
+      "description_ko": "고라와 일당이 모세에게 반역하다 땅에 삼켜짐.",
+      "description_en": "Korah and followers rebelled against Moses and were swallowed by earth.",
+      "verse": "민 16:1-35",
+      "characters": [
+        "moses",
+        "aaron"
+      ],
+      "significance_ko": "하나님의 권위에 대한 반역의 결과",
+      "significance_en": "Consequence of rebellion against God's authority"
+    },
+    {
+      "id": "bronze_serpent",
+      "name_ko": "놋뱀",
+      "name_en": "Bronze Serpent",
+      "year": -1407,
+      "era": "exodus",
+      "type": "miracle",
+      "icon": "🐍",
+      "description_ko": "불뱀에 물린 자가 놋뱀을 보면 살게 됨.",
+      "description_en": "Those bitten by snakes were healed by looking at bronze serpent.",
+      "verse": "민 21:4-9",
+      "characters": [
+        "moses"
+      ],
+      "significance_ko": "예수님의 십자가를 예표",
+      "significance_en": "Foreshadows Jesus' cross"
+    },
+    {
+      "id": "balaam_donkey",
+      "name_ko": "발람의 나귀",
+      "name_en": "Balaam's Donkey",
+      "era": "exodus",
+      "year": -1406,
+      "icon": "🫏",
+      "characters": [
+        "balaam"
+      ],
+      "description_ko": "발람의 나귀가 여호와의 사자를 보고 말함.",
+      "description_en": "Balaam's donkey saw the angel and spoke.",
+      "verses": [
+        "민수기 22:21-35"
+      ],
+      "verse_text_ko": "여호와께서 나귀의 입을 여시니 나귀가 발람에게 이르되",
+      "verse_text_en": "The LORD opened the donkey's mouth, and it said to Balaam...",
+      "location": "모압 들판",
+      "commentary_ko": "하나님이 말 못하는 동물도 사용하실 수 있음."
+    },
+    {
+      "id": "moses_death",
+      "name_ko": "모세의 죽음",
+      "name_en": "Death of Moses",
+      "era": "exodus",
+      "year": -1406,
+      "icon": "⛰️",
+      "characters": [
+        "moses",
+        "joshua"
+      ],
+      "description_ko": "모세가 느보산에서 약속의 땅을 바라보고 죽음.",
+      "description_en": "Moses viewed promised land from Nebo and died.",
+      "verses": [
+        "신명기 34:1-8"
+      ],
+      "verse_text_ko": "모세가 백이십 세에 죽으되 그의 눈이 흐리지 아니하였고 기력이 쇠하지 아니하였더라",
+      "verse_text_en": "Moses was 120 years old when he died, yet his eyes were not weak nor his strength gone.",
+      "location": "느보산",
+      "commentary_ko": "충성된 종의 마지막. 여호수아에게 인도자의 위치가 넘겨짐."
+    },
+    {
+      "id": "jordan_crossing",
+      "name_ko": "요단강 도강",
+      "name_en": "Crossing the Jordan",
+      "era": "conquest",
+      "year": -1406,
+      "icon": "🌊",
+      "characters": [
+        "joshua"
+      ],
+      "description_ko": "제사장들이 언약궤를 메고 요단강에 들어가자 물이 멈춤.",
+      "description_en": "Priests carrying the ark entered Jordan; waters stopped.",
+      "verses": [
+        "여호수아 3:14-17"
+      ],
+      "verse_text_ko": "언약궤를 멘 제사장들의 발이 강 가에 잠기자... 물이 그쳐 일어나 쌓이고",
+      "verse_text_en": "The priests carrying the ark... stood on dry ground in the middle of the Jordan.",
+      "location": "요단강",
+      "commentary_ko": "홍해 기적의 재현. 새 세대에게 하나님의 능력을 보여줌."
+    },
+    {
+      "id": "jericho_walls",
+      "name_ko": "여리고 성벽 무너짐",
+      "name_en": "Walls of Jericho Fall",
+      "era": "conquest",
+      "year": -1406,
+      "icon": "🏚️",
+      "characters": [
+        "joshua",
+        "rahab"
+      ],
+      "description_ko": "이스라엘이 7일간 성을 돈 후 함성을 지르자 성벽이 무너짐.",
+      "description_en": "Israel marched 7 days; walls fell when they shouted.",
+      "verses": [
+        "여호수아 6:1-21"
+      ],
+      "verse_text_ko": "백성이 외치고 제사장들이 나팔을 불매 성벽이 무너지니",
+      "verse_text_en": "The people shouted, and the wall collapsed.",
+      "location": "여리고",
+      "commentary_ko": "믿음의 승리. 하나님의 방법으로 싸우면 이김."
+    },
+    {
+      "id": "achan_sin",
+      "name_ko": "아간의 죄",
+      "name_en": "Achan's Sin",
+      "year": -1405,
+      "era": "conquest",
+      "type": "judgment",
+      "icon": "💰",
+      "description_ko": "아간이 여리고의 물건을 숨겨 아이 성에서 패배.",
+      "description_en": "Achan hid plunder from Jericho causing defeat at Ai.",
+      "verse": "수 7:1-26",
+      "characters": [
+        "joshua"
+      ],
+      "significance_ko": "공동체 안에서 죄의 영향",
+      "significance_en": "Impact of sin in the community"
+    },
+    {
+      "id": "sun_stand_still",
+      "name_ko": "태양이 멈춤",
+      "name_en": "Sun Stands Still",
+      "era": "conquest",
+      "year": -1405,
+      "icon": "☀️",
+      "characters": [
+        "joshua"
+      ],
+      "description_ko": "여호수아의 기도에 태양과 달이 멈추어 전투에서 승리함.",
+      "description_en": "Sun and moon stopped at Joshua's prayer; won battle.",
+      "verses": [
+        "여호수아 10:12-14"
+      ],
+      "verse_text_ko": "태양아 너는 기브온 위에 머무르라 달아 너도 아얄론 골짜기에 그리할지어다",
+      "verse_text_en": "Sun, stand still over Gibeon, and you, moon, over the Valley of Aijalon.",
+      "location": "기브온",
+      "commentary_ko": "하나님이 자연 법칙도 다스리심. 신실한 자를 도우심."
+    },
+    {
+      "id": "gideon_fleece",
+      "name_ko": "기드온의 양털",
+      "name_en": "Gideon's Fleece",
+      "year": -1162,
+      "era": "judges",
+      "type": "sign",
+      "icon": "🐑",
+      "description_ko": "기드온이 양털로 하나님의 뜻을 확인.",
+      "description_en": "Gideon confirmed God's will with a fleece.",
+      "verse": "삿 6:36-40",
+      "characters": [
+        "gideon"
+      ],
+      "significance_ko": "하나님의 인도하심 구함",
+      "significance_en": "Seeking God's guidance"
+    },
+    {
+      "id": "gideon_300",
+      "name_ko": "기드온의 300용사",
+      "name_en": "Gideon's 300 Warriors",
+      "year": -1162,
+      "era": "judges",
+      "type": "victory",
+      "icon": "🏺",
+      "description_ko": "300명으로 미디안 대군을 이김.",
+      "description_en": "300 men defeated the vast Midianite army.",
+      "verse": "삿 7:1-25",
+      "characters": [
+        "gideon"
+      ],
+      "significance_ko": "하나님의 능력으로 승리",
+      "significance_en": "Victory through God's power"
+    },
+    {
+      "id": "samson_lion",
+      "name_ko": "삼손이 사자를 죽임",
+      "name_en": "Samson Kills Lion",
+      "era": "judges",
+      "year": -1090,
+      "icon": "🦁",
+      "characters": [
+        "samson"
+      ],
+      "description_ko": "삼손이 맨손으로 사자를 찢어 죽임.",
+      "description_en": "Samson killed a lion with his bare hands.",
+      "verses": [
+        "사사기 14:5-6"
+      ],
+      "verse_text_ko": "여호와의 영이 삼손에게 강하게 임하매 그가 손에 아무것도 없이 그것을 찢기를 염소 새끼를 찢는 것 같이 하였으나",
+      "verse_text_en": "The Spirit of the LORD came powerfully upon him so that he tore the lion apart with his bare hands.",
+      "location": "딤나",
+      "commentary_ko": "성령의 능력으로 초자연적 힘을 발휘함."
+    },
+    {
+      "id": "samson_death",
+      "name_ko": "삼손의 죽음",
+      "name_en": "Samson's Death",
+      "year": -1050,
+      "era": "judges",
+      "type": "victory",
+      "icon": "🏛️",
+      "description_ko": "삼손이 다곤 신전을 무너뜨리며 죽음.",
+      "description_en": "Samson destroyed the temple of Dagon in his death.",
+      "verse": "삿 16:23-31",
+      "characters": [
+        "samson"
+      ],
+      "significance_ko": "죽음으로 더 많은 적을 죽임",
+      "significance_en": "Killed more enemies in death than in life"
+    },
+    {
+      "id": "ruth_loyalty",
+      "name_ko": "룻의 충성 고백",
+      "name_en": "Ruth's Loyalty",
+      "era": "judges",
+      "year": -1100,
+      "icon": "❤️",
+      "characters": [
+        "ruth"
+      ],
+      "description_ko": "룻이 시어머니 나오미를 따라 이스라엘로 감.",
+      "description_en": "Ruth followed Naomi to Israel, declaring loyalty.",
+      "verses": [
+        "룻기 1:16-17"
+      ],
+      "verse_text_ko": "어머니의 백성이 나의 백성이 되고 어머니의 하나님이 나의 하나님이 되시리니",
+      "verse_text_en": "Your people will be my people and your God my God.",
+      "location": "모압 → 베들레헴",
+      "commentary_ko": "이방인이 참된 신앙으로 들어옴. 다윗과 예수님의 조상이 됨."
+    },
+    {
+      "id": "hannah_prayer",
+      "name_ko": "한나의 기도",
+      "name_en": "Hannah's Prayer",
+      "year": -1100,
+      "era": "judges",
+      "type": "prayer",
+      "icon": "🙏",
+      "description_ko": "한나가 아들을 달라고 기도하고 사무엘을 낳음.",
+      "description_en": "Hannah prayed for a son and gave birth to Samuel.",
+      "verse": "삼상 1:1-28",
+      "characters": [
+        "hannah",
+        "samuel",
+        "elkanah"
+      ],
+      "significance_ko": "기도의 능력",
+      "significance_en": "Power of prayer"
+    },
+    {
+      "id": "ark_captured",
+      "name_ko": "법궤 빼앗김",
+      "name_en": "Ark Captured",
+      "year": -1085,
+      "era": "judges",
+      "type": "tragedy",
+      "icon": "📦",
+      "description_ko": "블레셋이 법궤를 빼앗아 감.",
+      "description_en": "Philistines captured the Ark of the Covenant.",
+      "verse": "삼상 4:1-22",
+      "characters": [
+        "eli",
+        "hophni",
+        "phinehas_eli"
+      ],
+      "significance_ko": "하나님의 영광 떠남",
+      "significance_en": "Glory departed from Israel"
+    },
+    {
+      "id": "cain_kills_abel",
+      "name_ko": "가인이 아벨을 죽임",
+      "name_en": "Cain Kills Abel",
+      "year": -4000,
+      "era": "creation",
+      "type": "tragedy",
+      "icon": "🩸",
+      "description_ko": "인류 최초의 살인 사건. 가인이 질투로 동생 아벨을 죽임.",
+      "description_en": "First murder in human history. Cain killed his brother Abel out of jealousy.",
+      "verse": "창 4:8",
+      "characters": [
+        "cain",
+        "abel"
+      ],
+      "significance_ko": "죄의 결과와 인류의 타락을 보여줌",
+      "significance_en": "Shows the consequence of sin and human depravity"
+    },
+    {
+      "id": "tower_of_babel",
+      "name_ko": "바벨탑 사건",
+      "name_en": "Tower of Babel",
+      "year": -2200,
+      "era": "patriarchs",
+      "type": "judgment",
+      "icon": "🗼",
+      "description_ko": "인류가 하늘에 닿는 탑을 쌓으려 하자 하나님이 언어를 혼잡케 함.",
+      "description_en": "God confused languages when humanity tried to build a tower to heaven.",
+      "verse": "창 11:1-9",
+      "characters": [
+        "nimrod"
+      ],
+      "significance_ko": "민족과 언어의 분리 시작",
+      "significance_en": "Beginning of separation of nations and languages"
+    },
+    {
+      "id": "hagar_ishmael_sent",
+      "name_ko": "하갈과 이스마엘 추방",
+      "name_en": "Hagar and Ishmael Sent Away",
+      "year": -2050,
+      "era": "patriarchs",
+      "type": "family",
+      "icon": "🏜️",
+      "description_ko": "사라의 요청으로 아브라함이 하갈과 이스마엘을 내보냄.",
+      "description_en": "Abraham sent away Hagar and Ishmael at Sarah's request.",
+      "verse": "창 21:8-21",
+      "characters": [
+        "abraham",
+        "sarah",
+        "hagar",
+        "ishmael"
+      ],
+      "significance_ko": "이스마엘 후손(아랍 민족)의 시작",
+      "significance_en": "Beginning of Ishmael's descendants (Arab nations)"
+    },
+    {
+      "id": "isaac_blessed_jacob",
+      "name_ko": "이삭이 야곱을 축복함",
+      "name_en": "Isaac Blesses Jacob",
+      "year": -1930,
+      "era": "patriarchs",
+      "type": "blessing",
+      "icon": "🙏",
+      "description_ko": "야곱이 에서로 가장하여 아버지 이삭의 축복을 받음.",
+      "description_en": "Jacob disguised as Esau and received Isaac's blessing.",
+      "verse": "창 27:1-40",
+      "characters": [
+        "isaac",
+        "jacob",
+        "esau",
+        "rebekah"
+      ],
+      "significance_ko": "야곱이 언약의 계승자가 됨",
+      "significance_en": "Jacob becomes heir of the covenant"
+    },
+    {
+      "id": "jacob_wrestles",
+      "name_ko": "야곱이 천사와 씨름함",
+      "name_en": "Jacob Wrestles with God",
+      "year": -1890,
+      "era": "patriarchs",
+      "type": "encounter",
+      "icon": "💪",
+      "description_ko": "야곱이 밤새 천사와 씨름하고 이스라엘이라는 이름을 받음.",
+      "description_en": "Jacob wrestled with angel all night and received the name Israel.",
+      "verse": "창 32:22-32",
+      "characters": [
+        "jacob"
+      ],
+      "significance_ko": "야곱에서 이스라엘로의 변화",
+      "significance_en": "Transformation from Jacob to Israel"
+    },
+    {
+      "id": "dinah_incident",
+      "name_ko": "디나 사건",
+      "name_en": "Dinah Incident",
+      "year": -1880,
+      "era": "patriarchs",
+      "type": "tragedy",
+      "icon": "⚔️",
+      "description_ko": "시므온과 레위가 세겜 성을 멸함.",
+      "description_en": "Simeon and Levi destroyed the city of Shechem.",
+      "verse": "창 34:1-31",
+      "characters": [
+        "dinah",
+        "simeon",
+        "levi",
+        "jacob"
+      ],
+      "significance_ko": "복수의 죄와 그 결과",
+      "significance_en": "Sin of revenge and its consequences"
+    },
+    {
+      "id": "joseph_dreams",
+      "name_ko": "요셉의 꿈",
+      "name_en": "Joseph's Dreams",
+      "year": -1870,
+      "era": "patriarchs",
+      "type": "prophecy",
+      "icon": "💭",
+      "description_ko": "요셉이 형제들이 자신에게 절하는 꿈을 꿈.",
+      "description_en": "Joseph dreamed that his brothers would bow to him.",
+      "verse": "창 37:5-11",
+      "characters": [
+        "joseph"
+      ],
+      "significance_ko": "하나님의 미래 계획 계시",
+      "significance_en": "Revelation of God's future plan"
+    },
+    {
+      "id": "judah_tamar",
+      "name_ko": "유다와 다말",
+      "name_en": "Judah and Tamar",
+      "year": -1860,
+      "era": "patriarchs",
+      "type": "family",
+      "icon": "👶",
+      "description_ko": "다말이 유다의 계보를 이어감.",
+      "description_en": "Tamar continued Judah's lineage.",
+      "verse": "창 38:1-30",
+      "characters": [
+        "judah",
+        "tamar_judah",
+        "perez"
+      ],
+      "significance_ko": "예수님 족보에 포함된 여인",
+      "significance_en": "Woman included in Jesus's genealogy"
+    },
+    {
+      "id": "jacob_blesses_sons",
+      "name_ko": "야곱이 아들들을 축복함",
+      "name_en": "Jacob Blesses His Sons",
+      "year": -1820,
+      "era": "patriarchs",
+      "type": "blessing",
+      "icon": "🙏",
+      "description_ko": "야곱이 죽기 전 열두 아들에게 예언적 축복.",
+      "description_en": "Jacob's prophetic blessings to his twelve sons before death.",
+      "verse": "창 49:1-28",
+      "characters": [
+        "jacob",
+        "reuben",
+        "simeon",
+        "levi",
+        "judah",
+        "dan",
+        "naphtali",
+        "gad",
+        "asher",
+        "issachar",
+        "zebulun",
+        "joseph",
+        "benjamin"
+      ],
+      "significance_ko": "12지파의 미래 예언",
+      "significance_en": "Prophecy about the future of 12 tribes"
+    },
+    {
+      "id": "plague_blood",
+      "name_ko": "첫째 재앙: 피",
+      "name_en": "First Plague: Blood",
+      "year": -1446,
+      "era": "exodus",
+      "type": "miracle",
+      "icon": "🩸",
+      "description_ko": "나일강이 피로 변함.",
+      "description_en": "The Nile turned to blood.",
+      "verse": "출 7:14-25",
+      "characters": [
+        "moses",
+        "aaron",
+        "pharaoh_exodus"
+      ],
+      "significance_ko": "나일강 신에 대한 심판",
+      "significance_en": "Judgment against the Nile god"
+    },
+    {
+      "id": "plague_darkness",
+      "name_ko": "아홉째 재앙: 흑암",
+      "name_en": "Ninth Plague: Darkness",
+      "year": -1446,
+      "era": "exodus",
+      "type": "miracle",
+      "icon": "🌑",
+      "description_ko": "삼 일간 흑암이 애굽을 덮음.",
+      "description_en": "Darkness covered Egypt for three days.",
+      "verse": "출 10:21-29",
+      "characters": [
+        "moses",
+        "pharaoh_exodus"
+      ],
+      "significance_ko": "태양신 라에 대한 심판",
+      "significance_en": "Judgment against Ra the sun god"
+    },
+    {
+      "id": "tabernacle_completed",
+      "name_ko": "성막 완성",
+      "name_en": "Tabernacle Completed",
+      "year": -1445,
+      "era": "exodus",
+      "type": "construction",
+      "icon": "⛺",
+      "description_ko": "하나님의 영광이 성막에 임함.",
+      "description_en": "God's glory filled the tabernacle.",
+      "verse": "출 40:33-38",
+      "characters": [
+        "moses"
+      ],
+      "significance_ko": "하나님이 백성 가운데 거하심",
+      "significance_en": "God dwelling among His people"
+    },
+    {
+      "id": "nadab_abihu_death",
+      "name_ko": "나답과 아비후의 죽음",
+      "name_en": "Death of Nadab and Abihu",
+      "year": -1445,
+      "era": "exodus",
+      "type": "judgment",
+      "icon": "🔥",
+      "description_ko": "아론의 아들들이 다른 불을 드려 죽음.",
+      "description_en": "Aaron's sons died for offering unauthorized fire.",
+      "verse": "레 10:1-3",
+      "characters": [
+        "nadab",
+        "abihu",
+        "aaron"
+      ],
+      "significance_ko": "하나님의 거룩하심과 순종의 중요성",
+      "significance_en": "God's holiness and importance of obedience"
+    },
+    {
+      "id": "balaam_story",
+      "name_ko": "발람 이야기",
+      "name_en": "Balaam's Story",
+      "year": -1407,
+      "era": "exodus",
+      "type": "prophecy",
+      "icon": "🐴",
+      "description_ko": "발람이 이스라엘을 저주하려다 축복하게 됨.",
+      "description_en": "Balaam tried to curse Israel but blessed them instead.",
+      "verse": "민 22-24장",
+      "characters": [
+        "balaam"
+      ],
+      "significance_ko": "메시아 예언 포함",
+      "significance_en": "Contains Messianic prophecy"
+    },
+    {
+      "id": "rahab_spies",
+      "name_ko": "라합과 정탐꾼",
+      "name_en": "Rahab and the Spies",
+      "year": -1406,
+      "era": "conquest",
+      "type": "deliverance",
+      "icon": "🪢",
+      "description_ko": "라합이 여리고 정탐꾼을 숨겨줌.",
+      "description_en": "Rahab hid the spies in Jericho.",
+      "verse": "수 2:1-24",
+      "characters": [
+        "rahab",
+        "joshua"
+      ],
+      "significance_ko": "믿음으로 구원받은 이방인",
+      "significance_en": "Gentile saved by faith"
+    },
+    {
+      "id": "sun_stands_still",
+      "name_ko": "태양이 멈춤",
+      "name_en": "Sun Stands Still",
+      "year": -1404,
+      "era": "conquest",
+      "type": "miracle",
+      "icon": "☀️",
+      "description_ko": "여호수아의 기도로 태양이 하루 종일 멈춤.",
+      "description_en": "Sun stood still for a whole day at Joshua's prayer.",
+      "verse": "수 10:12-14",
+      "characters": [
+        "joshua"
+      ],
+      "significance_ko": "하나님이 자연을 통제하심",
+      "significance_en": "God's control over nature"
+    },
+    {
+      "id": "deborah_barak_victory",
+      "name_ko": "드보라와 바락의 승리",
+      "name_en": "Deborah and Barak's Victory",
+      "year": -1209,
+      "era": "judges",
+      "type": "victory",
+      "icon": "⚔️",
+      "description_ko": "드보라와 바락이 시스라를 이김.",
+      "description_en": "Deborah and Barak defeated Sisera.",
+      "verse": "삿 4:1-24",
+      "characters": [
+        "deborah",
+        "barak",
+        "jael",
+        "sisera"
+      ],
+      "significance_ko": "여성 지도자의 역할",
+      "significance_en": "Role of female leadership"
+    },
+    {
+      "id": "jephthah_vow",
+      "name_ko": "입다의 서원",
+      "name_en": "Jephthah's Vow",
+      "year": -1100,
+      "era": "judges",
+      "type": "tragedy",
+      "icon": "😢",
+      "description_ko": "입다가 무모한 서원으로 딸을 바치게 됨.",
+      "description_en": "Jephthah's rash vow resulted in sacrificing his daughter.",
+      "verse": "삿 11:29-40",
+      "characters": [
+        "jephthah"
+      ],
+      "significance_ko": "무모한 서원의 위험",
+      "significance_en": "Danger of rash vows"
+    },
+    {
+      "id": "ruth_boaz",
+      "name_ko": "룻과 보아스",
+      "name_en": "Ruth and Boaz",
+      "year": -1100,
+      "era": "judges",
+      "type": "romance",
+      "icon": "💕",
+      "description_ko": "룻이 보아스와 결혼하여 다윗의 조상이 됨.",
+      "description_en": "Ruth married Boaz and became ancestor of David.",
+      "verse": "룻 4:13-22",
+      "characters": [
+        "ruth",
+        "boaz",
+        "naomi"
+      ],
+      "significance_ko": "예수님 족보에 포함",
+      "significance_en": "Included in Jesus' genealogy"
+    },
+    {
+      "id": "saul_anointed",
+      "name_ko": "사울 기름부음",
+      "name_en": "Saul Anointed",
+      "year": -1050,
+      "era": "united_kingdom",
+      "type": "coronation",
+      "icon": "👑",
+      "description_ko": "사무엘이 사울에게 기름을 부어 첫 왕으로 세움.",
+      "description_en": "Samuel anointed Saul as Israel's first king.",
+      "verse": "삼상 10:1",
+      "characters": [
+        "samuel",
+        "saul"
+      ],
+      "significance_ko": "이스라엘 왕정 시작",
+      "significance_en": "Beginning of Israelite monarchy"
+    },
+    {
+      "id": "saul_rejected",
+      "name_ko": "사울의 거부",
+      "name_en": "Saul Rejected",
+      "year": -1028,
+      "era": "united_kingdom",
+      "type": "judgment",
+      "icon": "❌",
+      "description_ko": "사울이 불순종하여 왕위에서 거부됨.",
+      "description_en": "Saul rejected as king for disobedience.",
+      "verse": "삼상 15:1-35",
+      "characters": [
+        "samuel",
+        "saul"
+      ],
+      "significance_ko": "순종이 제사보다 나음",
+      "significance_en": "Obedience is better than sacrifice"
+    },
+    {
+      "id": "david_jonathan_covenant",
+      "name_ko": "다윗과 요나단의 언약",
+      "name_en": "David and Jonathan's Covenant",
+      "year": -1023,
+      "era": "united_kingdom",
+      "type": "covenant",
+      "icon": "🤝",
+      "description_ko": "다윗과 요나단이 우정의 언약을 맺음.",
+      "description_en": "David and Jonathan made a covenant of friendship.",
+      "verse": "삼상 18:1-4",
+      "characters": [
+        "david",
+        "jonathan"
+      ],
+      "significance_ko": "진정한 우정의 모범",
+      "significance_en": "Model of true friendship"
+    },
+    {
+      "id": "david_bathsheba_sin",
+      "name_ko": "다윗의 죄",
+      "name_en": "David's Sin",
+      "year": -987,
+      "era": "united_kingdom",
+      "type": "sin",
+      "icon": "😔",
+      "description_ko": "다윗이 밧세바와 간음하고 우리야를 죽게 함.",
+      "description_en": "David committed adultery with Bathsheba and had Uriah killed.",
+      "verse": "삼하 11:1-27",
+      "characters": [
+        "david",
+        "bathsheba",
+        "uriah"
+      ],
+      "significance_ko": "위대한 자도 넘어질 수 있음",
+      "significance_en": "Even great men can fall"
+    },
+    {
+      "id": "nathan_confronts_david",
+      "name_ko": "나단이 다윗을 책망함",
+      "name_en": "Nathan Confronts David",
+      "year": -986,
+      "era": "united_kingdom",
+      "type": "prophecy",
+      "icon": "👆",
+      "description_ko": "선지자 나단이 비유로 다윗의 죄를 지적함.",
+      "description_en": "Prophet Nathan confronted David with a parable.",
+      "verse": "삼하 12:1-15",
+      "characters": [
+        "nathan_prophet",
+        "david"
+      ],
+      "significance_ko": "진정한 회개의 모범",
+      "significance_en": "Model of true repentance"
+    },
+    {
+      "id": "absalom_rebellion",
+      "name_ko": "압살롬의 반역",
+      "name_en": "Absalom's Rebellion",
+      "year": -980,
+      "era": "united_kingdom",
+      "type": "rebellion",
+      "icon": "⚔️",
+      "description_ko": "압살롬이 아버지 다윗에게 반역함.",
+      "description_en": "Absalom rebelled against his father David.",
+      "verse": "삼하 15:1-18:33",
+      "characters": [
+        "absalom",
+        "david"
+      ],
+      "significance_ko": "다윗 죄의 결과",
+      "significance_en": "Consequence of David's sin"
+    },
+    {
+      "id": "solomon_wisdom",
+      "name_ko": "솔로몬의 지혜",
+      "name_en": "Solomon's Wisdom",
+      "year": -970,
+      "era": "united_kingdom",
+      "type": "blessing",
+      "icon": "🧠",
+      "description_ko": "솔로몬이 지혜를 구하여 받음.",
+      "description_en": "Solomon asked for and received wisdom.",
+      "verse": "왕상 3:5-15",
+      "characters": [
+        "solomon"
+      ],
+      "significance_ko": "지혜를 구하는 자에게 주시는 하나님",
+      "significance_en": "God gives wisdom to those who ask"
+    },
+    {
+      "id": "solomon_temple_dedicated",
+      "name_ko": "솔로몬 성전 봉헌",
+      "name_en": "Solomon's Temple Dedicated",
+      "year": -960,
+      "era": "united_kingdom",
+      "type": "construction",
+      "icon": "🏛️",
+      "description_ko": "솔로몬이 성전을 완성하고 봉헌함.",
+      "description_en": "Solomon completed and dedicated the Temple.",
+      "verse": "왕상 8:1-66",
+      "characters": [
+        "solomon"
+      ],
+      "significance_ko": "하나님의 임재의 영광",
+      "significance_en": "Glory of God's presence"
+    },
+    {
+      "id": "elijah_fed_ravens",
+      "name_ko": "까마귀가 엘리야를 먹임",
+      "name_en": "Ravens Feed Elijah",
+      "year": -869,
+      "era": "divided_kingdom",
+      "type": "miracle",
+      "icon": "🐦‍⬛",
+      "description_ko": "까마귀가 그릿 시냇가에서 엘리야에게 음식을 가져다 줌.",
+      "description_en": "Ravens brought food to Elijah at the brook Cherith.",
+      "verse": "왕상 17:1-6",
+      "characters": [
+        "elijah"
+      ],
+      "significance_ko": "하나님의 기적적 공급",
+      "significance_en": "God's miraculous provision"
+    },
+    {
+      "id": "elijah_carmel",
+      "name_ko": "갈멜산 대결",
+      "name_en": "Mount Carmel Contest",
+      "year": -862,
+      "era": "divided_kingdom",
+      "type": "victory",
+      "icon": "🔥",
+      "description_ko": "엘리야가 바알 선지자 450명과 대결하여 승리.",
+      "description_en": "Elijah defeated 450 prophets of Baal.",
+      "verse": "왕상 18:20-40",
+      "characters": [
+        "elijah",
+        "ahab",
+        "jezebel"
+      ],
+      "significance_ko": "참 하나님 여호와",
+      "significance_en": "The LORD is the true God"
+    },
+    {
+      "id": "elijah_still_small_voice",
+      "name_ko": "세미한 음성",
+      "name_en": "Still Small Voice",
+      "year": -861,
+      "era": "divided_kingdom",
+      "type": "theophany",
+      "icon": "🌬️",
+      "description_ko": "엘리야가 호렙산에서 하나님의 세미한 음성을 들음.",
+      "description_en": "Elijah heard God's still small voice at Horeb.",
+      "verse": "왕상 19:9-18",
+      "characters": [
+        "elijah"
+      ],
+      "significance_ko": "하나님은 조용히 말씀하신다",
+      "significance_en": "God speaks in quiet ways"
+    },
+    {
+      "id": "naboth_vineyard",
+      "name_ko": "나봇의 포도원",
+      "name_en": "Naboth's Vineyard",
+      "year": -856,
+      "era": "divided_kingdom",
+      "type": "tragedy",
+      "icon": "🍇",
+      "description_ko": "이세벨이 나봇을 모함하여 죽이고 포도원을 빼앗음.",
+      "description_en": "Jezebel had Naboth killed to take his vineyard.",
+      "verse": "왕상 21:1-29",
+      "characters": [
+        "ahab",
+        "jezebel",
+        "elijah"
+      ],
+      "significance_ko": "권력의 남용과 심판",
+      "significance_en": "Abuse of power and judgment"
+    },
+    {
+      "id": "elijah_taken_up",
+      "name_ko": "엘리야 승천",
+      "name_en": "Elijah Taken Up",
+      "year": -852,
+      "era": "divided_kingdom",
+      "type": "miracle",
+      "icon": "🌪️",
+      "description_ko": "엘리야가 회오리바람으로 하늘로 올라감.",
+      "description_en": "Elijah was taken up to heaven in a whirlwind.",
+      "verse": "왕하 2:1-12",
+      "characters": [
+        "elijah",
+        "elisha"
+      ],
+      "significance_ko": "엘리사에게 갑절의 영 전수",
+      "significance_en": "Double portion of spirit to Elisha"
+    },
+    {
+      "id": "elisha_widow_oil",
+      "name_ko": "과부의 기름",
+      "name_en": "Widow's Oil",
+      "year": -850,
+      "era": "divided_kingdom",
+      "type": "miracle",
+      "icon": "🫒",
+      "description_ko": "엘리사가 과부의 기름을 불리심.",
+      "description_en": "Elisha multiplied the widow's oil.",
+      "verse": "왕하 4:1-7",
+      "characters": [
+        "elisha"
+      ],
+      "significance_ko": "하나님의 풍성한 공급",
+      "significance_en": "God's abundant provision"
+    },
+    {
+      "id": "naaman_healed",
+      "name_ko": "나아만의 치유",
+      "name_en": "Naaman Healed",
+      "year": -845,
+      "era": "divided_kingdom",
+      "type": "miracle",
+      "icon": "🏊",
+      "description_ko": "나아만이 요단강에 일곱 번 씻어 나병에서 치유됨.",
+      "description_en": "Naaman was healed of leprosy by washing in Jordan seven times.",
+      "verse": "왕하 5:1-19",
+      "characters": [
+        "elisha",
+        "naaman",
+        "gehazi"
+      ],
+      "significance_ko": "믿음으로 순종할 때 치유",
+      "significance_en": "Healing through obedient faith"
+    },
+    {
+      "id": "jehu_anointed",
+      "name_ko": "예후의 기름부음",
+      "name_en": "Jehu Anointed",
+      "year": -841,
+      "era": "divided_kingdom",
+      "type": "coronation",
+      "icon": "👑",
+      "description_ko": "예후가 왕으로 기름부음 받아 아합 왕조를 멸함.",
+      "description_en": "Jehu anointed as king and destroyed Ahab's dynasty.",
+      "verse": "왕하 9:1-10:36",
+      "characters": [
+        "jehu",
+        "elisha",
+        "jezebel"
+      ],
+      "significance_ko": "하나님의 심판 성취",
+      "significance_en": "Fulfillment of God's judgment"
+    },
+    {
+      "id": "isaiah_vision",
+      "name_ko": "이사야의 소명",
+      "name_en": "Isaiah's Vision",
+      "year": -740,
+      "era": "divided_kingdom",
+      "type": "theophany",
+      "icon": "👀",
+      "description_ko": "이사야가 성전에서 하나님의 영광을 봄.",
+      "description_en": "Isaiah saw God's glory in the temple.",
+      "verse": "사 6:1-13",
+      "characters": [
+        "isaiah"
+      ],
+      "significance_ko": "선지자의 소명",
+      "significance_en": "Prophet's calling"
+    },
+    {
+      "id": "hezekiah_healing",
+      "name_ko": "히스기야의 치유",
+      "name_en": "Hezekiah's Healing",
+      "year": -702,
+      "era": "divided_kingdom",
+      "type": "miracle",
+      "icon": "🏥",
+      "description_ko": "히스기야가 병에서 회복되고 15년 더 삶.",
+      "description_en": "Hezekiah recovered from illness and lived 15 more years.",
+      "verse": "왕하 20:1-11",
+      "characters": [
+        "hezekiah",
+        "isaiah"
+      ],
+      "significance_ko": "기도의 능력",
+      "significance_en": "Power of prayer"
+    },
+    {
+      "id": "assyria_defeated",
+      "name_ko": "앗수르 패배",
+      "name_en": "Assyria Defeated",
+      "year": -701,
+      "era": "divided_kingdom",
+      "type": "deliverance",
+      "icon": "⚔️",
+      "description_ko": "천사가 앗수르 군대 185,000명을 침.",
+      "description_en": "An angel struck down 185,000 Assyrian soldiers.",
+      "verse": "왕하 19:35-37",
+      "characters": [
+        "hezekiah",
+        "isaiah",
+        "sennacherib"
+      ],
+      "significance_ko": "하나님의 기적적 구원",
+      "significance_en": "God's miraculous deliverance"
+    },
+    {
+      "id": "josiah_reforms",
+      "name_ko": "요시야의 개혁",
+      "name_en": "Josiah's Reforms",
+      "year": -622,
+      "era": "divided_kingdom",
+      "type": "revival",
+      "icon": "📜",
+      "description_ko": "요시야가 율법책을 발견하고 대대적인 종교개혁.",
+      "description_en": "Josiah found the Book of Law and initiated major religious reforms.",
+      "verse": "왕하 22:1-23:25",
+      "characters": [
+        "josiah"
+      ],
+      "significance_ko": "유다의 마지막 부흥",
+      "significance_en": "Judah's last revival"
+    },
+    {
+      "id": "jeremiah_called",
+      "name_ko": "예레미야의 소명",
+      "name_en": "Jeremiah's Calling",
+      "year": -627,
+      "era": "divided_kingdom",
+      "type": "calling",
+      "icon": "📣",
+      "description_ko": "예레미야가 젊은 나이에 선지자로 부름받음.",
+      "description_en": "Jeremiah called as prophet while still young.",
+      "verse": "렘 1:4-19",
+      "characters": [
+        "jeremiah"
+      ],
+      "significance_ko": "눈물의 선지자의 시작",
+      "significance_en": "Beginning of the weeping prophet's ministry"
+    },
+    {
+      "id": "jerusalem_falls",
+      "name_ko": "예루살렘 멸망",
+      "name_en": "Fall of Jerusalem",
+      "year": -586,
+      "era": "exile",
+      "type": "judgment",
+      "icon": "🔥",
+      "description_ko": "바벨론이 예루살렘과 성전을 파괴함.",
+      "description_en": "Babylon destroyed Jerusalem and the Temple.",
+      "verse": "왕하 25:1-21",
+      "characters": [
+        "zedekiah",
+        "nebuchadnezzar",
+        "jeremiah"
+      ],
+      "significance_ko": "심판의 성취",
+      "significance_en": "Fulfillment of judgment"
+    },
+    {
+      "id": "daniel_lions_den",
+      "name_ko": "다니엘과 사자굴",
+      "name_en": "Daniel in Lions' Den",
+      "year": -539,
+      "era": "exile",
+      "type": "miracle",
+      "icon": "🦁",
+      "description_ko": "다니엘이 사자 굴에서 구출됨.",
+      "description_en": "Daniel was delivered from the lions' den.",
+      "verse": "단 6:1-28",
+      "characters": [
+        "daniel"
+      ],
+      "significance_ko": "기도의 승리",
+      "significance_en": "Victory through prayer"
+    },
+    {
+      "id": "cyrus_decree",
+      "name_ko": "고레스 칙령",
+      "name_en": "Cyrus's Decree",
+      "year": -538,
+      "era": "post_exile",
+      "type": "deliverance",
+      "icon": "📜",
+      "description_ko": "고레스가 유대인의 귀환을 허락함.",
+      "description_en": "Cyrus decreed the return of Jews to Judah.",
+      "verse": "스 1:1-4",
+      "characters": [
+        "cyrus",
+        "zerubbabel"
+      ],
+      "significance_ko": "이사야 예언 성취",
+      "significance_en": "Fulfillment of Isaiah's prophecy"
+    },
+    {
+      "id": "second_temple_completed",
+      "name_ko": "제2성전 완성",
+      "name_en": "Second Temple Completed",
+      "year": -516,
+      "era": "post_exile",
+      "type": "construction",
+      "icon": "🏛️",
+      "description_ko": "스룹바벨 지도 하에 성전 재건 완료.",
+      "description_en": "Temple rebuilding completed under Zerubbabel.",
+      "verse": "스 6:14-18",
+      "characters": [
+        "zerubbabel",
+        "jeshua_priest",
+        "haggai",
+        "zechariah_prophet"
+      ],
+      "significance_ko": "예배 회복",
+      "significance_en": "Restoration of worship"
+    },
+    {
+      "id": "esther_queen",
+      "name_ko": "에스더 왕비가 됨",
+      "name_en": "Esther Becomes Queen",
+      "year": -479,
+      "era": "post_exile",
+      "type": "coronation",
+      "icon": "👑",
+      "description_ko": "에스더가 페르시아 왕비로 선택됨.",
+      "description_en": "Esther chosen as queen of Persia.",
+      "verse": "에 2:17",
+      "characters": [
+        "esther",
+        "ahasuerus"
+      ],
+      "significance_ko": "하나님의 섭리",
+      "significance_en": "God's providence"
+    },
+    {
+      "id": "haman_defeated",
+      "name_ko": "하만의 패망",
+      "name_en": "Haman's Downfall",
+      "year": -473,
+      "era": "post_exile",
+      "type": "deliverance",
+      "icon": "🪢",
+      "description_ko": "하만이 자기가 만든 장대에 달림.",
+      "description_en": "Haman hanged on the gallows he made for Mordecai.",
+      "verse": "에 7:1-10",
+      "characters": [
+        "esther",
+        "mordecai",
+        "haman",
+        "ahasuerus"
+      ],
+      "significance_ko": "하나님의 역전 승리",
+      "significance_en": "God's reversal and victory"
+    },
+    {
+      "id": "nehemiah_wall",
+      "name_ko": "느헤미야 성벽 재건",
+      "name_en": "Nehemiah's Wall",
+      "year": -445,
+      "era": "post_exile",
+      "type": "construction",
+      "icon": "🧱",
+      "description_ko": "느헤미야가 52일 만에 예루살렘 성벽 재건.",
+      "description_en": "Nehemiah rebuilt Jerusalem's wall in 52 days.",
+      "verse": "느 6:15",
+      "characters": [
+        "nehemiah",
+        "sanballat",
+        "tobiah"
+      ],
+      "significance_ko": "반대 속에서의 성취",
+      "significance_en": "Achievement despite opposition"
+    },
+    {
+      "id": "ezra_reads_law",
+      "name_ko": "에스라가 율법을 낭독함",
+      "name_en": "Ezra Reads the Law",
+      "year": -444,
+      "era": "post_exile",
+      "type": "revival",
+      "icon": "📖",
+      "description_ko": "에스라가 백성에게 율법을 읽어줌.",
+      "description_en": "Ezra read the Law to the people.",
+      "verse": "느 8:1-18",
+      "characters": [
+        "ezra",
+        "nehemiah"
+      ],
+      "significance_ko": "말씀 중심의 회복",
+      "significance_en": "Word-centered restoration"
+    },
+    {
+      "id": "jesus_baptism",
+      "name_ko": "예수님의 세례",
+      "name_en": "Baptism of Jesus",
+      "year": 26,
+      "era": "new_testament",
+      "type": "theophany",
+      "icon": "🕊️",
+      "description_ko": "예수님이 요단강에서 세례를 받으심.",
+      "description_en": "Jesus was baptized in the Jordan River.",
+      "verse": "마 3:13-17",
+      "characters": [
+        "jesus",
+        "john_baptist"
+      ],
+      "significance_ko": "공생애 시작, 삼위일체 현현",
+      "significance_en": "Beginning of public ministry, Trinity revealed"
+    },
+    {
+      "id": "jesus_temptation",
+      "name_ko": "예수님의 시험",
+      "name_en": "Temptation of Jesus",
+      "year": 26,
+      "era": "new_testament",
+      "type": "victory",
+      "icon": "🏜️",
+      "description_ko": "예수님이 광야에서 40일 동안 시험받으심.",
+      "description_en": "Jesus was tempted in the wilderness for 40 days.",
+      "verse": "마 4:1-11",
+      "characters": [
+        "jesus"
+      ],
+      "significance_ko": "사탄을 말씀으로 이기심",
+      "significance_en": "Overcame Satan with Scripture"
+    },
+    {
+      "id": "water_to_wine",
+      "name_ko": "가나의 혼인잔치",
+      "name_en": "Water to Wine",
+      "year": 27,
+      "era": "new_testament",
+      "type": "miracle",
+      "icon": "🍷",
+      "description_ko": "예수님의 첫 기적, 물을 포도주로 바꾸심.",
+      "description_en": "Jesus' first miracle: turning water into wine.",
+      "verse": "요 2:1-11",
+      "characters": [
+        "jesus",
+        "mary_mother"
+      ],
+      "significance_ko": "예수님의 첫 기적",
+      "significance_en": "Jesus' first miracle"
+    },
+    {
+      "id": "sermon_on_mount",
+      "name_ko": "산상수훈",
+      "name_en": "Sermon on the Mount",
+      "year": 28,
+      "era": "new_testament",
+      "type": "teaching",
+      "icon": "⛰️",
+      "description_ko": "예수님이 팔복과 천국 윤리를 가르치심.",
+      "description_en": "Jesus taught the Beatitudes and Kingdom ethics.",
+      "verse": "마 5-7장",
+      "characters": [
+        "jesus"
+      ],
+      "significance_ko": "천국 시민의 삶",
+      "significance_en": "Life of Kingdom citizens"
+    },
+    {
+      "id": "great_commission",
+      "name_ko": "지상명령",
+      "name_en": "Great Commission",
+      "year": 30,
+      "era": "new_testament",
+      "type": "commission",
+      "icon": "🌍",
+      "description_ko": "예수님이 제자들에게 모든 민족을 제자삼으라 명하심.",
+      "description_en": "Jesus commanded disciples to make disciples of all nations.",
+      "verse": "마 28:18-20",
+      "characters": [
+        "jesus"
+      ],
+      "significance_ko": "교회의 사명",
+      "significance_en": "Mission of the church"
+    },
+    {
+      "id": "peter_cornelius",
+      "name_ko": "베드로와 고넬료",
+      "name_en": "Peter and Cornelius",
+      "year": 40,
+      "era": "early_church",
+      "type": "breakthrough",
+      "icon": "🌍",
+      "description_ko": "이방인 고넬료가 복음을 받아들임.",
+      "description_en": "Gentile Cornelius received the gospel.",
+      "verse": "행 10:1-48",
+      "characters": [
+        "peter",
+        "cornelius"
+      ],
+      "significance_ko": "이방인 선교의 시작",
+      "significance_en": "Beginning of Gentile mission"
+    },
+    {
+      "id": "antioch_church",
+      "name_ko": "안디옥 교회",
+      "name_en": "Antioch Church",
+      "year": 42,
+      "era": "early_church",
+      "type": "milestone",
+      "icon": "⛪",
+      "description_ko": "안디옥에서 처음으로 그리스도인이라 불림.",
+      "description_en": "Disciples were first called Christians in Antioch.",
+      "verse": "행 11:26",
+      "characters": [
+        "barnabas",
+        "paul"
+      ],
+      "significance_ko": "선교의 본부 교회",
+      "significance_en": "Mission headquarters church"
+    },
+    {
+      "id": "jerusalem_council",
+      "name_ko": "예루살렘 공의회",
+      "name_en": "Jerusalem Council",
+      "year": 49,
+      "era": "early_church",
+      "type": "decision",
+      "icon": "⚖️",
+      "description_ko": "이방인 그리스도인의 율법 준수에 대해 결정.",
+      "description_en": "Decision about Gentile Christians and the law.",
+      "verse": "행 15:1-35",
+      "characters": [
+        "peter",
+        "paul",
+        "barnabas",
+        "james_brother_jesus"
+      ],
+      "significance_ko": "은혜로 구원받음 확증",
+      "significance_en": "Confirmed salvation by grace"
+    },
+    {
+      "id": "paul_rome",
+      "name_ko": "바울의 로마 도착",
+      "name_en": "Paul Arrives in Rome",
+      "year": 60,
+      "era": "early_church",
+      "type": "milestone",
+      "icon": "🏛️",
+      "description_ko": "바울이 로마에 도착하여 복음을 전함.",
+      "description_en": "Paul arrived in Rome and preached the gospel.",
+      "verse": "행 28:16-31",
+      "characters": [
+        "paul"
+      ],
+      "significance_ko": "땅끝까지 복음 확산",
+      "significance_en": "Gospel spread to the ends of the earth"
+    }
+  ],
+  "eras": [
+    {
+      "id": "creation",
+      "name_ko": "창조",
+      "name_en": "Creation",
+      "year_start": -4000,
+      "year_end": -3000,
+      "color": "#4a5568"
+    },
+    {
+      "id": "flood",
+      "name_ko": "홍수",
+      "name_en": "Flood",
+      "year_start": -2400,
+      "year_end": -2100,
+      "color": "#2b6cb0"
+    },
+    {
+      "id": "patriarchs",
+      "name_ko": "족장시대",
+      "name_en": "Patriarchs",
+      "year_start": -2100,
+      "year_end": -1876,
+      "color": "#9f7aea"
+    },
+    {
+      "id": "exodus",
+      "name_ko": "출애굽",
+      "name_en": "Exodus",
+      "year_start": -1526,
+      "year_end": -1406,
+      "color": "#dd6b20"
+    },
+    {
+      "id": "conquest",
+      "name_ko": "정복시대",
+      "name_en": "Conquest",
+      "year_start": -1406,
+      "year_end": -1350,
+      "color": "#38a169"
+    },
+    {
+      "id": "judges",
+      "name_ko": "사사시대",
+      "name_en": "Judges",
+      "year_start": -1350,
+      "year_end": -1050,
+      "color": "#e53e3e"
+    },
+    {
+      "id": "united_kingdom",
+      "name_ko": "통일왕국",
+      "name_en": "United Kingdom",
+      "year_start": -1050,
+      "year_end": -930,
+      "color": "#d69e2e"
+    },
+    {
+      "id": "divided_kingdom",
+      "name_ko": "분열왕국",
+      "name_en": "Divided Kingdom",
+      "year_start": -930,
+      "year_end": -586,
+      "color": "#805ad5"
+    },
+    {
+      "id": "exile",
+      "name_ko": "포로기",
+      "name_en": "Exile",
+      "year_start": -586,
+      "year_end": -538,
+      "color": "#4a5568"
+    },
+    {
+      "id": "return",
+      "name_ko": "귀환기",
+      "name_en": "Return",
+      "year_start": -538,
+      "year_end": -400,
+      "color": "#319795"
+    },
+    {
+      "id": "intertestamental",
+      "name_ko": "중간기",
+      "name_en": "Intertestamental",
+      "year_start": -400,
+      "year_end": -4,
+      "color": "#718096"
+    },
+    {
+      "id": "new_testament",
+      "name_ko": "신약시대",
+      "name_en": "New Testament",
+      "year_start": -4,
+      "year_end": 100,
+      "color": "#e53e3e"
+    }
+  ]
+}

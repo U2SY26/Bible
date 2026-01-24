@@ -14,7 +14,26 @@
       "Bash(git commit -m \"$\\(cat <<''EOF''\nUpgrade to premium UI with glassmorphism and animations\n\n- Add background particle animation system\n- Implement glassmorphism design for header, sidebar, timeline\n- Add SVG glow filters for nodes \\(gold, blue, purple\\)\n- Add pulse animation for selected nodes\n- Add particle flow animation on active relationships\n- Add hover effects with scale transitions\n- Integrate rich Bible data \\(100+ characters, 50+ events, 150+ relationships, 43 hymns\\)\n- Add 66 Bible books reference data\n- Add legend for node colors\n- Improve dropdown styling with dark background\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
       "Bash(git commit:*)",
       "Bash(git -C \"d:/Bible\" add -A)",
-      "Bash(git -C \"d:/Bible\" commit -m \"$\\(cat <<''EOF''\nAdd Google Analytics and simplify footer to single line\n\n- Add Google Analytics tag \\(G-6354L66V8C\\) to index.html\n- Simplify footer to single line with smaller text \\(0.55rem\\)\n- Compact business info display\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")"
+      "Bash(git -C \"d:/Bible\" commit -m \"$\\(cat <<''EOF''\nAdd Google Analytics and simplify footer to single line\n\n- Add Google Analytics tag \\(G-6354L66V8C\\) to index.html\n- Simplify footer to single line with smaller text \\(0.55rem\\)\n- Compact business info display\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git -C \"d:/Bible\" push)",
+      "Bash(node scripts/audit-artwork.cjs:*)",
+      "Bash(node scripts/find-severe-issues.cjs:*)",
+      "Bash(node scripts/fix-artwork.cjs:*)",
+      "Bash(node -e:*)",
+      "Bash(node scripts/check-empty.cjs:*)",
+      "Bash(node scripts/check-backup.cjs:*)",
+      "Bash(git -C \"d:/Bible\" status)",
+      "Bash(git -C \"d:/Bible\" add frontend/src/data/artwork-missing.js frontend/src/data/artwork.generated.json frontend/dist/)",
+      "Bash(git -C \"d:/Bible\" commit:*)",
+      "Bash(git -C \"d:/Bible\" add frontend/src/App.jsx frontend/dist/)",
+      "Bash(git -C \"d:/Bible\" commit -m \"$\\(cat <<''EOF''\nAdd CLM portfolio link to footer\n\n- Add APS/MES/PLM MVP app link \\(https://clm-2.vercel.app/access\\)\n- Light blue color \\(#88ccff\\) for differentiation\n- Compact address display\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git -C \"/d/Bible\" status)",
+      "Bash(git -C \"/d/Bible\" log --oneline -3)",
+      "Bash(git -C \"/d/Bible\" add frontend/src/App.jsx frontend/dist/)",
+      "Bash(git -C \"/d/Bible\" commit -m \"$\\(cat <<''EOF''\nFix timeline to canvas zoom bug\n\n- Add fitToNodes call when selecting character from timeline\n- Centers selected character and connected nodes on canvas\n- Matches behavior of autocomplete character selection\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git -C \"/d/Bible\" push)",
+      "Bash(git -C \"/d/Bible\" commit -m \"$\\(cat <<''EOF''\nRemove APS/MES/PLM link from footer\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git -C \"/d/Bible\" commit -m \"$\\(cat <<''EOF''\nAdd browser back button support\n\n- Push history state when opening character, event, timeline, popup, or bible viewer\n- Handle popstate event to close items in order \\(most recent first\\)\n- Prevents leaving the page when pressing back button\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")"
     ]
   }
 }
