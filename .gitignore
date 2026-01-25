@@ -1,2 +1,31 @@
 .vercel
 .env*.local
+
+# Dependencies
+node_modules/
+.dart_tool/
+
+# Build outputs
+build/
+out/
+dist/
+*.aab
+*.apk
+
+# IDE
+.idea/
+*.iml
+
+# Keystore backups
+*.jks.bak
+
+# Media files (too large)
+*.mp4
+*.mov
+
+# Windows null device
+nul
+
+# Temp files
+*.log
+.DS_Store
