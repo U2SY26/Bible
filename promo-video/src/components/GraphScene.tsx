@@ -1,16 +1,16 @@
-import { AbsoluteFill, useCurrentFrame, interpolate, spring, useVideoConfig, Video, staticFile } from "remotion";
+import { AbsoluteFill, useCurrentFrame, interpolate, spring, useVideoConfig } from "remotion";
 import { colors, fonts } from "../theme";
 
-// 노드 배치 - 작게 조정
+// 노드 배치 - 전체 화면용
 const characters = [
-  { id: "god", name: "하나님", x: 50, y: 8, size: 80, color: colors.accent },
-  { id: "abraham", name: "아브라함", x: 12, y: 22, size: 65, color: colors.primary },
-  { id: "moses", name: "모세", x: 88, y: 22, size: 65, color: colors.primary },
-  { id: "david", name: "다윗", x: 18, y: 42, size: 60, color: colors.primaryLight },
-  { id: "isaiah", name: "이사야", x: 82, y: 42, size: 58, color: colors.primaryLight },
-  { id: "jesus", name: "예수", x: 50, y: 55, size: 75, color: colors.accentRed },
-  { id: "peter", name: "베드로", x: 20, y: 72, size: 55, color: colors.holySpirit },
-  { id: "paul", name: "바울", x: 80, y: 72, size: 55, color: colors.holySpirit },
+  { id: "god", name: "하나님", x: 50, y: 10, size: 100, color: colors.accent },
+  { id: "abraham", name: "아브라함", x: 15, y: 28, size: 85, color: colors.primary },
+  { id: "moses", name: "모세", x: 85, y: 28, size: 85, color: colors.primary },
+  { id: "david", name: "다윗", x: 22, y: 52, size: 78, color: colors.primaryLight },
+  { id: "isaiah", name: "이사야", x: 78, y: 52, size: 75, color: colors.primaryLight },
+  { id: "jesus", name: "예수", x: 50, y: 62, size: 95, color: colors.accentRed },
+  { id: "peter", name: "베드로", x: 25, y: 82, size: 70, color: colors.holySpirit },
+  { id: "paul", name: "바울", x: 75, y: 82, size: 70, color: colors.holySpirit },
 ];
 
 const connections = [
@@ -69,8 +69,8 @@ export const GraphScene: React.FC = () => {
         </h2>
       </div>
 
-      {/* 그래프 - 왼쪽 영역 (더 작게) */}
-      <div style={{ position: "absolute", top: 100, left: 30, width: 420, bottom: 180 }}>
+      {/* 그래프 - 전체 영역 */}
+      <div style={{ position: "absolute", top: 100, left: 60, right: 60, bottom: 200 }}>
         {/* 연결선 */}
         <svg style={{ position: "absolute", width: "100%", height: "100%" }}>
           <defs>
@@ -156,62 +156,6 @@ export const GraphScene: React.FC = () => {
             </div>
           );
         })}
-      </div>
-
-      {/* 앱 데모 영상 - 폰 프레임 (더 크게) */}
-      <div
-        style={{
-          position: "absolute",
-          right: 80,
-          top: "45%",
-          transform: `translateY(-50%) scale(${interpolate(frame, [60, 90], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" })})`,
-          opacity: interpolate(frame, [60, 90], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }),
-        }}
-      >
-        {/* 폰 프레임 */}
-        <div
-          style={{
-            width: 320,
-            height: 640,
-            borderRadius: 48,
-            background: `linear-gradient(145deg, #2a2a3a 0%, #1a1a2a 100%)`,
-            padding: 10,
-            boxShadow: `0 30px 100px rgba(0,0,0,0.7), inset 0 1px 1px rgba(255,255,255,0.1)`,
-          }}
-        >
-          {/* 스크린 */}
-          <div
-            style={{
-              width: "100%",
-              height: "100%",
-              borderRadius: 38,
-              overflow: "hidden",
-              background: colors.background,
-            }}
-          >
-            <Video
-              src={staticFile("app-demo.mp4")}
-              playbackRate={2.5}
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-              }}
-            />
-          </div>
-        </div>
-        {/* 라벨 */}
-        <div
-          style={{
-            textAlign: "center",
-            marginTop: 20,
-            fontFamily: fonts.script,
-            fontSize: 36,
-            color: colors.textSecondary,
-          }}
-        >
-          실시간 탐색
-        </div>
       </div>
 
       {/* 통계 - 하단에 꽉 차게 */}

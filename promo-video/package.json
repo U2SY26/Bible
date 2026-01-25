@@ -1,0 +1,23 @@
+{
+  "name": "promo-video",
+  "version": "1.0.0",
+  "description": "Graph Bible Promo Video",
+  "scripts": {
+    "start": "npx remotion studio",
+    "build": "npx remotion render PromoVideo out/promo-vertical.mp4",
+    "build:horizontal": "npx remotion render PromoVideoHorizontal out/promo-horizontal.mp4",
+    "build:all": "npm run build && npm run build:horizontal"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@remotion/bundler": "^4.0.409",
+    "@remotion/cli": "^4.0.409",
+    "@types/react": "^19.2.9",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "remotion": "^4.0.409",
+    "typescript": "^5.9.3"
+  }
+}
