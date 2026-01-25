@@ -710,7 +710,7 @@ class _$EraImpl implements _Era {
     @JsonKey(name: 'year_start') required this.yearStart,
     @JsonKey(name: 'year_end') required this.yearEnd,
     required this.color,
-    required this.order,
+    this.order = 0,
   });
 
   factory _$EraImpl.fromJson(Map<String, dynamic> json) =>
@@ -733,6 +733,7 @@ class _$EraImpl implements _Era {
   @override
   final String color;
   @override
+  @JsonKey()
   final int order;
 
   @override
@@ -790,7 +791,7 @@ abstract class _Era implements Era {
     @JsonKey(name: 'year_start') required final int yearStart,
     @JsonKey(name: 'year_end') required final int yearEnd,
     required final String color,
-    required final int order,
+    final int order,
   }) = _$EraImpl;
 
   factory _Era.fromJson(Map<String, dynamic> json) = _$EraImpl.fromJson;

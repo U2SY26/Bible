@@ -61,7 +61,7 @@ _$EraImpl _$$EraImplFromJson(Map<String, dynamic> json) => _$EraImpl(
   yearStart: (json['year_start'] as num).toInt(),
   yearEnd: (json['year_end'] as num).toInt(),
   color: json['color'] as String,
-  order: (json['order'] as num).toInt(),
+  order: (json['order'] as num?)?.toInt() ?? 0,
 );
 
 Map<String, dynamic> _$$EraImplToJson(_$EraImpl instance) => <String, dynamic>{

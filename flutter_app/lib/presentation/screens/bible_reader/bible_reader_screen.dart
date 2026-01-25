@@ -24,7 +24,6 @@ class _BibleReaderScreenState extends ConsumerState<BibleReaderScreen> {
     final booksAsync = ref.watch(allBooksProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.background,
       body: SafeArea(
         child: Column(
           children: [
@@ -74,11 +73,17 @@ class _BibleReaderScreenState extends ConsumerState<BibleReaderScreen> {
   }
 
   Widget _buildHeader(String lang) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: const BoxDecoration(
-        color: AppColors.surface,
-        border: Border(bottom: BorderSide(color: AppColors.surfaceLight)),
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.surface : Colors.white,
+        border: Border(
+          bottom: BorderSide(
+            color: isDark ? AppColors.surfaceLight : Colors.grey.shade200,
+          ),
+        ),
       ),
       child: Row(
         children: [
@@ -86,7 +91,7 @@ class _BibleReaderScreenState extends ConsumerState<BibleReaderScreen> {
             IconButton(
               onPressed: () => setState(() => _selectedBookId = null),
               icon: const Icon(Icons.arrow_back),
-              color: AppColors.textSecondary,
+              color: isDark ? AppColors.textSecondary : Colors.grey[600],
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(),
             ),
@@ -110,7 +115,10 @@ class _BibleReaderScreenState extends ConsumerState<BibleReaderScreen> {
           if (_selectedBookId != null)
             Text(
               '${lang == 'ko' ? '장' : 'Ch.'} $_selectedChapter / $_totalChapters',
-              style: const TextStyle(color: AppColors.textMuted, fontSize: 12),
+              style: TextStyle(
+                color: isDark ? AppColors.textMuted : Colors.grey,
+                fontSize: 12,
+              ),
             ),
         ],
       ),
@@ -148,16 +156,18 @@ class _BookSelector extends StatelessWidget {
       'prophecy_nt': lang == 'ko' ? '예언서' : 'Prophecy',
     };
 
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return DefaultTabController(
       length: 2,
       child: Column(
         children: [
           // Testament tabs
           Container(
-            color: AppColors.surface,
+            color: isDark ? AppColors.surface : Colors.white,
             child: TabBar(
               labelColor: AppColors.primary,
-              unselectedLabelColor: AppColors.textSecondary,
+              unselectedLabelColor: isDark ? AppColors.textSecondary : Colors.grey,
               indicatorColor: AppColors.primary,
               tabs: [
                 Tab(text: lang == 'ko' ? '구약' : 'Old Testament'),
@@ -210,6 +220,8 @@ class _TestamentBooks extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return ListView.builder(
       padding: const EdgeInsets.all(16),
       itemCount: categories.length,
@@ -226,8 +238,8 @@ class _TestamentBooks extends StatelessWidget {
               padding: EdgeInsets.only(bottom: 8, top: index > 0 ? 16 : 0),
               child: Text(
                 categoryNames[category] ?? category,
-                style: const TextStyle(
-                  color: AppColors.textSecondary,
+                style: TextStyle(
+                  color: isDark ? AppColors.textSecondary : Colors.grey[700],
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
                 ),
@@ -262,20 +274,22 @@ class _BookChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
-          color: AppColors.surfaceLight,
+          color: isDark ? AppColors.surfaceLight : Colors.grey.shade100,
           borderRadius: BorderRadius.circular(8),
         ),
         child: Column(
           children: [
             Text(
               lang == 'ko' ? book.nameKo : book.nameEn,
-              style: const TextStyle(
-                color: AppColors.textPrimary,
+              style: TextStyle(
+                color: isDark ? AppColors.textPrimary : Colors.black87,
                 fontSize: 13,
                 fontWeight: FontWeight.w500,
               ),
@@ -283,8 +297,8 @@ class _BookChip extends StatelessWidget {
             const SizedBox(height: 2),
             Text(
               '${book.chapters}${lang == 'ko' ? '장' : ' ch'}',
-              style: const TextStyle(
-                color: AppColors.textMuted,
+              style: TextStyle(
+                color: isDark ? AppColors.textMuted : Colors.grey,
                 fontSize: 10,
               ),
             ),
@@ -319,13 +333,14 @@ class _ChapterViewer extends ConsumerWidget {
     final chapterAsync = ref.watch(
       bibleChapterProvider((bookId: bookId, chapter: chapter)),
     );
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Column(
       children: [
         // Chapter navigation
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          color: AppColors.surface,
+          color: isDark ? AppColors.surface : Colors.white,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -334,20 +349,22 @@ class _ChapterViewer extends ConsumerWidget {
                     ? () => onChapterChanged(chapter - 1)
                     : null,
                 icon: const Icon(Icons.chevron_left),
-                color: chapter > 1 ? AppColors.textPrimary : AppColors.textMuted,
+                color: chapter > 1
+                    ? (isDark ? AppColors.textPrimary : Colors.black87)
+                    : (isDark ? AppColors.textMuted : Colors.grey),
               ),
               GestureDetector(
                 onTap: () => _showChapterPicker(context),
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   decoration: BoxDecoration(
-                    color: AppColors.surfaceLight,
+                    color: isDark ? AppColors.surfaceLight : Colors.grey.shade100,
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
                     '${lang == 'ko' ? '장' : 'Chapter'} $chapter',
-                    style: const TextStyle(
-                      color: AppColors.textPrimary,
+                    style: TextStyle(
+                      color: isDark ? AppColors.textPrimary : Colors.black87,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -358,7 +375,9 @@ class _ChapterViewer extends ConsumerWidget {
                     ? () => onChapterChanged(chapter + 1)
                     : null,
                 icon: const Icon(Icons.chevron_right),
-                color: chapter < totalChapters ? AppColors.textPrimary : AppColors.textMuted,
+                color: chapter < totalChapters
+                    ? (isDark ? AppColors.textPrimary : Colors.black87)
+                    : (isDark ? AppColors.textMuted : Colors.grey),
               ),
             ],
           ),
@@ -371,7 +390,7 @@ class _ChapterViewer extends ConsumerWidget {
                 return Center(
                   child: Text(
                     lang == 'ko' ? '장을 찾을 수 없습니다' : 'Chapter not found',
-                    style: const TextStyle(color: AppColors.textMuted),
+                    style: TextStyle(color: isDark ? AppColors.textMuted : Colors.grey),
                   ),
                 );
               }
@@ -399,8 +418,8 @@ class _ChapterViewer extends ConsumerWidget {
                         Expanded(
                           child: Text(
                             verse.text,
-                            style: const TextStyle(
-                              color: AppColors.textPrimary,
+                            style: TextStyle(
+                              color: isDark ? AppColors.textPrimary : Colors.black87,
                               fontSize: 16,
                               height: 1.6,
                             ),
@@ -416,7 +435,7 @@ class _ChapterViewer extends ConsumerWidget {
               child: CircularProgressIndicator(color: AppColors.primary),
             ),
             error: (e, _) => Center(
-              child: Text('Error: $e', style: const TextStyle(color: AppColors.textMuted)),
+              child: Text('Error: $e', style: TextStyle(color: isDark ? AppColors.textMuted : Colors.grey)),
             ),
           ),
         ),
@@ -425,74 +444,83 @@ class _ChapterViewer extends ConsumerWidget {
   }
 
   void _showChapterPicker(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppColors.surface,
+      backgroundColor: isDark ? AppColors.surface : Colors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (context) => Container(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: AppColors.surfaceLight,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              lang == 'ko' ? '장 선택' : 'Select Chapter',
-              style: const TextStyle(
-                color: AppColors.textPrimary,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 16),
-            SizedBox(
-              height: 300,
-              child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 6,
-                  mainAxisSpacing: 8,
-                  crossAxisSpacing: 8,
+      builder: (context) {
+        final sheetIsDark = Theme.of(context).brightness == Brightness.dark;
+        return Container(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: sheetIsDark ? AppColors.surfaceLight : Colors.grey.shade300,
+                  borderRadius: BorderRadius.circular(2),
                 ),
-                itemCount: totalChapters,
-                itemBuilder: (context, index) {
-                  final ch = index + 1;
-                  final isSelected = ch == chapter;
-                  return GestureDetector(
-                    onTap: () {
-                      onChapterChanged(ch);
-                      Navigator.pop(context);
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: isSelected ? AppColors.primary : AppColors.surfaceLight,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Center(
-                        child: Text(
-                          '$ch',
-                          style: TextStyle(
-                            color: isSelected ? Colors.white : AppColors.textSecondary,
-                            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                lang == 'ko' ? '장 선택' : 'Select Chapter',
+                style: TextStyle(
+                  color: sheetIsDark ? AppColors.textPrimary : Colors.black87,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                height: 300,
+                child: GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 6,
+                    mainAxisSpacing: 8,
+                    crossAxisSpacing: 8,
+                  ),
+                  itemCount: totalChapters,
+                  itemBuilder: (context, index) {
+                    final ch = index + 1;
+                    final isSelected = ch == chapter;
+                    return GestureDetector(
+                      onTap: () {
+                        onChapterChanged(ch);
+                        Navigator.pop(context);
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? AppColors.primary
+                              : (sheetIsDark ? AppColors.surfaceLight : Colors.grey.shade100),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Center(
+                          child: Text(
+                            '$ch',
+                            style: TextStyle(
+                              color: isSelected
+                                  ? Colors.white
+                                  : (sheetIsDark ? AppColors.textSecondary : Colors.grey[700]),
+                              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
-            ),
-          ],
-        ),
-      ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

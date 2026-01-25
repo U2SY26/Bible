@@ -3,6 +3,27 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'character.freezed.dart';
 part 'character.g.dart';
 
+class VersesConverter implements JsonConverter<List<CharacterVerse>, List<dynamic>> {
+  const VersesConverter();
+
+  @override
+  List<CharacterVerse> fromJson(List<dynamic> json) {
+    return json.map((e) {
+      if (e is String) {
+        return CharacterVerse(ref: e, textKo: '', textEn: '');
+      } else if (e is Map<String, dynamic>) {
+        return CharacterVerse.fromJson(e);
+      }
+      return CharacterVerse(ref: '', textKo: '', textEn: '');
+    }).toList();
+  }
+
+  @override
+  List<dynamic> toJson(List<CharacterVerse> object) {
+    return object.map((e) => e.toJson()).toList();
+  }
+}
+
 @freezed
 class Character with _$Character {
   const factory Character({
@@ -14,7 +35,7 @@ class Character with _$Character {
     @Default([]) List<String> books,
     @JsonKey(name: 'description_ko') @Default('') String descriptionKo,
     @JsonKey(name: 'description_en') @Default('') String descriptionEn,
-    @Default([]) List<CharacterVerse> verses,
+    @VersesConverter() @Default([]) List<CharacterVerse> verses,
     @Default([]) List<String> labels,
     String? era,
     String? location,

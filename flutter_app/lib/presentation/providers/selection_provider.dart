@@ -1,10 +1,22 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+// 선택 모드: none -> focused -> detailOpen
+enum SelectionMode { none, focused, detailOpen }
+
+// 선택 모드 Provider
+final selectionModeProvider = StateProvider<SelectionMode>((ref) => SelectionMode.none);
+
 // Selected Character Provider
 final selectedCharacterIdProvider = StateProvider<String?>((ref) => null);
 
 // Selected Event Provider
 final selectedEventIdProvider = StateProvider<String?>((ref) => null);
+
+// 사건에서 연결된 인물 ID들 (타임라인 -> 그래프 연동)
+final eventLinkedCharacterIdsProvider = StateProvider<Set<String>>((ref) => {});
+
+// 현재 탭 인덱스 Provider (탭 전환용)
+final currentTabIndexProvider = StateProvider<int>((ref) => 0);
 
 // Show Bible Viewer Provider
 final showBibleViewerProvider = StateProvider<bool>((ref) => false);

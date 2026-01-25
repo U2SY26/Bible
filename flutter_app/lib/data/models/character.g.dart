@@ -18,11 +18,9 @@ _$CharacterImpl _$$CharacterImplFromJson(Map<String, dynamic> json) =>
           const [],
       descriptionKo: json['description_ko'] as String? ?? '',
       descriptionEn: json['description_en'] as String? ?? '',
-      verses:
-          (json['verses'] as List<dynamic>?)
-              ?.map((e) => CharacterVerse.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          const [],
+      verses: json['verses'] == null
+          ? const []
+          : const VersesConverter().fromJson(json['verses'] as List),
       labels:
           (json['labels'] as List<dynamic>?)
               ?.map((e) => e as String)
@@ -48,7 +46,7 @@ Map<String, dynamic> _$$CharacterImplToJson(_$CharacterImpl instance) =>
       'books': instance.books,
       'description_ko': instance.descriptionKo,
       'description_en': instance.descriptionEn,
-      'verses': instance.verses,
+      'verses': const VersesConverter().toJson(instance.verses),
       'labels': instance.labels,
       'era': instance.era,
       'location': instance.location,

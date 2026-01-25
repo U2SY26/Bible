@@ -14,7 +14,8 @@ class EventRepository {
 
   Future<List<Era>> getAllEras() async {
     final data = await _dataSource.loadEvents();
-    return data.eras..sort((a, b) => a.order.compareTo(b.order));
+    // Create a mutable copy before sorting (freezed lists are immutable)
+    return [...data.eras]..sort((a, b) => a.order.compareTo(b.order));
   }
 
   Future<BibleEvent?> getEventById(String id) async {

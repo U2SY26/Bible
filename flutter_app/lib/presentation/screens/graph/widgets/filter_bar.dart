@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
-import '../../../providers/data_providers.dart';
 import '../../../providers/filter_provider.dart';
 
 class FilterBar extends ConsumerWidget {
@@ -11,11 +10,12 @@ class FilterBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final filter = ref.watch(filterProvider);
     final lang = ref.watch(languageProvider);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: const BoxDecoration(
-        color: AppColors.surface,
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.surface : Colors.white,
       ),
       child: Column(
         children: [
@@ -57,13 +57,13 @@ class FilterBar extends ConsumerWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.clear,
-                            size: 14, color: AppColors.textMuted),
+                        Icon(Icons.clear,
+                            size: 14, color: isDark ? AppColors.textMuted : Colors.grey),
                         const SizedBox(width: 4),
                         Text(
                           lang == 'ko' ? '초기화' : 'Clear',
-                          style: const TextStyle(
-                            color: AppColors.textMuted,
+                          style: TextStyle(
+                            color: isDark ? AppColors.textMuted : Colors.grey,
                             fontSize: 12,
                           ),
                         ),
@@ -120,6 +120,7 @@ class _FilterChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final effectiveColor = color ?? AppColors.primary;
 
     return GestureDetector(
@@ -130,7 +131,9 @@ class _FilterChip extends StatelessWidget {
         decoration: BoxDecoration(
           color: isSelected
               ? effectiveColor.withValues(alpha: 0.2)
-              : AppColors.surfaceLight,
+              : isDark
+                  ? AppColors.surfaceLight
+                  : Colors.grey.shade100,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: isSelected ? effectiveColor : Colors.transparent,
@@ -140,7 +143,11 @@ class _FilterChip extends StatelessWidget {
         child: Text(
           label,
           style: TextStyle(
-            color: isSelected ? effectiveColor : AppColors.textSecondary,
+            color: isSelected
+                ? effectiveColor
+                : isDark
+                    ? AppColors.textSecondary
+                    : Colors.grey[700],
             fontSize: 12,
             fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
           ),

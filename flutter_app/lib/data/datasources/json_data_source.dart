@@ -24,10 +24,19 @@ class JsonDataSource {
   Future<List<Character>> loadCharacters() async {
     if (_characters != null) return _characters!;
 
-    final jsonString = await _loadAsset('assets/data/characters.json');
-    final List<dynamic> jsonList = json.decode(jsonString);
-    _characters = jsonList.map((e) => Character.fromJson(e)).toList();
-    return _characters!;
+    try {
+      final jsonString = await _loadAsset('assets/data/characters.json');
+      print('[JsonDataSource] Loaded characters.json, length: ${jsonString.length}');
+      final List<dynamic> jsonList = json.decode(jsonString);
+      print('[JsonDataSource] Parsed ${jsonList.length} characters');
+      _characters = jsonList.map((e) => Character.fromJson(e)).toList();
+      print('[JsonDataSource] Created ${_characters!.length} Character objects');
+      return _characters!;
+    } catch (e, stack) {
+      print('[JsonDataSource] Error loading characters: $e');
+      print('[JsonDataSource] Stack: $stack');
+      rethrow;
+    }
   }
 
   Future<RelationshipsData> loadRelationships() async {
@@ -56,17 +65,27 @@ class JsonDataSource {
   Future<EventsData> loadEvents() async {
     if (_eventsData != null) return _eventsData!;
 
-    final jsonString = await _loadAsset('assets/data/events.json');
-    final Map<String, dynamic> jsonMap = json.decode(jsonString);
+    try {
+      final jsonString = await _loadAsset('assets/data/events.json');
+      print('[JsonDataSource] Loaded events.json, length: ${jsonString.length}');
+      final Map<String, dynamic> jsonMap = json.decode(jsonString);
 
-    final List<dynamic> eventsList = jsonMap['events'];
-    final events = eventsList.map((e) => BibleEvent.fromJson(e)).toList();
+      final List<dynamic> eventsList = jsonMap['events'];
+      print('[JsonDataSource] Parsing ${eventsList.length} events');
+      final events = eventsList.map((e) => BibleEvent.fromJson(e)).toList();
 
-    final List<dynamic> erasList = jsonMap['eras'];
-    final eras = erasList.map((e) => Era.fromJson(e)).toList();
+      final List<dynamic> erasList = jsonMap['eras'];
+      print('[JsonDataSource] Parsing ${erasList.length} eras');
+      final eras = erasList.map((e) => Era.fromJson(e)).toList();
 
-    _eventsData = EventsData(events: events, eras: eras);
-    return _eventsData!;
+      _eventsData = EventsData(events: events, eras: eras);
+      print('[JsonDataSource] Created EventsData successfully');
+      return _eventsData!;
+    } catch (e, stack) {
+      print('[JsonDataSource] Error loading events: $e');
+      print('[JsonDataSource] Stack: $stack');
+      rethrow;
+    }
   }
 
   Future<BooksData> loadBooks() async {

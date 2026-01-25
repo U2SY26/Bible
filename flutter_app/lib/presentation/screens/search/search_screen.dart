@@ -45,7 +45,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     final query = ref.watch(searchQueryProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.background,
       body: SafeArea(
         child: Column(
           children: [
@@ -73,11 +72,17 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   }
 
   Widget _buildHeader(String lang) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: const BoxDecoration(
-        color: AppColors.surface,
-        border: Border(bottom: BorderSide(color: AppColors.surfaceLight)),
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.surface : Colors.white,
+        border: Border(
+          bottom: BorderSide(
+            color: isDark ? AppColors.surfaceLight : Colors.grey.shade200,
+          ),
+        ),
       ),
       child: Row(
         children: [
@@ -97,7 +102,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           const Spacer(),
           Text(
             lang == 'ko' ? '성경 인물 검색' : 'Search Bible Characters',
-            style: const TextStyle(color: AppColors.textMuted, fontSize: 12),
+            style: TextStyle(
+              color: isDark ? AppColors.textMuted : Colors.grey,
+              fontSize: 12,
+            ),
           ),
         ],
       ),
@@ -105,19 +113,21 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   }
 
   Widget _buildSearchBar(String lang) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       padding: const EdgeInsets.all(16),
-      color: AppColors.surface,
+      color: isDark ? AppColors.surface : Colors.white,
       child: TextField(
         controller: _searchController,
         focusNode: _focusNode,
-        style: const TextStyle(color: AppColors.textPrimary),
+        style: TextStyle(color: isDark ? AppColors.textPrimary : Colors.black87),
         decoration: InputDecoration(
           hintText: lang == 'ko' ? '인물 이름, 설명, 역할 검색...' : 'Search name, description, role...',
-          prefixIcon: const Icon(Icons.search, color: AppColors.textMuted),
+          prefixIcon: Icon(Icons.search, color: isDark ? AppColors.textMuted : Colors.grey),
           suffixIcon: _searchController.text.isNotEmpty
               ? IconButton(
-                  icon: const Icon(Icons.clear, color: AppColors.textMuted),
+                  icon: Icon(Icons.clear, color: isDark ? AppColors.textMuted : Colors.grey),
                   onPressed: () {
                     _searchController.clear();
                     ref.read(searchQueryProvider.notifier).state = '';
@@ -133,20 +143,22 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   }
 
   Widget _buildEmptyState(String lang) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.search, size: 64, color: AppColors.surfaceLight),
+          Icon(Icons.search, size: 64, color: isDark ? AppColors.surfaceLight : Colors.grey.shade300),
           const SizedBox(height: 16),
           Text(
             lang == 'ko' ? '검색어를 입력하세요' : 'Enter a search term',
-            style: const TextStyle(color: AppColors.textSecondary, fontSize: 16),
+            style: TextStyle(color: isDark ? AppColors.textSecondary : Colors.grey[700], fontSize: 16),
           ),
           const SizedBox(height: 8),
           Text(
             lang == 'ko' ? '인물의 이름, 역할, 설명으로 검색할 수 있습니다' : 'Search by name, role, or description',
-            style: const TextStyle(color: AppColors.textMuted, fontSize: 12),
+            style: TextStyle(color: isDark ? AppColors.textMuted : Colors.grey, fontSize: 12),
           ),
           const SizedBox(height: 32),
           // Quick search suggestions
@@ -172,20 +184,22 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   }
 
   Widget _buildNoResults(String lang) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.search_off, size: 64, color: AppColors.surfaceLight),
+          Icon(Icons.search_off, size: 64, color: isDark ? AppColors.surfaceLight : Colors.grey.shade300),
           const SizedBox(height: 16),
           Text(
             lang == 'ko' ? '검색 결과가 없습니다' : 'No results found',
-            style: const TextStyle(color: AppColors.textSecondary, fontSize: 16),
+            style: TextStyle(color: isDark ? AppColors.textSecondary : Colors.grey[700], fontSize: 16),
           ),
           const SizedBox(height: 8),
           Text(
             lang == 'ko' ? '다른 검색어를 시도해보세요' : 'Try a different search term',
-            style: const TextStyle(color: AppColors.textMuted, fontSize: 12),
+            style: TextStyle(color: isDark ? AppColors.textMuted : Colors.grey, fontSize: 12),
           ),
         ],
       ),
@@ -219,12 +233,14 @@ class _QuickSearchChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: AppColors.surfaceLight,
+          color: isDark ? AppColors.surfaceLight : Colors.grey.shade100,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
         ),
@@ -250,15 +266,19 @@ class _SearchResultCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: isDark ? AppColors.surface : Colors.white,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.surfaceLight),
+          border: Border.all(
+            color: isDark ? AppColors.surfaceLight : Colors.grey.shade200,
+          ),
         ),
         child: Row(
           children: [
@@ -295,8 +315,8 @@ class _SearchResultCard extends StatelessWidget {
                     children: [
                       Text(
                         lang == 'ko' ? character.nameKo : character.nameEn,
-                        style: const TextStyle(
-                          color: AppColors.textPrimary,
+                        style: TextStyle(
+                          color: isDark ? AppColors.textPrimary : Colors.black87,
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                         ),
@@ -336,8 +356,8 @@ class _SearchResultCard extends StatelessWidget {
                     lang == 'ko' ? character.descriptionKo : character.descriptionEn,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: AppColors.textMuted,
+                    style: TextStyle(
+                      color: isDark ? AppColors.textMuted : Colors.grey,
                       fontSize: 12,
                     ),
                   ),
@@ -348,13 +368,13 @@ class _SearchResultCard extends StatelessWidget {
                       children: character.labels.take(3).map((label) => Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
-                          color: AppColors.surfaceLight,
+                          color: isDark ? AppColors.surfaceLight : Colors.grey.shade100,
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Text(
                           label,
-                          style: const TextStyle(
-                            color: AppColors.textSecondary,
+                          style: TextStyle(
+                            color: isDark ? AppColors.textSecondary : Colors.grey[700],
                             fontSize: 10,
                           ),
                         ),
@@ -364,7 +384,7 @@ class _SearchResultCard extends StatelessWidget {
                 ],
               ),
             ),
-            const Icon(Icons.chevron_right, color: AppColors.textMuted),
+            Icon(Icons.chevron_right, color: isDark ? AppColors.textMuted : Colors.grey),
           ],
         ),
       ),

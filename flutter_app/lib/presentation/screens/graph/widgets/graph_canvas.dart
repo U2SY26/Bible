@@ -8,6 +8,19 @@ import '../../../providers/data_providers.dart';
 import '../../../providers/filter_provider.dart';
 import '../../../providers/selection_provider.dart';
 
+// 연결된 노드 ID 집합을 계산하는 헬퍼 함수
+Set<String> _getConnectedNodeIds(String nodeId, List<Relationship> relationships) {
+  final connectedIds = <String>{nodeId};
+  for (final rel in relationships) {
+    if (rel.source == nodeId) {
+      connectedIds.add(rel.target);
+    } else if (rel.target == nodeId) {
+      connectedIds.add(rel.source);
+    }
+  }
+  return connectedIds;
+}
+
 // Graph node representation
 class GraphNode {
   final String id;
@@ -17,6 +30,7 @@ class GraphNode {
   Offset position;
   Offset velocity;
   bool isDragging;
+  bool isPinned;  // 드래그 후 고정
 
   GraphNode({
     required this.id,
@@ -26,9 +40,12 @@ class GraphNode {
     required this.position,
     this.velocity = Offset.zero,
     this.isDragging = false,
+    this.isPinned = false,
   });
 
-  double get radius => 15 + (importance * 2);
+  double get radius => 5 + (importance * 0.8);
+
+  bool get isFixed => isDragging || isPinned;
 }
 
 class GraphCanvas extends ConsumerStatefulWidget {
@@ -43,22 +60,44 @@ class GraphCanvas extends ConsumerStatefulWidget {
 class _GraphCanvasState extends ConsumerState<GraphCanvas>
     with TickerProviderStateMixin {
   late AnimationController _animationController;
+  late AnimationController _fitAnimationController;
   final Map<String, GraphNode> _nodes = {};
   List<Relationship> _relationships = [];
 
   Offset _pan = Offset.zero;
-  double _zoom = 0.6;
+  double _zoom = 1.0;
   String? _draggedNodeId;
   Offset? _lastFocalPoint;
   Offset? _scaleStartPoint;
   bool _hasMoved = false;
+  Size? _canvasSize;
+  bool _initialFitDone = false;
+
+  // 더블탭 감지용
+  DateTime? _lastTapTime;
+  String? _lastTappedNodeId;
+
+  // 드래그 중 여부 (용수철 효과 활성화)
+  bool _isDraggingNode = false;
+
+  // "두번 클릭하라" 말풍선 표시 여부
+  bool _showDoubleTapHint = false;
+
+  // 애니메이션용
+  Offset _targetPan = Offset.zero;
+  double _targetZoom = 1.0;
+  Offset _startPan = Offset.zero;
+  double _startZoom = 1.0;
 
   // Physics constants
-  static const double repulsionStrength = 3000;
-  static const double attractionStrength = 0.05;
-  static const double idealDistance = 120;
-  static const double damping = 0.85;
-  static const double minDistance = 40;
+  static const double repulsionStrength = 1500;  // 반발력
+  static const double attractionStrength = 50.0;  // 2배 강한 연결 인력
+  static const double idealDistance = 50;
+  static const double damping = 0.70;  // 빠른 수렴
+  static const double minDistance = 20;
+  static const double centerGravity = 0.0;  // 중심 중력 없음
+  static const double maxVelocity = 400.0;  // 2배 속도
+  static const double springStrength = 100.0;  // 용수철 강도
 
   @override
   void initState() {
@@ -68,20 +107,47 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
       duration: const Duration(seconds: 1),
     )..repeat();
 
+    _fitAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 400),
+    );
+    _fitAnimationController.addListener(_onFitAnimation);
+
     _animationController.addListener(_onFrame);
     _initializeNodes();
     _loadRelationships();
   }
 
+  void _onFitAnimation() {
+    final t = Curves.easeOutCubic.transform(_fitAnimationController.value);
+    setState(() {
+      _zoom = _startZoom + (_targetZoom - _startZoom) * t;
+      _pan = Offset(
+        _startPan.dx + (_targetPan.dx - _startPan.dx) * t,
+        _startPan.dy + (_targetPan.dy - _startPan.dy) * t,
+      );
+    });
+  }
+
+  void _animateToFit(double newZoom, Offset newPan) {
+    _startZoom = _zoom;
+    _startPan = _pan;
+    _targetZoom = newZoom;
+    _targetPan = newPan;
+    _fitAnimationController.forward(from: 0);
+  }
+
   void _initializeNodes() {
     final random = Random();
-    final centerX = 200.0;
-    final centerY = 300.0;
-    final radius = 300.0;
+    final centerX = 0.0;  // 원점 중심
+    final centerY = 0.0;
+    // 노드 수에 따라 동적으로 반경 조절 (1.5배 넓게)
+    final nodeCount = widget.characters.length;
+    final spreadRadius = (100.0 + sqrt(nodeCount) * 30) * 1.5;  // 1.5배 증가
 
     for (final char in widget.characters) {
       final angle = random.nextDouble() * 2 * pi;
-      final r = random.nextDouble() * radius;
+      final r = 75 + random.nextDouble() * spreadRadius;  // 1.5배
       _nodes[char.id] = GraphNode(
         id: char.id,
         name: char.nameKo,
@@ -104,6 +170,72 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
               (r) => visibleIds.contains(r.source) && visibleIds.contains(r.target))
           .toList();
     });
+
+    // 초기 fit-to-screen 실행 (약간의 지연 후)
+    Future.delayed(const Duration(milliseconds: 100), () {
+      if (mounted && !_initialFitDone) {
+        _fitToScreen();
+        _initialFitDone = true;
+      }
+    });
+  }
+
+  void _fitToScreen({bool animate = true}) {
+    if (_nodes.isEmpty || _canvasSize == null) return;
+
+    // 모든 노드의 경계 계산
+    double minX = double.infinity;
+    double maxX = double.negativeInfinity;
+    double minY = double.infinity;
+    double maxY = double.negativeInfinity;
+
+    for (final node in _nodes.values) {
+      final r = node.radius;
+      minX = min(minX, node.position.dx - r);
+      maxX = max(maxX, node.position.dx + r);
+      minY = min(minY, node.position.dy - r);
+      maxY = max(maxY, node.position.dy + r);
+    }
+
+    // 여백 추가
+    const padding = 50.0;
+    minX -= padding;
+    maxX += padding;
+    minY -= padding;
+    maxY += padding;
+
+    final contentWidth = maxX - minX;
+    final contentHeight = maxY - minY;
+    final contentCenterX = (minX + maxX) / 2;
+    final contentCenterY = (minY + maxY) / 2;
+
+    // 화면에 맞는 줌 계산
+    final scaleX = _canvasSize!.width / contentWidth;
+    final scaleY = _canvasSize!.height / contentHeight;
+    final newZoom = min(scaleX, scaleY).clamp(0.3, 2.0);
+
+    // 중앙 정렬을 위한 pan 계산
+    final screenCenterX = _canvasSize!.width / 2;
+    final screenCenterY = _canvasSize!.height / 2;
+    final newPan = Offset(
+      screenCenterX - contentCenterX * newZoom,
+      screenCenterY - contentCenterY * newZoom,
+    );
+
+    // 모든 노드 고정 (초기 배치 후 움직이지 않음)
+    for (final node in _nodes.values) {
+      node.isPinned = true;
+      node.velocity = Offset.zero;
+    }
+
+    if (animate && _initialFitDone) {
+      _animateToFit(newZoom, newPan);
+    } else {
+      setState(() {
+        _zoom = newZoom;
+        _pan = newPan;
+      });
+    }
   }
 
   void _onFrame() {
@@ -117,6 +249,45 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
 
   void _applyForces() {
     final nodeList = _nodes.values.toList();
+    final draggedNode = _draggedNodeId != null ? _nodes[_draggedNodeId] : null;
+
+    // Calculate center of mass
+    Offset center = Offset.zero;
+    for (final node in nodeList) {
+      center += node.position;
+    }
+    if (nodeList.isNotEmpty) {
+      center = center / nodeList.length.toDouble();
+    }
+
+    // 드래그 중일 때 용수철 효과 적용
+    if (_isDraggingNode && draggedNode != null) {
+      // 연결된 노드들을 드래그된 노드 쪽으로 강하게 끌어당김
+      for (final rel in _relationships) {
+        if (rel.source == _draggedNodeId) {
+          final target = _nodes[rel.target];
+          if (target != null && !target.isFixed) {
+            final diff = draggedNode.position - target.position;
+            final distance = diff.distance;
+            if (distance > 1) {
+              final direction = diff / distance;
+              // 용수철 힘: 거리에 비례
+              target.velocity += direction * springStrength * 0.1;
+            }
+          }
+        } else if (rel.target == _draggedNodeId) {
+          final source = _nodes[rel.source];
+          if (source != null && !source.isFixed) {
+            final diff = draggedNode.position - source.position;
+            final distance = diff.distance;
+            if (distance > 1) {
+              final direction = diff / distance;
+              source.velocity += direction * springStrength * 0.1;
+            }
+          }
+        }
+      }
+    }
 
     // Repulsion between all nodes
     for (int i = 0; i < nodeList.length; i++) {
@@ -134,9 +305,13 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
       }
     }
 
-    // Update positions with damping
+    // Update positions with damping and center gravity
     for (final node in _nodes.values) {
-      if (!node.isDragging) {
+      if (!node.isFixed) {
+        // Apply center gravity
+        final toCenter = center - node.position;
+        node.velocity += toCenter * centerGravity;
+
         node.velocity *= damping;
         node.position += node.velocity * 0.016; // ~60fps
       }
@@ -149,8 +324,8 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
     final force = repulsionStrength / (distance * distance);
     final direction = diff / distance;
 
-    if (!a.isDragging) a.velocity += direction * force * 0.01;
-    if (!b.isDragging) b.velocity -= direction * force * 0.01;
+    if (!a.isFixed) a.velocity += direction * force * 0.01;
+    if (!b.isFixed) b.velocity -= direction * force * 0.01;
   }
 
   void _applyAttraction(GraphNode a, GraphNode b) {
@@ -158,11 +333,25 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
     final distance = diff.distance;
     if (distance < 1) return;
 
-    final force = (distance - idealDistance) * attractionStrength;
+    // 거리가 멀수록 가속도 급격히 증가 (세제곱 비례)
+    final distanceRatio = (distance - idealDistance) / idealDistance;
+    final acceleration = 1.0 + (distanceRatio.abs() * distanceRatio.abs() * distanceRatio.abs());
+    final force = (distance - idealDistance) * attractionStrength * acceleration;
     final direction = diff / distance;
 
-    if (!a.isDragging) a.velocity += direction * force;
-    if (!b.isDragging) b.velocity -= direction * force;
+    if (!a.isFixed) {
+      a.velocity += direction * force * 0.5;
+      // 최대 속도 제한
+      if (a.velocity.distance > maxVelocity) {
+        a.velocity = a.velocity / a.velocity.distance * maxVelocity;
+      }
+    }
+    if (!b.isFixed) {
+      b.velocity -= direction * force * 0.5;
+      if (b.velocity.distance > maxVelocity) {
+        b.velocity = b.velocity / b.velocity.distance * maxVelocity;
+      }
+    }
   }
 
   @override
@@ -183,49 +372,124 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
       _nodes.remove(id);
     }
 
-    // Add new nodes
+    // Add new nodes - 기존 노드 중심 근처에 배치
     final random = Random();
+    Offset center = Offset.zero;
+    if (_nodes.isNotEmpty) {
+      for (final node in _nodes.values) {
+        center += node.position;
+      }
+      center = center / _nodes.length.toDouble();
+    }
+
     for (final char in widget.characters) {
       if (!_nodes.containsKey(char.id)) {
         final angle = random.nextDouble() * 2 * pi;
-        final r = random.nextDouble() * 200;
+        final r = 100 + random.nextDouble() * 200;
         _nodes[char.id] = GraphNode(
           id: char.id,
           name: char.nameKo,
           importance: char.importance,
           testament: char.testament,
-          position: Offset(200 + r * cos(angle), 300 + r * sin(angle)),
+          position: Offset(center.dx + r * cos(angle), center.dy + r * sin(angle)),
         );
       }
     }
+
+    // 필터 변경 시 fit-to-screen
+    _initialFitDone = false;
   }
 
   @override
   Widget build(BuildContext context) {
     final selectedId = ref.watch(selectedCharacterIdProvider);
+    final selectionMode = ref.watch(selectionModeProvider);
     final lang = ref.watch(languageProvider);
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return GestureDetector(
-      onScaleStart: _onScaleStart,
-      onScaleUpdate: _onScaleUpdate,
-      onScaleEnd: _onScaleEnd,
-      onTapUp: _onTapUp,
-      child: Container(
-        color: isDark ? AppColors.background : const Color(0xFFF5F5F7),
-        child: CustomPaint(
-          painter: _GraphPainter(
-            nodes: _nodes,
-            relationships: _relationships,
-            pan: _pan,
-            zoom: _zoom,
-            selectedNodeId: selectedId,
-            lang: lang,
-            isDark: isDark,
-          ),
-          size: Size.infinite,
-        ),
-      ),
+    // 연결된 노드 ID 계산
+    final visibleNodeIds = selectedId != null
+        ? _getConnectedNodeIds(selectedId, _relationships)
+        : <String>{};
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // 캔버스 크기 저장
+        _canvasSize = Size(constraints.maxWidth, constraints.maxHeight);
+
+        return Stack(
+          children: [
+            GestureDetector(
+              onScaleStart: _onScaleStart,
+              onScaleUpdate: _onScaleUpdate,
+              onScaleEnd: _onScaleEnd,
+              onDoubleTapDown: _onDoubleTap,
+              child: ClipRect(
+                child: Container(
+                  color: isDark ? AppColors.background : const Color(0xFFF5F5F7),
+                  child: CustomPaint(
+                    painter: _GraphPainter(
+                      nodes: _nodes,
+                      relationships: _relationships,
+                      pan: _pan,
+                      zoom: _zoom,
+                      selectedNodeId: selectedId,
+                      lang: lang,
+                      isDark: isDark,
+                      selectionMode: selectionMode,
+                      visibleNodeIds: visibleNodeIds,
+                    ),
+                    size: Size.infinite,
+                  ),
+                ),
+              ),
+            ),
+            // "두번 클릭하라" 말풍선
+            if (_showDoubleTapHint && selectionMode == SelectionMode.focused && selectedId != null)
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 60,
+                child: Center(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.7),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Text(
+                      lang == 'ko' ? '두번 클릭하여 상세보기' : 'Double tap for details',
+                      style: TextStyle(
+                        color: isDark ? Colors.black : Colors.white,
+                        fontSize: 11,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            // Fit-to-screen 버튼
+            Positioned(
+              right: 16,
+              bottom: 16,
+              child: FloatingActionButton.small(
+                heroTag: 'fitToScreen',
+                onPressed: () {
+                  // 전체 화면 fit 시 선택 해제
+                  ref.read(selectionModeProvider.notifier).state = SelectionMode.none;
+                  ref.read(selectedCharacterIdProvider.notifier).state = null;
+                  _showDoubleTapHint = false;
+                  _fitToScreen();
+                },
+                backgroundColor: isDark ? AppColors.surfaceLight : Colors.white,
+                child: Icon(
+                  Icons.fit_screen,
+                  color: isDark ? AppColors.textSecondary : Colors.grey[700],
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -234,13 +498,72 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
     _scaleStartPoint = details.localFocalPoint;
     _hasMoved = false;
 
-    // Check if touching a node
+    // 두 손가락 이상이면 노드 선택 안함 (핀치 줌 전용)
+    if (details.pointerCount > 1) {
+      return;
+    }
+
+    // Check if touching a node (한 손가락일 때만)
     final touchPoint = (details.localFocalPoint - _pan) / _zoom;
+    final currentMode = ref.read(selectionModeProvider);
+    final currentSelectedId = ref.read(selectedCharacterIdProvider);
+
+    // focused/detailOpen 모드에서는 보이는 노드만 터치 가능
+    final visibleNodeIds = currentSelectedId != null && currentMode != SelectionMode.none
+        ? _getConnectedNodeIds(currentSelectedId, _relationships)
+        : null;
+
     for (final node in _nodes.values) {
-      if ((node.position - touchPoint).distance < node.radius) {
+      // 보이지 않는 노드는 터치 불가
+      if (visibleNodeIds != null && !visibleNodeIds.contains(node.id)) {
+        continue;
+      }
+
+      if ((node.position - touchPoint).distance < node.radius + 10) {  // 터치 영역 확대
         _draggedNodeId = node.id;
         node.isDragging = true;
+        _isDraggingNode = true;
+
+        // 더블탭 감지
+        final now = DateTime.now();
+        final isDoubleTap = _lastTapTime != null &&
+            _lastTappedNodeId == node.id &&
+            now.difference(_lastTapTime!).inMilliseconds < 400;
+
+        if (isDoubleTap && currentMode == SelectionMode.focused) {
+          // 더블탭 -> detailOpen (팝업 표시)
+          ref.read(selectionModeProvider.notifier).state = SelectionMode.detailOpen;
+          _showDoubleTapHint = false;
+        } else if (currentSelectedId != node.id) {
+          // 다른 노드 터치 -> focused 모드로 전환
+          ref.read(selectedCharacterIdProvider.notifier).state = node.id;
+          ref.read(selectionModeProvider.notifier).state = SelectionMode.focused;
+          _showDoubleTapHint = true;
+        }
+
+        _lastTapTime = now;
+        _lastTappedNodeId = node.id;
+
+        // 드래그 시작 시 연결된 노드들의 고정 해제 (용수철 효과를 위해)
+        _unpinConnectedNodes(node.id);
         return;
+      }
+    }
+  }
+
+  // 연결된 노드들의 고정을 해제
+  void _unpinConnectedNodes(String nodeId) {
+    for (final rel in _relationships) {
+      if (rel.source == nodeId) {
+        final target = _nodes[rel.target];
+        if (target != null) {
+          target.isPinned = false;
+        }
+      } else if (rel.target == nodeId) {
+        final source = _nodes[rel.source];
+        if (source != null) {
+          source.isPinned = false;
+        }
       }
     }
   }
@@ -262,9 +585,9 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
         node.position = (details.localFocalPoint - _pan) / _zoom;
       }
     } else {
-      // Pan and zoom
+      // Pan and zoom (속도 조절)
       if (_lastFocalPoint != null) {
-        final delta = details.localFocalPoint - _lastFocalPoint!;
+        final delta = (details.localFocalPoint - _lastFocalPoint!) * 0.7;  // 70%만 적용
         setState(() {
           _pan += delta;
         });
@@ -272,8 +595,18 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
 
       if (details.scale != 1.0) {
         _hasMoved = true;
+        // 확대/축소 속도를 더 늦춤
+        final scaleDelta = (details.scale - 1.0) * 0.08;  // 8%만 적용
+        final newZoom = (_zoom * (1.0 + scaleDelta)).clamp(0.3, 2.0);
+
+        // 손가락 위치 기준으로 줌 (focal point zoom)
+        final focalPoint = details.localFocalPoint;
+        final oldZoom = _zoom;
+
         setState(() {
-          _zoom = (_zoom * details.scale).clamp(0.2, 3.0);
+          _zoom = newZoom;
+          // 줌 변화에 따라 pan 조정하여 focal point 유지
+          _pan = focalPoint - (focalPoint - _pan) * (newZoom / oldZoom);
         });
       }
     }
@@ -281,48 +614,170 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
   }
 
   void _onScaleEnd(ScaleEndDetails details) {
+    final currentMode = ref.read(selectionModeProvider);
+    final currentSelectedId = ref.read(selectedCharacterIdProvider);
+
     // If there was no movement, treat it as a tap (for web compatibility)
-    if (!_hasMoved && _scaleStartPoint != null) {
+    if (!_hasMoved && _scaleStartPoint != null && _draggedNodeId == null) {
       final touchPoint = (_scaleStartPoint! - _pan) / _zoom;
+
+      // focused/detailOpen 모드에서는 보이는 노드만 체크
+      final visibleNodeIds = currentSelectedId != null && currentMode != SelectionMode.none
+          ? _getConnectedNodeIds(currentSelectedId, _relationships)
+          : null;
+
       bool tappedNode = false;
       for (final node in _nodes.values) {
-        if ((node.position - touchPoint).distance < node.radius) {
-          ref.read(selectedCharacterIdProvider.notifier).state = node.id;
+        // 보이지 않는 노드는 체크 안함
+        if (visibleNodeIds != null && !visibleNodeIds.contains(node.id)) {
+          continue;
+        }
+        if ((node.position - touchPoint).distance < node.radius + 10) {
           tappedNode = true;
           break;
         }
       }
-      // Tap on empty space - deselect
+
+      // 빈 공간 터치 - 모드 전환
       if (!tappedNode) {
-        ref.read(selectedCharacterIdProvider.notifier).state = null;
+        if (currentMode == SelectionMode.detailOpen) {
+          // detailOpen -> focused (팝업만 닫기)
+          ref.read(selectionModeProvider.notifier).state = SelectionMode.focused;
+          _showDoubleTapHint = true;
+        } else if (currentMode == SelectionMode.focused) {
+          // focused -> none (전체 노드 표시)
+          ref.read(selectionModeProvider.notifier).state = SelectionMode.none;
+          ref.read(selectedCharacterIdProvider.notifier).state = null;
+          _showDoubleTapHint = false;
+          // 전체 노드 fit
+          _fitToScreen();
+        }
       }
     }
 
     if (_draggedNodeId != null) {
-      _nodes[_draggedNodeId]?.isDragging = false;
+      final node = _nodes[_draggedNodeId];
+      if (node != null) {
+        node.isDragging = false;
+        node.isPinned = true;  // 드래그 후 고정
+        node.velocity = Offset.zero;  // 속도 초기화
+      }
+
+      _isDraggingNode = false;
+
+      // 연결된 노드들만 fit 화면으로
+      if (currentMode == SelectionMode.focused || currentMode == SelectionMode.none) {
+        _fitToConnectedNodes(_draggedNodeId!);
+      }
+
+      // 연결된 노드들도 다시 고정
+      _pinConnectedNodes(_draggedNodeId!);
       _draggedNodeId = null;
     }
+  }
+
+  // 연결된 노드들만 fit 화면으로 (애니메이션)
+  void _fitToConnectedNodes(String nodeId) {
+    if (_canvasSize == null) return;
+
+    final connectedIds = _getConnectedNodeIds(nodeId, _relationships);
+    if (connectedIds.isEmpty) return;
+
+    // 연결된 노드들의 경계 계산
+    double minX = double.infinity;
+    double maxX = double.negativeInfinity;
+    double minY = double.infinity;
+    double maxY = double.negativeInfinity;
+
+    for (final id in connectedIds) {
+      final node = _nodes[id];
+      if (node == null) continue;
+      final r = node.radius;
+      minX = min(minX, node.position.dx - r);
+      maxX = max(maxX, node.position.dx + r);
+      minY = min(minY, node.position.dy - r);
+      maxY = max(maxY, node.position.dy + r);
+    }
+
+    // 여백 추가
+    const padding = 80.0;
+    minX -= padding;
+    maxX += padding;
+    minY -= padding;
+    maxY += padding;
+
+    final contentWidth = maxX - minX;
+    final contentHeight = maxY - minY;
+    final contentCenterX = (minX + maxX) / 2;
+    final contentCenterY = (minY + maxY) / 2;
+
+    // 화면에 맞는 줌 계산
+    final scaleX = _canvasSize!.width / contentWidth;
+    final scaleY = _canvasSize!.height / contentHeight;
+    final newZoom = min(scaleX, scaleY).clamp(0.5, 2.0);
+
+    // 중앙 정렬을 위한 pan 계산
+    final screenCenterX = _canvasSize!.width / 2;
+    final screenCenterY = _canvasSize!.height / 2;
+    final newPan = Offset(
+      screenCenterX - contentCenterX * newZoom,
+      screenCenterY - contentCenterY * newZoom,
+    );
+
+    // 부드러운 애니메이션
+    _animateToFit(newZoom, newPan);
+  }
+
+  // 연결된 노드들을 다시 고정
+  void _pinConnectedNodes(String nodeId) {
+    // 잠시 후 모든 노드 고정 (물리 시뮬레이션 안정화 후)
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (mounted) {
+        setState(() {
+          for (final node in _nodes.values) {
+            node.isPinned = true;
+            node.velocity = Offset.zero;
+          }
+        });
+      }
+    });
     _lastFocalPoint = null;
     _scaleStartPoint = null;
     _hasMoved = false;
   }
 
-  void _onTapUp(TapUpDetails details) {
-    final touchPoint = (details.localPosition - _pan) / _zoom;
-    for (final node in _nodes.values) {
-      if ((node.position - touchPoint).distance < node.radius) {
-        ref.read(selectedCharacterIdProvider.notifier).state = node.id;
-        return;
-      }
-    }
-    // Tap on empty space - deselect
-    ref.read(selectedCharacterIdProvider.notifier).state = null;
-  }
-
   @override
   void dispose() {
     _animationController.dispose();
+    _fitAnimationController.dispose();
     super.dispose();
+  }
+
+  void _onDoubleTap(TapDownDetails details) {
+    final touchPoint = (details.localPosition - _pan) / _zoom;
+    final currentMode = ref.read(selectionModeProvider);
+    final currentSelectedId = ref.read(selectedCharacterIdProvider);
+
+    // focused/detailOpen 모드에서는 보이는 노드만 터치 가능
+    final visibleNodeIds = currentSelectedId != null && currentMode != SelectionMode.none
+        ? _getConnectedNodeIds(currentSelectedId, _relationships)
+        : null;
+
+    for (final node in _nodes.values) {
+      // 보이지 않는 노드는 터치 불가
+      if (visibleNodeIds != null && !visibleNodeIds.contains(node.id)) {
+        continue;
+      }
+
+      if ((node.position - touchPoint).distance < node.radius + 15) {
+        // 더블탭 -> detailOpen (팝업 표시)
+        ref.read(selectedCharacterIdProvider.notifier).state = node.id;
+        ref.read(selectionModeProvider.notifier).state = SelectionMode.detailOpen;
+        _showDoubleTapHint = false;
+        setState(() {});
+        return;
+      }
+    }
   }
 }
 
@@ -334,6 +789,8 @@ class _GraphPainter extends CustomPainter {
   final String? selectedNodeId;
   final String lang;
   final bool isDark;
+  final SelectionMode selectionMode;
+  final Set<String> visibleNodeIds;
 
   _GraphPainter({
     required this.nodes,
@@ -343,6 +800,8 @@ class _GraphPainter extends CustomPainter {
     this.selectedNodeId,
     required this.lang,
     required this.isDark,
+    required this.selectionMode,
+    required this.visibleNodeIds,
   });
 
   @override
@@ -351,13 +810,25 @@ class _GraphPainter extends CustomPainter {
     canvas.translate(pan.dx, pan.dy);
     canvas.scale(zoom);
 
-    // Draw edges first
+    // focused나 detailOpen 모드일 때는 연결된 노드만 표시
+    final showOnlyConnected = selectionMode != SelectionMode.none && selectedNodeId != null;
+
+    // Draw edges first (연결된 것만)
     for (final rel in relationships) {
+      if (showOnlyConnected) {
+        // 선택된 노드와 연결된 엣지만 표시
+        if (rel.source != selectedNodeId && rel.target != selectedNodeId) {
+          continue;
+        }
+      }
       _drawEdge(canvas, rel);
     }
 
-    // Draw nodes
+    // Draw nodes (연결된 것만)
     for (final node in nodes.values) {
+      if (showOnlyConnected && !visibleNodeIds.contains(node.id)) {
+        continue;
+      }
       _drawNode(canvas, node);
     }
 
@@ -383,14 +854,29 @@ class _GraphPainter extends CustomPainter {
 
   void _drawNode(Canvas canvas, GraphNode node) {
     final isSelected = selectedNodeId == node.id;
-    final radius = node.radius * (isSelected ? 1.2 : 1.0);
+    final isFocusedMode = selectionMode == SelectionMode.focused || selectionMode == SelectionMode.detailOpen;
+    final radius = node.radius * (isSelected ? 1.3 : 1.0);
 
     // Get node color
     final nodeColor =
         AppColors.getCharacterColor(node.id, node.importance, node.testament);
 
-    // Glow effect for important or selected nodes
-    if (node.importance >= 8 || isSelected) {
+    // 강화된 네온 효과 (선택된 노드 + focused 모드)
+    if (isSelected && isFocusedMode) {
+      // 외곽 네온 (여러 레이어)
+      for (int i = 3; i >= 1; i--) {
+        final glowPaint = Paint()
+          ..color = Colors.cyanAccent.withValues(alpha: 0.15 * i)
+          ..maskFilter = MaskFilter.blur(BlurStyle.normal, 8.0 * i);
+        canvas.drawCircle(node.position, radius + 8 * i, glowPaint);
+      }
+      // 중심 네온
+      final innerGlowPaint = Paint()
+        ..color = Colors.white.withValues(alpha: 0.5)
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5);
+      canvas.drawCircle(node.position, radius + 3, innerGlowPaint);
+    } else if (node.importance >= 8 || isSelected) {
+      // 기본 글로우
       final glowPaint = Paint()
         ..color = nodeColor.withValues(alpha: 0.3)
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10);
@@ -401,7 +887,7 @@ class _GraphPainter extends CustomPainter {
     final fillPaint = Paint()
       ..shader = RadialGradient(
         colors: [
-          nodeColor,
+          isSelected && isFocusedMode ? Colors.white : nodeColor,
           nodeColor.withValues(alpha: 0.7),
         ],
       ).createShader(Rect.fromCircle(center: node.position, radius: radius));
@@ -409,8 +895,10 @@ class _GraphPainter extends CustomPainter {
 
     // Node border
     final borderPaint = Paint()
-      ..color = isSelected ? Colors.white : nodeColor.withValues(alpha: 0.5)
-      ..strokeWidth = isSelected ? 3.0 : 1.5
+      ..color = isSelected
+          ? (isFocusedMode ? Colors.cyanAccent : Colors.white)
+          : nodeColor.withValues(alpha: 0.5)
+      ..strokeWidth = isSelected ? 3.5 : 1.5
       ..style = PaintingStyle.stroke;
     canvas.drawCircle(node.position, radius, borderPaint);
 

@@ -18,7 +18,6 @@ class TimelineScreen extends ConsumerWidget {
     final lang = ref.watch(languageProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.background,
       body: SafeArea(
         child: Column(
           children: [
@@ -50,11 +49,17 @@ class TimelineScreen extends ConsumerWidget {
   }
 
   Widget _buildHeader(BuildContext context, WidgetRef ref, String lang) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: const BoxDecoration(
-        color: AppColors.surface,
-        border: Border(bottom: BorderSide(color: AppColors.surfaceLight)),
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.surface : Colors.white,
+        border: Border(
+          bottom: BorderSide(
+            color: isDark ? AppColors.surfaceLight : Colors.grey.shade200,
+          ),
+        ),
       ),
       child: Row(
         children: [
@@ -74,8 +79,8 @@ class TimelineScreen extends ConsumerWidget {
           const Spacer(),
           Text(
             lang == 'ko' ? '시대별 성경 역사' : 'Biblical History by Era',
-            style: const TextStyle(
-              color: AppColors.textMuted,
+            style: TextStyle(
+              color: isDark ? AppColors.textMuted : Colors.grey,
               fontSize: 12,
             ),
           ),
@@ -171,12 +176,18 @@ class _EraLegend extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       height: 50,
       padding: const EdgeInsets.symmetric(vertical: 8),
-      decoration: const BoxDecoration(
-        color: AppColors.surface,
-        border: Border(bottom: BorderSide(color: AppColors.surfaceLight)),
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.surface : Colors.white,
+        border: Border(
+          bottom: BorderSide(
+            color: isDark ? AppColors.surfaceLight : Colors.grey.shade200,
+          ),
+        ),
       ),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
@@ -309,12 +320,17 @@ class _EraSection extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(width: 8),
-                    Text(
-                      _formatYearRange(era.yearStart, era.yearEnd),
-                      style: const TextStyle(
-                        color: AppColors.textMuted,
-                        fontSize: 12,
-                      ),
+                    Builder(
+                      builder: (context) {
+                        final isDark = Theme.of(context).brightness == Brightness.dark;
+                        return Text(
+                          _formatYearRange(era.yearStart, era.yearEnd),
+                          style: TextStyle(
+                            color: isDark ? AppColors.textMuted : Colors.grey,
+                            fontSize: 12,
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -322,13 +338,18 @@ class _EraSection extends ConsumerWidget {
 
                 // Events
                 if (events.isNotEmpty) ...[
-                  Text(
-                    lang == 'ko' ? '주요 사건' : 'Key Events',
-                    style: const TextStyle(
-                      color: AppColors.textSecondary,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                    ),
+                  Builder(
+                    builder: (context) {
+                      final isDark = Theme.of(context).brightness == Brightness.dark;
+                      return Text(
+                        lang == 'ko' ? '주요 사건' : 'Key Events',
+                        style: TextStyle(
+                          color: isDark ? AppColors.textSecondary : Colors.grey[700],
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      );
+                    },
                   ),
                   const SizedBox(height: 8),
                   ...events.take(5).map((event) => _EventCard(
@@ -341,13 +362,18 @@ class _EraSection extends ConsumerWidget {
                 // Characters
                 if (characters.isNotEmpty) ...[
                   const SizedBox(height: 12),
-                  Text(
-                    lang == 'ko' ? '주요 인물' : 'Key Figures',
-                    style: const TextStyle(
-                      color: AppColors.textSecondary,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                    ),
+                  Builder(
+                    builder: (context) {
+                      final isDark = Theme.of(context).brightness == Brightness.dark;
+                      return Text(
+                        lang == 'ko' ? '주요 인물' : 'Key Figures',
+                        style: TextStyle(
+                          color: isDark ? AppColors.textSecondary : Colors.grey[700],
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      );
+                    },
                   ),
                   const SizedBox(height: 8),
                   Wrap(
@@ -389,7 +415,7 @@ class _EraSection extends ConsumerWidget {
   }
 }
 
-class _EventCard extends StatelessWidget {
+class _EventCard extends ConsumerWidget {
   final BibleEvent event;
   final String lang;
   final Color color;
@@ -401,52 +427,94 @@ class _EventCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppColors.surfaceLight,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withValues(alpha: 0.3)),
-      ),
-      child: Row(
-        children: [
-          // Event icon
-          if (event.icon != null)
-            Text(event.icon!, style: const TextStyle(fontSize: 20)),
-          if (event.icon != null) const SizedBox(width: 12),
-          // Event info
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  lang == 'ko' ? event.nameKo : event.nameEn,
-                  style: const TextStyle(
-                    color: AppColors.textPrimary,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final hasCharacters = event.characters.isNotEmpty;
+
+    return GestureDetector(
+      onTap: hasCharacters
+          ? () {
+              // 사건과 연관된 인물들을 그래프에서 표시
+              ref.read(eventLinkedCharacterIdsProvider.notifier).state =
+                  event.characters.toSet();
+
+              // 첫 번째 인물을 선택
+              ref.read(selectedCharacterIdProvider.notifier).state =
+                  event.characters.first;
+              ref.read(selectionModeProvider.notifier).state = SelectionMode.focused;
+
+              // 그래프 탭으로 전환
+              ref.read(currentTabIndexProvider.notifier).state = 0;
+            }
+          : null,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: isDark ? AppColors.surfaceLight : Colors.grey.shade50,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: color.withValues(alpha: hasCharacters ? 0.5 : 0.3)),
+        ),
+        child: Row(
+          children: [
+            // Event icon
+            if (event.icon != null)
+              Text(event.icon!, style: const TextStyle(fontSize: 20)),
+            if (event.icon != null) const SizedBox(width: 12),
+            // Event info
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    lang == 'ko' ? event.nameKo : event.nameEn,
+                    style: TextStyle(
+                      color: isDark ? AppColors.textPrimary : Colors.black87,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  _formatYear(event.year),
-                  style: const TextStyle(
-                    color: AppColors.textMuted,
-                    fontSize: 11,
+                  const SizedBox(height: 2),
+                  Row(
+                    children: [
+                      Text(
+                        _formatYear(event.year),
+                        style: TextStyle(
+                          color: isDark ? AppColors.textMuted : Colors.grey,
+                          fontSize: 11,
+                        ),
+                      ),
+                      if (hasCharacters) ...[
+                        const SizedBox(width: 8),
+                        Icon(
+                          Icons.people_outline,
+                          size: 12,
+                          color: color,
+                        ),
+                        const SizedBox(width: 2),
+                        Text(
+                          '${event.characters.length}',
+                          style: TextStyle(
+                            color: color,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          // Arrow
-          const Icon(
-            Icons.chevron_right,
-            color: AppColors.textMuted,
-            size: 20,
-          ),
-        ],
+            // Graph icon (인물이 있을 때만 표시)
+            if (hasCharacters)
+              Icon(
+                Icons.hub_outlined,
+                color: color,
+                size: 20,
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -469,12 +537,14 @@ class _CharacterChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         decoration: BoxDecoration(
-          color: AppColors.surfaceLight,
+          color: isDark ? AppColors.surfaceLight : Colors.grey.shade100,
           borderRadius: BorderRadius.circular(16),
         ),
         child: Row(
@@ -505,8 +575,8 @@ class _CharacterChip extends StatelessWidget {
             const SizedBox(width: 6),
             Text(
               lang == 'ko' ? character.nameKo : character.nameEn,
-              style: const TextStyle(
-                color: AppColors.textSecondary,
+              style: TextStyle(
+                color: isDark ? AppColors.textSecondary : Colors.grey[700],
                 fontSize: 12,
               ),
             ),

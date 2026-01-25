@@ -33,6 +33,7 @@ mixin _$Character {
   String get descriptionKo => throw _privateConstructorUsedError;
   @JsonKey(name: 'description_en')
   String get descriptionEn => throw _privateConstructorUsedError;
+  @VersesConverter()
   List<CharacterVerse> get verses => throw _privateConstructorUsedError;
   List<String> get labels => throw _privateConstructorUsedError;
   String? get era => throw _privateConstructorUsedError;
@@ -64,7 +65,7 @@ abstract class $CharacterCopyWith<$Res> {
     List<String> books,
     @JsonKey(name: 'description_ko') String descriptionKo,
     @JsonKey(name: 'description_en') String descriptionEn,
-    List<CharacterVerse> verses,
+    @VersesConverter() List<CharacterVerse> verses,
     List<String> labels,
     String? era,
     String? location,
@@ -185,7 +186,7 @@ abstract class _$$CharacterImplCopyWith<$Res>
     List<String> books,
     @JsonKey(name: 'description_ko') String descriptionKo,
     @JsonKey(name: 'description_en') String descriptionEn,
-    List<CharacterVerse> verses,
+    @VersesConverter() List<CharacterVerse> verses,
     List<String> labels,
     String? era,
     String? location,
@@ -298,7 +299,7 @@ class _$CharacterImpl implements _Character {
     final List<String> books = const [],
     @JsonKey(name: 'description_ko') this.descriptionKo = '',
     @JsonKey(name: 'description_en') this.descriptionEn = '',
-    final List<CharacterVerse> verses = const [],
+    @VersesConverter() final List<CharacterVerse> verses = const [],
     final List<String> labels = const [],
     this.era,
     this.location,
@@ -342,6 +343,7 @@ class _$CharacterImpl implements _Character {
   final List<CharacterVerse> _verses;
   @override
   @JsonKey()
+  @VersesConverter()
   List<CharacterVerse> get verses {
     if (_verses is EqualUnmodifiableListView) return _verses;
     // ignore: implicit_dynamic_type
@@ -448,7 +450,7 @@ abstract class _Character implements Character {
     final List<String> books,
     @JsonKey(name: 'description_ko') final String descriptionKo,
     @JsonKey(name: 'description_en') final String descriptionEn,
-    final List<CharacterVerse> verses,
+    @VersesConverter() final List<CharacterVerse> verses,
     final List<String> labels,
     final String? era,
     final String? location,
@@ -480,6 +482,7 @@ abstract class _Character implements Character {
   @JsonKey(name: 'description_en')
   String get descriptionEn;
   @override
+  @VersesConverter()
   List<CharacterVerse> get verses;
   @override
   List<String> get labels;

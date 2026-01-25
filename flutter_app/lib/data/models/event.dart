@@ -36,7 +36,7 @@ class Era with _$Era {
     @JsonKey(name: 'year_start') required int yearStart,
     @JsonKey(name: 'year_end') required int yearEnd,
     required String color,
-    required int order,
+    @Default(0) int order,
   }) = _Era;
 
   factory Era.fromJson(Map<String, dynamic> json) => _$EraFromJson(json);

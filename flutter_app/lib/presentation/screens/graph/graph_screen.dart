@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_colors.dart';
-import '../../../data/models/character.dart';
-import '../../providers/data_providers.dart';
 import '../../providers/filter_provider.dart';
 import '../../providers/selection_provider.dart';
+import '../../providers/bookmark_provider.dart';
 import 'widgets/graph_canvas.dart';
 import 'widgets/filter_bar.dart';
 import 'widgets/character_detail_sheet.dart';
+import '../favorites/favorites_screen.dart';
 
 class GraphScreen extends ConsumerWidget {
   const GraphScreen({super.key});
@@ -17,6 +17,7 @@ class GraphScreen extends ConsumerWidget {
     final lang = ref.watch(languageProvider);
     final charactersAsync = ref.watch(filteredCharactersProvider);
     final selectedCharacterId = ref.watch(selectedCharacterIdProvider);
+    final selectionMode = ref.watch(selectionModeProvider);
 
     return Scaffold(
       body: SafeArea(
@@ -32,7 +33,8 @@ class GraphScreen extends ConsumerWidget {
                 data: (characters) => Stack(
                   children: [
                     GraphCanvas(characters: characters),
-                    if (selectedCharacterId != null)
+                    // detailOpen 모드에서만 팝업 표시
+                    if (selectedCharacterId != null && selectionMode == SelectionMode.detailOpen)
                       Positioned(
                         left: 0,
                         right: 0,
@@ -76,12 +78,16 @@ class GraphScreen extends ConsumerWidget {
   }
 
   Widget _buildHeader(BuildContext context, WidgetRef ref, String lang) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: const BoxDecoration(
-        color: AppColors.surface,
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.surface : Colors.white,
         border: Border(
-          bottom: BorderSide(color: AppColors.surfaceLight),
+          bottom: BorderSide(
+            color: isDark ? AppColors.surfaceLight : Colors.grey.shade200,
+          ),
         ),
       ),
       child: Row(
@@ -110,13 +116,13 @@ class GraphScreen extends ConsumerWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
-                color: AppColors.surfaceLight,
+                color: isDark ? AppColors.surfaceLight : Colors.grey.shade100,
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Text(
                 lang == 'ko' ? 'EN' : '한국어',
-                style: const TextStyle(
-                  color: AppColors.textSecondary,
+                style: TextStyle(
+                  color: isDark ? AppColors.textSecondary : Colors.grey[700],
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
                 ),
@@ -124,6 +130,48 @@ class GraphScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(width: 8),
+          // Favorites button
+          Consumer(
+            builder: (context, ref, child) {
+              final bookmarkCount = ref.watch(bookmarkProvider).length;
+              return Stack(
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const FavoritesScreen(),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.bookmark_border),
+                    color: isDark ? AppColors.textSecondary : Colors.grey[600],
+                    tooltip: lang == 'ko' ? '즐겨찾기' : 'Favorites',
+                  ),
+                  if (bookmarkCount > 0)
+                    Positioned(
+                      right: 4,
+                      top: 4,
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: const BoxDecoration(
+                          color: AppColors.primary,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Text(
+                          bookmarkCount > 9 ? '9+' : '$bookmarkCount',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              );
+            },
+          ),
           // MBTI Quiz button
           IconButton(
             onPressed: () {
@@ -131,7 +179,7 @@ class GraphScreen extends ConsumerWidget {
               _showMbtiQuizDialog(context, ref);
             },
             icon: const Icon(Icons.psychology_outlined),
-            color: AppColors.textSecondary,
+            color: isDark ? AppColors.textSecondary : Colors.grey[600],
             tooltip: lang == 'ko' ? 'MBTI 퀴즈' : 'MBTI Quiz',
           ),
         ],
@@ -140,10 +188,11 @@ class GraphScreen extends ConsumerWidget {
   }
 
   void _showMbtiQuizDialog(BuildContext context, WidgetRef ref) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: AppColors.surface,
+      backgroundColor: isDark ? AppColors.surface : Colors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -159,6 +208,7 @@ class _MbtiQuizSheet extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final quizState = ref.watch(mbtiQuizProvider);
     final lang = ref.watch(languageProvider);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     final questions = [
       {
@@ -197,7 +247,7 @@ class _MbtiQuizSheet extends ConsumerWidget {
             width: 40,
             height: 4,
             decoration: BoxDecoration(
-              color: AppColors.surfaceLight,
+              color: isDark ? AppColors.surfaceLight : Colors.grey.shade300,
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -206,10 +256,10 @@ class _MbtiQuizSheet extends ConsumerWidget {
           // Title
           Text(
             lang == 'ko' ? 'MBTI 성격 매칭' : 'MBTI Personality Match',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: AppColors.textPrimary,
+              color: isDark ? AppColors.textPrimary : Colors.black87,
             ),
           ),
           const SizedBox(height: 8),
@@ -217,8 +267,8 @@ class _MbtiQuizSheet extends ConsumerWidget {
             lang == 'ko'
                 ? '나와 비슷한 성경 인물을 찾아보세요'
                 : 'Find Bible characters similar to you',
-            style: const TextStyle(
-              color: AppColors.textSecondary,
+            style: TextStyle(
+              color: isDark ? AppColors.textSecondary : Colors.grey[600],
               fontSize: 14,
             ),
           ),
@@ -240,7 +290,9 @@ class _MbtiQuizSheet extends ConsumerWidget {
                       ? AppColors.primary
                       : isCurrent
                           ? AppColors.accent
-                          : AppColors.surfaceLight,
+                          : isDark
+                              ? AppColors.surfaceLight
+                              : Colors.grey.shade300,
                 ),
               );
             }),
@@ -251,9 +303,9 @@ class _MbtiQuizSheet extends ConsumerWidget {
           if (quizState.currentStep < 4) ...[
             Text(
               questions[quizState.currentStep][lang] as String,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 18,
-                color: AppColors.textPrimary,
+                color: isDark ? AppColors.textPrimary : Colors.black87,
               ),
               textAlign: TextAlign.center,
             ),
@@ -284,8 +336,8 @@ class _MbtiQuizSheet extends ConsumerWidget {
           ] else if (quizState.result != null) ...[
             Text(
               lang == 'ko' ? '당신의 MBTI 유형' : 'Your MBTI Type',
-              style: const TextStyle(
-                color: AppColors.textSecondary,
+              style: TextStyle(
+                color: isDark ? AppColors.textSecondary : Colors.grey[600],
                 fontSize: 14,
               ),
             ),
@@ -302,7 +354,6 @@ class _MbtiQuizSheet extends ConsumerWidget {
             ElevatedButton(
               onPressed: () {
                 Navigator.pop(context);
-                // TODO: Show matching characters
               },
               child: Text(
                 lang == 'ko' ? '비슷한 인물 보기' : 'View Similar Characters',
@@ -318,7 +369,9 @@ class _MbtiQuizSheet extends ConsumerWidget {
             },
             child: Text(
               lang == 'ko' ? '닫기' : 'Close',
-              style: const TextStyle(color: AppColors.textSecondary),
+              style: TextStyle(
+                color: isDark ? AppColors.textSecondary : Colors.grey[600],
+              ),
             ),
           ),
           const SizedBox(height: 16),
