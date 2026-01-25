@@ -50,6 +50,8 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
   double _zoom = 0.6;
   String? _draggedNodeId;
   Offset? _lastFocalPoint;
+  Offset? _scaleStartPoint;
+  bool _hasMoved = false;
 
   // Physics constants
   static const double repulsionStrength = 3000;
@@ -202,6 +204,7 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
   Widget build(BuildContext context) {
     final selectedId = ref.watch(selectedCharacterIdProvider);
     final lang = ref.watch(languageProvider);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return GestureDetector(
       onScaleStart: _onScaleStart,
@@ -209,7 +212,7 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
       onScaleEnd: _onScaleEnd,
       onTapUp: _onTapUp,
       child: Container(
-        color: AppColors.background,
+        color: isDark ? AppColors.background : const Color(0xFFF5F5F7),
         child: CustomPaint(
           painter: _GraphPainter(
             nodes: _nodes,
@@ -218,6 +221,7 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
             zoom: _zoom,
             selectedNodeId: selectedId,
             lang: lang,
+            isDark: isDark,
           ),
           size: Size.infinite,
         ),
@@ -227,6 +231,8 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
 
   void _onScaleStart(ScaleStartDetails details) {
     _lastFocalPoint = details.localFocalPoint;
+    _scaleStartPoint = details.localFocalPoint;
+    _hasMoved = false;
 
     // Check if touching a node
     final touchPoint = (details.localFocalPoint - _pan) / _zoom;
@@ -240,10 +246,19 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
   }
 
   void _onScaleUpdate(ScaleUpdateDetails details) {
+    // Check if there was significant movement
+    if (_scaleStartPoint != null) {
+      final distance = (details.localFocalPoint - _scaleStartPoint!).distance;
+      if (distance > 5) {
+        _hasMoved = true;
+      }
+    }
+
     if (_draggedNodeId != null) {
       // Dragging a node
       final node = _nodes[_draggedNodeId];
       if (node != null) {
+        _hasMoved = true;
         node.position = (details.localFocalPoint - _pan) / _zoom;
       }
     } else {
@@ -256,6 +271,7 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
       }
 
       if (details.scale != 1.0) {
+        _hasMoved = true;
         setState(() {
           _zoom = (_zoom * details.scale).clamp(0.2, 3.0);
         });
@@ -265,11 +281,30 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
   }
 
   void _onScaleEnd(ScaleEndDetails details) {
+    // If there was no movement, treat it as a tap (for web compatibility)
+    if (!_hasMoved && _scaleStartPoint != null) {
+      final touchPoint = (_scaleStartPoint! - _pan) / _zoom;
+      bool tappedNode = false;
+      for (final node in _nodes.values) {
+        if ((node.position - touchPoint).distance < node.radius) {
+          ref.read(selectedCharacterIdProvider.notifier).state = node.id;
+          tappedNode = true;
+          break;
+        }
+      }
+      // Tap on empty space - deselect
+      if (!tappedNode) {
+        ref.read(selectedCharacterIdProvider.notifier).state = null;
+      }
+    }
+
     if (_draggedNodeId != null) {
       _nodes[_draggedNodeId]?.isDragging = false;
       _draggedNodeId = null;
     }
     _lastFocalPoint = null;
+    _scaleStartPoint = null;
+    _hasMoved = false;
   }
 
   void _onTapUp(TapUpDetails details) {
@@ -298,6 +333,7 @@ class _GraphPainter extends CustomPainter {
   final double zoom;
   final String? selectedNodeId;
   final String lang;
+  final bool isDark;
 
   _GraphPainter({
     required this.nodes,
@@ -306,6 +342,7 @@ class _GraphPainter extends CustomPainter {
     required this.zoom,
     this.selectedNodeId,
     required this.lang,
+    required this.isDark,
   });
 
   @override
@@ -383,7 +420,7 @@ class _GraphPainter extends CustomPainter {
         text: TextSpan(
           text: node.name,
           style: TextStyle(
-            color: AppColors.textPrimary,
+            color: isDark ? AppColors.textPrimary : const Color(0xFF1C1C1E),
             fontSize: 10 / zoom,
             fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
           ),
