@@ -1,16 +1,16 @@
 import { AbsoluteFill, useCurrentFrame, interpolate, spring, useVideoConfig, Video, staticFile } from "remotion";
 import { colors, fonts } from "../theme";
 
-// 화면 전체를 채우도록 노드 배치
+// 노드 배치 - 작게 조정
 const characters = [
-  { id: "god", name: "하나님", x: 50, y: 8, size: 130, color: colors.accent },
-  { id: "abraham", name: "아브라함", x: 12, y: 22, size: 100, color: colors.primary },
-  { id: "moses", name: "모세", x: 88, y: 22, size: 100, color: colors.primary },
-  { id: "david", name: "다윗", x: 18, y: 42, size: 95, color: colors.primaryLight },
-  { id: "isaiah", name: "이사야", x: 82, y: 42, size: 90, color: colors.primaryLight },
-  { id: "jesus", name: "예수", x: 50, y: 55, size: 120, color: colors.accentRed },
-  { id: "peter", name: "베드로", x: 20, y: 72, size: 85, color: colors.holySpirit },
-  { id: "paul", name: "바울", x: 80, y: 72, size: 85, color: colors.holySpirit },
+  { id: "god", name: "하나님", x: 50, y: 8, size: 80, color: colors.accent },
+  { id: "abraham", name: "아브라함", x: 12, y: 22, size: 65, color: colors.primary },
+  { id: "moses", name: "모세", x: 88, y: 22, size: 65, color: colors.primary },
+  { id: "david", name: "다윗", x: 18, y: 42, size: 60, color: colors.primaryLight },
+  { id: "isaiah", name: "이사야", x: 82, y: 42, size: 58, color: colors.primaryLight },
+  { id: "jesus", name: "예수", x: 50, y: 55, size: 75, color: colors.accentRed },
+  { id: "peter", name: "베드로", x: 20, y: 72, size: 55, color: colors.holySpirit },
+  { id: "paul", name: "바울", x: 80, y: 72, size: 55, color: colors.holySpirit },
 ];
 
 const connections = [
@@ -69,8 +69,8 @@ export const GraphScene: React.FC = () => {
         </h2>
       </div>
 
-      {/* 그래프 - 왼쪽 영역 */}
-      <div style={{ position: "absolute", top: 100, left: 20, right: 300, bottom: 180 }}>
+      {/* 그래프 - 왼쪽 영역 (더 작게) */}
+      <div style={{ position: "absolute", top: 100, left: 30, width: 420, bottom: 180 }}>
         {/* 연결선 */}
         <svg style={{ position: "absolute", width: "100%", height: "100%" }}>
           <defs>
@@ -91,8 +91,8 @@ export const GraphScene: React.FC = () => {
                 x2={`${from.x + (to.x - from.x) * p}%`}
                 y2={`${from.y + (to.y - from.y) * p}%`}
                 stroke="url(#lineGrad)"
-                strokeWidth="3"
-                strokeDasharray="8 8"
+                strokeWidth="2"
+                strokeDasharray="6 6"
               />
             );
           })}
@@ -118,10 +118,10 @@ export const GraphScene: React.FC = () => {
                 <div
                   style={{
                     position: "absolute",
-                    width: char.size + 60,
-                    height: char.size + 60,
-                    left: -30,
-                    top: -30,
+                    width: char.size + 40,
+                    height: char.size + 40,
+                    left: -20,
+                    top: -20,
                     borderRadius: "50%",
                     background: `radial-gradient(circle, ${char.color}60 0%, transparent 70%)`,
                   }}
@@ -133,13 +133,13 @@ export const GraphScene: React.FC = () => {
                   height: char.size,
                   borderRadius: "50%",
                   background: `linear-gradient(135deg, ${char.color}35 0%, ${colors.surface} 100%)`,
-                  border: `4px solid ${char.color}`,
+                  border: `3px solid ${char.color}`,
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
                   boxShadow: isActive
-                    ? `0 0 50px ${char.color}80`
-                    : `0 12px 50px rgba(0,0,0,0.5)`,
+                    ? `0 0 30px ${char.color}80`
+                    : `0 8px 30px rgba(0,0,0,0.5)`,
                 }}
               >
                 <span
@@ -158,12 +158,12 @@ export const GraphScene: React.FC = () => {
         })}
       </div>
 
-      {/* 앱 데모 영상 - 폰 프레임 */}
+      {/* 앱 데모 영상 - 폰 프레임 (더 크게) */}
       <div
         style={{
           position: "absolute",
-          right: 60,
-          top: "50%",
+          right: 80,
+          top: "45%",
           transform: `translateY(-50%) scale(${interpolate(frame, [60, 90], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" })})`,
           opacity: interpolate(frame, [60, 90], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }),
         }}
@@ -171,12 +171,12 @@ export const GraphScene: React.FC = () => {
         {/* 폰 프레임 */}
         <div
           style={{
-            width: 220,
-            height: 440,
-            borderRadius: 36,
+            width: 320,
+            height: 640,
+            borderRadius: 48,
             background: `linear-gradient(145deg, #2a2a3a 0%, #1a1a2a 100%)`,
-            padding: 8,
-            boxShadow: `0 25px 80px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.1)`,
+            padding: 10,
+            boxShadow: `0 30px 100px rgba(0,0,0,0.7), inset 0 1px 1px rgba(255,255,255,0.1)`,
           }}
         >
           {/* 스크린 */}
@@ -184,7 +184,7 @@ export const GraphScene: React.FC = () => {
             style={{
               width: "100%",
               height: "100%",
-              borderRadius: 28,
+              borderRadius: 38,
               overflow: "hidden",
               background: colors.background,
             }}
@@ -204,9 +204,9 @@ export const GraphScene: React.FC = () => {
         <div
           style={{
             textAlign: "center",
-            marginTop: 16,
+            marginTop: 20,
             fontFamily: fonts.script,
-            fontSize: 28,
+            fontSize: 36,
             color: colors.textSecondary,
           }}
         >
