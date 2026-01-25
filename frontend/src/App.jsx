@@ -235,57 +235,12 @@ const translations = {
 const t = (lang, key) => translations[lang]?.[key] || translations.ko[key] || key;
 
 // ==================== AdSense 광고 컴포넌트 ====================
-const AdSenseUnit = ({ slot, format = 'auto', responsive = true, style = {} }) => {
-  const adRef = useRef(null);
+// 자동 광고 사용 중 - 수동 광고 단위 비활성화
+// Google 자동 광고가 페이지에 자동으로 광고를 배치합니다
+const AdSenseUnit = () => null;
 
-  useEffect(() => {
-    try {
-      if (typeof window !== 'undefined' && window.adsbygoogle && adRef.current) {
-        // Check if the ad has already been initialized
-        if (!adRef.current.dataset.adsbygoogleStatus) {
-          (window.adsbygoogle = window.adsbygoogle || []).push({});
-        }
-      }
-    } catch (error) {
-      console.log('AdSense error:', error);
-    }
-  }, []);
-
-  return (
-    <ins
-      ref={adRef}
-      className="adsbygoogle"
-      style={{
-        display: 'block',
-        minHeight: '90px',
-        ...style
-      }}
-      data-ad-client="ca-pub-2988937021017804"
-      data-ad-slot={slot}
-      data-ad-format={format}
-      data-full-width-responsive={responsive ? 'true' : 'false'}
-    />
-  );
-};
-
-// AdSense 배너 광고 (페이지 상단/하단용)
-const AdBanner = ({ position = 'bottom' }) => {
-  return (
-    <div style={{
-      width: '100%',
-      maxWidth: '728px',
-      margin: '0 auto',
-      padding: position === 'bottom' ? '16px 0 0' : '0 0 16px',
-      textAlign: 'center'
-    }}>
-      <AdSenseUnit
-        slot="AUTO_AD_SLOT"  // Replace with actual slot ID from AdSense dashboard
-        format="horizontal"
-        style={{ minHeight: '90px' }}
-      />
-    </div>
-  );
-};
+// AdSense 배너 광고 (자동 광고 사용으로 비활성화)
+const AdBanner = () => null;
 
 const normalizeArtworkEntry = (entry) => {
   if (!entry) return [];
