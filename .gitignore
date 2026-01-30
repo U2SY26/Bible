@@ -22,6 +22,8 @@ dist/
 # Media files (too large)
 *.mp4
 *.mov
+# Allow promo video for landing page
+!frontend/public/promo.mp4
 
 # Windows null device
 nul
