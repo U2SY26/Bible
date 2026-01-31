@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../providers/filter_provider.dart';
 import '../../providers/selection_provider.dart';
+import '../../widgets/banner_ad_widget.dart';
 import '../graph/graph_screen.dart';
 import '../timeline/timeline_screen.dart';
 import '../bible_reader/bible_reader_screen.dart';
@@ -30,8 +31,7 @@ class HomeScreen extends ConsumerWidget {
       bottomNavigationBar: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // 임시 비활성화 - 크래시 테스트
-          // const BannerAdWidget(),
+          const BannerAdWidget(),
           const _BottomNav(),
         ],
       ),

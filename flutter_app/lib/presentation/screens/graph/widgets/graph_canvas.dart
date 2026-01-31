@@ -644,14 +644,9 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
           // detailOpen -> focused (팝업만 닫기)
           ref.read(selectionModeProvider.notifier).state = SelectionMode.focused;
           _showDoubleTapHint = true;
-        } else if (currentMode == SelectionMode.focused) {
-          // focused -> none (전체 노드 표시)
-          ref.read(selectionModeProvider.notifier).state = SelectionMode.none;
-          ref.read(selectedCharacterIdProvider.notifier).state = null;
-          _showDoubleTapHint = false;
-          // 전체 노드 fit
-          _fitToScreen();
         }
+        // focused 모드에서 빈 공간 터치 시 리셋하지 않음
+        // 리셋은 우하단 fit-to-screen 버튼으로만 가능
       }
     }
 

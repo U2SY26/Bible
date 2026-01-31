@@ -7,14 +7,14 @@ import 'presentation/providers/text_scale_provider.dart';
 import 'presentation/screens/home/home_screen.dart';
 import 'presentation/screens/intro/intro_video_screen.dart';
 import 'presentation/screens/onboarding/onboarding_screen.dart';
+import 'services/ad_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   try {
     // Initialize AdMob with GDPR consent
-    // 임시 비활성화 - 크래시 테스트
-    // await AdService().initialize();
+    await AdService().initialize();
 
     // Check app state
     final prefs = await SharedPreferences.getInstance();

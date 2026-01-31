@@ -7,6 +7,7 @@ import '../../../../data/models/relationship.dart';
 import '../../../../data/models/event.dart';
 import '../../../../data/models/hymn.dart';
 import '../../../../data/models/location.dart';
+import '../../../../data/models/artwork.dart';
 import '../../../providers/data_providers.dart';
 import '../../../providers/filter_provider.dart';
 import '../../../providers/selection_provider.dart';
@@ -67,6 +68,7 @@ class _CharacterDetailContentState
     final eventsAsync = ref.watch(eventsByCharacterProvider(char.id));
     final hymnsAsync = ref.watch(hymnsByCharacterProvider(char.id));
     final locationsAsync = ref.watch(locationsByCharacterProvider(char.id));
+    final artworkAsync = ref.watch(artworkByCharacterProvider(char.id));
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
@@ -178,6 +180,15 @@ class _CharacterDetailContentState
                     locationsAsync.when(
                       data: (locations) => locations.isNotEmpty
                           ? _buildLocations(locations, lang)
+                          : const SizedBox.shrink(),
+                      loading: () => const SizedBox.shrink(),
+                      error: (_, __) => const SizedBox.shrink(),
+                    ),
+
+                    // Artwork
+                    artworkAsync.when(
+                      data: (artworks) => artworks.isNotEmpty
+                          ? _buildArtwork(artworks, lang)
                           : const SizedBox.shrink(),
                       loading: () => const SizedBox.shrink(),
                       error: (_, __) => const SizedBox.shrink(),
@@ -633,6 +644,111 @@ $description$verse
                   ],
                 ),
               )).toList(),
+        ),
+        const SizedBox(height: 16),
+      ],
+    );
+  }
+
+  Widget _buildArtwork(List<Artwork> artworks, String lang) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildSectionTitle(
+            lang == 'ko' ? '관련 미술 작품' : 'Related Artwork', Icons.palette),
+        const SizedBox(height: 8),
+        SizedBox(
+          height: 150,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: artworks.length > 5 ? 5 : artworks.length,
+            itemBuilder: (context, index) {
+              final artwork = artworks[index];
+              return Container(
+                width: 200,
+                margin: const EdgeInsets.only(right: 12),
+                decoration: BoxDecoration(
+                  color: AppColors.surfaceLight,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: AppColors.primary.withValues(alpha: 0.2),
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Artwork image
+                    Expanded(
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(12)),
+                        child: Image.network(
+                          artwork.url,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              color: AppColors.surfaceLight,
+                              child: const Center(
+                                child: Icon(
+                                  Icons.image_not_supported,
+                                  color: AppColors.textMuted,
+                                  size: 32,
+                                ),
+                              ),
+                            );
+                          },
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return Container(
+                              color: AppColors.surfaceLight,
+                              child: const Center(
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: AppColors.primary,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                    // Artwork info
+                    Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            artwork.title.length > 30
+                                ? '${artwork.title.substring(0, 30)}...'
+                                : artwork.title,
+                            style: const TextStyle(
+                              color: AppColors.textPrimary,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          if (artwork.artist.isNotEmpty)
+                            Text(
+                              '${artwork.artist}${artwork.year.isNotEmpty ? ' (${artwork.year})' : ''}',
+                              style: const TextStyle(
+                                color: AppColors.textMuted,
+                                fontSize: 10,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
         ),
         const SizedBox(height: 16),
       ],

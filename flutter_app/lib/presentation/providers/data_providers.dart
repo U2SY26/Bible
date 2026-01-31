@@ -12,6 +12,8 @@ import '../../data/models/event.dart';
 import '../../data/models/bible_book.dart';
 import '../../data/models/hymn.dart';
 import '../../data/models/location.dart';
+import '../../data/models/artwork.dart';
+import '../../data/repositories/artwork_repository.dart';
 
 // Data Source Provider
 final jsonDataSourceProvider = Provider<JsonDataSource>((ref) {
@@ -41,6 +43,10 @@ final hymnRepositoryProvider = Provider<HymnRepository>((ref) {
 
 final locationRepositoryProvider = Provider<LocationRepository>((ref) {
   return LocationRepository(ref.read(jsonDataSourceProvider));
+});
+
+final artworkRepositoryProvider = Provider<ArtworkRepository>((ref) {
+  return ArtworkRepository();
 });
 
 // Data Providers
@@ -139,4 +145,11 @@ final bibleChapterProvider = FutureProvider.family<BibleChapter?,
     ({String bookId, int chapter})>((ref, params) async {
   final repo = ref.read(bibleRepositoryProvider);
   return await repo.getChapter(params.bookId, params.chapter);
+});
+
+// Artwork by Character Provider
+final artworkByCharacterProvider =
+    FutureProvider.family<List<Artwork>, String>((ref, characterId) async {
+  final repo = ref.read(artworkRepositoryProvider);
+  return await repo.getArtworkByCharacter(characterId);
 });
