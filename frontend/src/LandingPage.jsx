@@ -192,8 +192,7 @@ export function IntroVideo({ lang, onSkip, onEnd }) {
       zIndex: 9999,
       display: 'flex',
       alignItems: 'center',
-      justifyContent: 'center',
-      cursor: 'pointer'
+      justifyContent: 'center'
     },
     video: {
       width: '100%',
@@ -203,37 +202,40 @@ export function IntroVideo({ lang, onSkip, onEnd }) {
     },
     controls: {
       position: 'absolute',
-      bottom: '40px',
-      left: '50%',
-      transform: 'translateX(-50%)',
+      top: '24px',
+      right: '24px',
       display: 'flex',
-      gap: '16px',
-      opacity: showControls ? 1 : 0,
+      gap: '10px',
+      opacity: showControls ? 1 : 0.3,
       transition: 'opacity 0.3s',
       zIndex: 10000
     },
-    button: {
-      padding: '12px 28px',
-      fontSize: '1rem',
-      fontWeight: '600',
-      background: 'rgba(255, 255, 255, 0.15)',
-      backdropFilter: 'blur(10px)',
+    muteButton: {
+      width: '40px',
+      height: '40px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontSize: '1.1rem',
+      background: 'rgba(0, 0, 0, 0.5)',
+      backdropFilter: 'blur(8px)',
       color: '#fff',
-      border: '1px solid rgba(255, 255, 255, 0.3)',
-      borderRadius: '30px',
+      border: '1px solid rgba(255, 255, 255, 0.2)',
+      borderRadius: '50%',
       cursor: 'pointer',
       transition: 'all 0.2s'
     },
     skipButton: {
-      padding: '12px 28px',
-      fontSize: '1rem',
-      fontWeight: '700',
-      background: 'linear-gradient(135deg, #fbbf24, #f59e0b)',
-      color: '#000',
-      border: 'none',
-      borderRadius: '30px',
+      padding: '10px 20px',
+      fontSize: '0.9rem',
+      fontWeight: '600',
+      background: 'rgba(0, 0, 0, 0.5)',
+      backdropFilter: 'blur(8px)',
+      color: '#fff',
+      border: '1px solid rgba(255, 255, 255, 0.2)',
+      borderRadius: '20px',
       cursor: 'pointer',
-      boxShadow: '0 4px 20px rgba(251, 191, 36, 0.4)'
+      transition: 'all 0.2s'
     }
   };
 
@@ -252,11 +254,11 @@ export function IntroVideo({ lang, onSkip, onEnd }) {
         onEnded={handleVideoEnd}
       />
       <div style={styles.controls}>
-        <button style={styles.button} onClick={(e) => { e.stopPropagation(); toggleMute(); }}>
-          {isMuted ? '🔇 ' + tr.video.unmute : '🔊 ' + tr.video.mute}
+        <button style={styles.muteButton} onClick={(e) => { e.stopPropagation(); toggleMute(); }}>
+          {isMuted ? '🔇' : '🔊'}
         </button>
         <button style={styles.skipButton} onClick={(e) => { e.stopPropagation(); onSkip(); }}>
-          {tr.video.skip} →
+          {tr.video.skip}
         </button>
       </div>
     </div>
