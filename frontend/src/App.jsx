@@ -22,7 +22,7 @@ import artworkGenerated from './data/artwork.generated.json';
 import bibleData from './data/bible.json';
 import { bibleBooks as bibleBooksMeta, findBookByName } from './data/bible-books.js';
 import TimelineMap from './TimelineMap.jsx';
-import LandingPage from './LandingPage.jsx';
+import LandingPage, { IntroVideo } from './LandingPage.jsx';
 
 // ==================== 다국어 번역 시스템 ====================
 const translations = {
@@ -974,7 +974,8 @@ export default function App() {
   const [searchFocused, setSearchFocused] = useState(false);
   const [recentSearches, setRecentSearches] = useState(() => getRecentSearches());
   const [activeQuickFilter, setActiveQuickFilter] = useState(null);
-  const [showLanding, setShowLanding] = useState(true);
+  const [showIntro, setShowIntro] = useState(true);
+  const [showLanding, setShowLanding] = useState(false);
 
   // Bottom Sheet 상태 (모바일 상세 패널)
   const [bottomSheetHeight, setBottomSheetHeight] = useState(0); // 0=닫힘, 40=작게, 70=중간, 90=크게
@@ -2135,6 +2136,23 @@ export default function App() {
       color: '#fbbf24',
     },
   };
+
+  // 인트로 비디오 표시
+  if (showIntro) {
+    return (
+      <IntroVideo
+        lang={lang}
+        onSkip={() => {
+          setShowIntro(false);
+          setShowLanding(true);
+        }}
+        onEnd={() => {
+          setShowIntro(false);
+          setShowLanding(true);
+        }}
+      />
+    );
+  }
 
   // 랜딩 페이지 표시
   if (showLanding) {
