@@ -158,17 +158,46 @@ export function IntroVideo({ lang, onSkip, onEnd }) {
   const videoRef = useRef(null);
   const [isMuted, setIsMuted] = useState(true);
   const [showControls, setShowControls] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(false);
   const tr = translations[lang] || translations.ko;
 
   useEffect(() => {
     const video = videoRef.current;
-    if (video) {
-      video.play().catch(() => {});
-    }
-    // 3초 후 컨트롤 숨기기
+    if (!video) return;
+
+    // 비디오 로드 타임아웃 - 3초 내 재생 안되면 스킵
+    const timeout = setTimeout(() => {
+      if (!isPlaying) {
+        onSkip();
+      }
+    }, 3000);
+
+    const handleCanPlay = () => {
+      setIsLoading(false);
+      video.play()
+        .then(() => setIsPlaying(true))
+        .catch(() => onSkip()); // 자동재생 차단 시 스킵
+    };
+
+    const handleError = () => onSkip();
+
+    video.addEventListener('canplay', handleCanPlay);
+    video.addEventListener('error', handleError);
+
+    return () => {
+      clearTimeout(timeout);
+      video.removeEventListener('canplay', handleCanPlay);
+      video.removeEventListener('error', handleError);
+    };
+  }, [onSkip, isPlaying]);
+
+  // 컨트롤 숨기기 타이머
+  useEffect(() => {
+    if (!isPlaying) return;
     const timer = setTimeout(() => setShowControls(false), 3000);
     return () => clearTimeout(timer);
-  }, []);
+  }, [isPlaying]);
 
   const handleVideoEnd = () => {
     onEnd();
@@ -236,8 +265,36 @@ export function IntroVideo({ lang, onSkip, onEnd }) {
       borderRadius: '20px',
       cursor: 'pointer',
       transition: 'all 0.2s'
+    },
+    loading: {
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      color: '#fff',
+      fontSize: '1rem',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      gap: '16px'
+    },
+    spinner: {
+      width: '40px',
+      height: '40px',
+      border: '3px solid rgba(255, 255, 255, 0.2)',
+      borderTopColor: '#fbbf24',
+      borderRadius: '50%',
+      animation: 'spin 1s linear infinite'
     }
   };
+
+  // CSS 애니메이션 추가
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = '@keyframes spin { to { transform: rotate(360deg); } }';
+    document.head.appendChild(style);
+    return () => document.head.removeChild(style);
+  }, []);
 
   return (
     <div
@@ -247,20 +304,32 @@ export function IntroVideo({ lang, onSkip, onEnd }) {
     >
       <video
         ref={videoRef}
-        style={styles.video}
+        style={{ ...styles.video, opacity: isPlaying ? 1 : 0 }}
         src="/promo.mp4"
         muted={isMuted}
         playsInline
         onEnded={handleVideoEnd}
       />
-      <div style={styles.controls}>
-        <button style={styles.muteButton} onClick={(e) => { e.stopPropagation(); toggleMute(); }}>
-          {isMuted ? '🔇' : '🔊'}
-        </button>
-        <button style={styles.skipButton} onClick={(e) => { e.stopPropagation(); onSkip(); }}>
-          {tr.video.skip}
-        </button>
-      </div>
+
+      {/* 로딩 중 표시 */}
+      {isLoading && (
+        <div style={styles.loading}>
+          <div style={styles.spinner} />
+          <span>Loading...</span>
+        </div>
+      )}
+
+      {/* 컨트롤 버튼 - 재생 중일 때만 표시 */}
+      {isPlaying && (
+        <div style={styles.controls}>
+          <button style={styles.muteButton} onClick={(e) => { e.stopPropagation(); toggleMute(); }}>
+            {isMuted ? '🔇' : '🔊'}
+          </button>
+          <button style={styles.skipButton} onClick={(e) => { e.stopPropagation(); onSkip(); }}>
+            {tr.video.skip}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
