@@ -260,29 +260,62 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
       center = center / nodeList.length.toDouble();
     }
 
-    // 드래그 중일 때 용수철 효과 적용
+    // 드래그 중일 때 용수철 효과 적용 (더 강한 힘 + 2차 연결까지)
     if (_isDraggingNode && draggedNode != null) {
-      // 연결된 노드들을 드래그된 노드 쪽으로 강하게 끌어당김
+      // 1차 연결 노드들 수집 및 끌어당김
+      final firstDegreeNodes = <String>{};
       for (final rel in _relationships) {
         if (rel.source == _draggedNodeId) {
+          firstDegreeNodes.add(rel.target);
           final target = _nodes[rel.target];
           if (target != null && !target.isFixed) {
             final diff = draggedNode.position - target.position;
             final distance = diff.distance;
             if (distance > 1) {
               final direction = diff / distance;
-              // 용수철 힘: 거리에 비례
-              target.velocity += direction * springStrength * 0.1;
+              // 더 강한 용수철 힘 (거리에 비례하여 가속)
+              final distanceFactor = min(distance / 100, 3.0);
+              target.velocity += direction * springStrength * 0.3 * distanceFactor;
             }
           }
         } else if (rel.target == _draggedNodeId) {
+          firstDegreeNodes.add(rel.source);
           final source = _nodes[rel.source];
           if (source != null && !source.isFixed) {
             final diff = draggedNode.position - source.position;
             final distance = diff.distance;
             if (distance > 1) {
               final direction = diff / distance;
-              source.velocity += direction * springStrength * 0.1;
+              final distanceFactor = min(distance / 100, 3.0);
+              source.velocity += direction * springStrength * 0.3 * distanceFactor;
+            }
+          }
+        }
+      }
+
+      // 2차 연결 노드들도 약하게 끌어당김 (체인 효과)
+      for (final firstNodeId in firstDegreeNodes) {
+        final firstNode = _nodes[firstNodeId];
+        if (firstNode == null) continue;
+
+        for (final rel in _relationships) {
+          String? secondNodeId;
+          if (rel.source == firstNodeId && rel.target != _draggedNodeId) {
+            secondNodeId = rel.target;
+          } else if (rel.target == firstNodeId && rel.source != _draggedNodeId) {
+            secondNodeId = rel.source;
+          }
+
+          if (secondNodeId != null && !firstDegreeNodes.contains(secondNodeId)) {
+            final secondNode = _nodes[secondNodeId];
+            if (secondNode != null && !secondNode.isFixed) {
+              // 2차 노드는 1차 노드 쪽으로 끌어당김
+              final diff = firstNode.position - secondNode.position;
+              final distance = diff.distance;
+              if (distance > 1) {
+                final direction = diff / distance;
+                secondNode.velocity += direction * springStrength * 0.15;
+              }
             }
           }
         }
