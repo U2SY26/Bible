@@ -8,6 +8,7 @@ import '../../../../data/models/event.dart';
 import '../../../../data/models/hymn.dart';
 import '../../../../data/models/location.dart';
 import '../../../../data/models/artwork.dart';
+import '../../../../core/utils/bible_book_names.dart';
 import '../../../providers/data_providers.dart';
 import '../../../widgets/artwork_fullscreen_viewer.dart';
 import '../../../providers/filter_provider.dart';
@@ -427,9 +428,10 @@ $description$verse
 
   Widget _buildVerseCard(CharacterVerse verse, String lang) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final displayRef = BibleBookNames.translateRef(verse.ref, lang);
 
     return Semantics(
-      label: '${verse.ref}: ${lang == 'ko' ? verse.textKo : verse.textEn}',
+      label: '$displayRef: ${lang == 'ko' ? verse.textKo : verse.textEn}',
       child: Container(
         margin: const EdgeInsets.only(bottom: 8),
         padding: const EdgeInsets.all(12),
@@ -444,7 +446,7 @@ $description$verse
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              verse.ref,
+              displayRef,
               style: const TextStyle(
                 color: AppColors.primary,
                 fontSize: 12,
