@@ -7,7 +7,7 @@ class AdService {
   AdService._internal();
 
   bool _isInitialized = false;
-  bool _canShowAds = false;
+  bool _canShowAds = true; // Default to true, will be updated after consent check
 
   // Production Ad Unit IDs
   static const String _bannerAdUnitIdAndroid = 'ca-app-pub-3715008468517611/8425278053';
@@ -85,9 +85,15 @@ class AdService {
     await MobileAds.instance.initialize();
 
     // Check if we can show personalized ads
-    final status = await ConsentInformation.instance.getConsentStatus();
-    _canShowAds = status == ConsentStatus.obtained ||
-                  status == ConsentStatus.notRequired;
+    try {
+      final status = await ConsentInformation.instance.getConsentStatus();
+      // Allow ads unless user explicitly denied
+      _canShowAds = status != ConsentStatus.required;
+    } catch (e) {
+      // If consent check fails, still allow ads (non-personalized)
+      debugPrint('Consent status check failed: $e');
+      _canShowAds = true;
+    }
 
     if (kDebugMode) {
       MobileAds.instance.updateRequestConfiguration(

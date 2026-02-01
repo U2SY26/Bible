@@ -24,6 +24,8 @@ dist/
 *.mov
 # Allow promo video for landing page
 !frontend/public/promo.mp4
+# Allow intro videos for Flutter app
+!flutter_app/assets/video/*.mp4
 
 # Windows null device
 nul

@@ -9,6 +9,7 @@ import '../../../../data/models/hymn.dart';
 import '../../../../data/models/location.dart';
 import '../../../../data/models/artwork.dart';
 import '../../../providers/data_providers.dart';
+import '../../../widgets/artwork_fullscreen_viewer.dart';
 import '../../../providers/filter_provider.dart';
 import '../../../providers/selection_provider.dart';
 import '../../../providers/bookmark_provider.dart';
@@ -656,6 +657,14 @@ $description$verse
       children: [
         _buildSectionTitle(
             lang == 'ko' ? '관련 미술 작품' : 'Related Artwork', Icons.palette),
+        const SizedBox(height: 4),
+        Text(
+          lang == 'ko' ? '더블탭하여 확대' : 'Double-tap to enlarge',
+          style: const TextStyle(
+            color: AppColors.textMuted,
+            fontSize: 10,
+          ),
+        ),
         const SizedBox(height: 8),
         SizedBox(
           height: 150,
@@ -664,87 +673,93 @@ $description$verse
             itemCount: artworks.length > 5 ? 5 : artworks.length,
             itemBuilder: (context, index) {
               final artwork = artworks[index];
-              return Container(
-                width: 200,
-                margin: const EdgeInsets.only(right: 12),
-                decoration: BoxDecoration(
-                  color: AppColors.surfaceLight,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: AppColors.primary.withValues(alpha: 0.2),
+              return GestureDetector(
+                onDoubleTap: () {
+                  ArtworkFullscreenViewer.show(context, artwork, lang);
+                },
+                child: Container(
+                  width: 200,
+                  margin: const EdgeInsets.only(right: 12),
+                  decoration: BoxDecoration(
+                    color: AppColors.surfaceLight,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: AppColors.primary.withValues(alpha: 0.2),
+                    ),
                   ),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Artwork image
-                    Expanded(
-                      child: ClipRRect(
-                        borderRadius: const BorderRadius.vertical(
-                            top: Radius.circular(12)),
-                        child: Image.network(
-                          artwork.url,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Container(
-                              color: AppColors.surfaceLight,
-                              child: const Center(
-                                child: Icon(
-                                  Icons.image_not_supported,
-                                  color: AppColors.textMuted,
-                                  size: 32,
-                                ),
-                              ),
-                            );
-                          },
-                          loadingBuilder: (context, child, loadingProgress) {
-                            if (loadingProgress == null) return child;
-                            return Container(
-                              color: AppColors.surfaceLight,
-                              child: const Center(
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: AppColors.primary,
-                                ),
-                              ),
-                            );
-                          },
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Artwork image
+                      Expanded(
+                        child: ClipRRect(
+                          borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(12)),
+                          child: Hero(
+                            tag: 'artwork_${artwork.url}',
+                            child: Image.network(
+                              artwork.url,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  color: AppColors.surfaceLight,
+                                  child: const Center(
+                                    child: Icon(
+                                      Icons.image_not_supported,
+                                      color: AppColors.textMuted,
+                                      size: 32,
+                                    ),
+                                  ),
+                                );
+                              },
+                              loadingBuilder: (context, child, loadingProgress) {
+                                if (loadingProgress == null) return child;
+                                return Container(
+                                  color: AppColors.surfaceLight,
+                                  child: const Center(
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: AppColors.primary,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                    // Artwork info
-                    Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            artwork.title.length > 30
-                                ? '${artwork.title.substring(0, 30)}...'
-                                : artwork.title,
-                            style: const TextStyle(
-                              color: AppColors.textPrimary,
-                              fontSize: 11,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          if (artwork.artist.isNotEmpty)
+                      // Artwork info
+                      Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
                             Text(
-                              '${artwork.artist}${artwork.year.isNotEmpty ? ' (${artwork.year})' : ''}',
+                              artwork.getTitle(lang),
                               style: const TextStyle(
-                                color: AppColors.textMuted,
-                                fontSize: 10,
+                                color: AppColors.textPrimary,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w500,
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
-                        ],
+                            if (artwork.getArtist(lang).isNotEmpty && artwork.getArtist(lang) != 'Unknown')
+                              Text(
+                                '${artwork.getArtist(lang)}${artwork.year.isNotEmpty ? ' (${artwork.year})' : ''}',
+                                style: const TextStyle(
+                                  color: AppColors.textMuted,
+                                  fontSize: 10,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               );
             },

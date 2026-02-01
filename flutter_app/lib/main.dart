@@ -18,14 +18,14 @@ void main() async {
 
     // Check app state
     final prefs = await SharedPreferences.getInstance();
-    final introVideoWatched = prefs.getBool('intro_video_watched') ?? false;
     final onboardingCompleted = prefs.getBool('onboarding_completed') ?? false;
 
     runApp(
       ProviderScope(
         child: GraphBibleApp(
-          showIntroVideo: !introVideoWatched,
+          showIntroVideo: true, // Always show random intro video
           showOnboarding: !onboardingCompleted,
+          isFirstLaunch: !onboardingCompleted,
         ),
       ),
     );
@@ -48,11 +48,13 @@ void main() async {
 class GraphBibleApp extends ConsumerWidget {
   final bool showIntroVideo;
   final bool showOnboarding;
+  final bool isFirstLaunch;
 
   const GraphBibleApp({
     super.key,
     required this.showIntroVideo,
     required this.showOnboarding,
+    this.isFirstLaunch = false,
   });
 
   @override
@@ -80,7 +82,10 @@ class GraphBibleApp extends ConsumerWidget {
 
   Widget _getHomeScreen() {
     if (showIntroVideo) {
-      return IntroVideoScreen(showOnboardingAfter: showOnboarding);
+      return IntroVideoScreen(
+        showOnboardingAfter: showOnboarding,
+        isFirstLaunch: isFirstLaunch,
+      );
     } else if (showOnboarding) {
       return const OnboardingScreen();
     } else {

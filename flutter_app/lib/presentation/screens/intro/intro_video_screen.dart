@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -8,38 +9,70 @@ import '../onboarding/onboarding_screen.dart';
 
 class IntroVideoScreen extends StatefulWidget {
   final bool showOnboardingAfter;
+  final bool isFirstLaunch;
 
   const IntroVideoScreen({
     super.key,
     this.showOnboardingAfter = true,
+    this.isFirstLaunch = true,
   });
 
   @override
   State<IntroVideoScreen> createState() => _IntroVideoScreenState();
 }
 
-class _IntroVideoScreenState extends State<IntroVideoScreen> {
+class _IntroVideoScreenState extends State<IntroVideoScreen>
+    with SingleTickerProviderStateMixin {
   late VideoPlayerController _controller;
+  late AnimationController _fadeController;
+  late Animation<double> _fadeAnimation;
   bool _isInitialized = false;
   bool _hasError = false;
+
+  // Available intro videos
+  static const List<String> _introVideos = [
+    'assets/video/intro1.mp4',
+    'assets/video/intro2.mp4',
+    'assets/video/intro3.mp4',
+  ];
 
   @override
   void initState() {
     super.initState();
     // Hide system UI for immersive experience
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+
+    // Setup fade animation
+    _fadeController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _fadeController, curve: Curves.easeIn),
+    );
+
     _initializeVideo();
+  }
+
+  String _getRandomVideoPath() {
+    final random = Random();
+    return _introVideos[random.nextInt(_introVideos.length)];
   }
 
   Future<void> _initializeVideo() async {
     try {
-      _controller = VideoPlayerController.asset('assets/video/intro.mp4');
+      final videoPath = _getRandomVideoPath();
+      debugPrint('Loading intro video: $videoPath');
+      _controller = VideoPlayerController.asset(videoPath);
       await _controller.initialize();
 
       if (mounted) {
         setState(() {
           _isInitialized = true;
         });
+
+        // Start fade-in animation
+        _fadeController.forward();
 
         // Auto-play the video
         _controller.play();
@@ -94,6 +127,7 @@ class _IntroVideoScreenState extends State<IntroVideoScreen> {
 
   @override
   void dispose() {
+    _fadeController.dispose();
     _controller.removeListener(_onVideoProgress);
     _controller.dispose();
     super.dispose();
@@ -117,12 +151,15 @@ class _IntroVideoScreenState extends State<IntroVideoScreen> {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            // Video player
+            // Video player with fade-in
             if (_isInitialized)
-              Center(
-                child: AspectRatio(
-                  aspectRatio: _controller.value.aspectRatio,
-                  child: VideoPlayer(_controller),
+              FadeTransition(
+                opacity: _fadeAnimation,
+                child: Center(
+                  child: AspectRatio(
+                    aspectRatio: _controller.value.aspectRatio,
+                    child: VideoPlayer(_controller),
+                  ),
                 ),
               )
             else

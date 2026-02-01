@@ -13,19 +13,26 @@ class BannerAdWidget extends StatefulWidget {
 class _BannerAdWidgetState extends State<BannerAdWidget> {
   BannerAd? _bannerAd;
   bool _isAdLoaded = false;
+  int _retryAttempt = 0;
+  static const int _maxRetries = 3;
 
   @override
   void initState() {
     super.initState();
     // Skip ads on web
     if (!kIsWeb) {
-      _loadAd();
+      // Delay loading slightly to ensure AdMob is initialized
+      Future.delayed(const Duration(milliseconds: 500), () {
+        if (mounted) _loadAd();
+      });
     }
   }
 
   void _loadAd() {
+    _bannerAd?.dispose();
     _bannerAd = AdService().createBannerAd(
       onAdLoaded: (ad) {
+        debugPrint('Banner ad loaded successfully');
         if (mounted) {
           setState(() {
             _isAdLoaded = true;
@@ -33,13 +40,20 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
         }
       },
       onAdFailedToLoad: (ad, error) {
-        debugPrint('Banner ad failed to load: ${error.message}');
+        debugPrint('Banner ad failed to load: ${error.message} (attempt $_retryAttempt)');
         ad.dispose();
         if (mounted) {
           setState(() {
             _bannerAd = null;
             _isAdLoaded = false;
           });
+          // Retry with exponential backoff
+          if (_retryAttempt < _maxRetries) {
+            _retryAttempt++;
+            Future.delayed(Duration(seconds: _retryAttempt * 2), () {
+              if (mounted) _loadAd();
+            });
+          }
         }
       },
     );
