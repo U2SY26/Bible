@@ -21,10 +21,67 @@ Set<String> _getConnectedNodeIds(String nodeId, List<Relationship> relationships
   return connectedIds;
 }
 
+// Spring 애니메이션을 위한 물리 시뮬레이션 클래스
+class SpringSimulation {
+  double position;
+  double velocity;
+  final double tension;  // 스프링 강도
+  final double friction; // 마찰력
+
+  SpringSimulation({
+    this.position = 0,
+    this.velocity = 0,
+    this.tension = 180,
+    this.friction = 12,
+  });
+
+  bool update(double target, double dt) {
+    final displacement = target - position;
+    final springForce = displacement * tension;
+    final dampingForce = -velocity * friction;
+    final acceleration = springForce + dampingForce;
+
+    velocity += acceleration * dt;
+    position += velocity * dt;
+
+    // 수렴 체크
+    return displacement.abs() > 0.001 || velocity.abs() > 0.001;
+  }
+}
+
+// 2D Spring 애니메이션
+class Spring2D {
+  SpringSimulation x;
+  SpringSimulation y;
+
+  Spring2D({
+    Offset position = Offset.zero,
+    double tension = 180,
+    double friction = 12,
+  }) : x = SpringSimulation(position: position.dx, tension: tension, friction: friction),
+       y = SpringSimulation(position: position.dy, tension: tension, friction: friction);
+
+  Offset get position => Offset(x.position, y.position);
+
+  bool update(Offset target, double dt) {
+    final xActive = x.update(target.dx, dt);
+    final yActive = y.update(target.dy, dt);
+    return xActive || yActive;
+  }
+
+  void setPosition(Offset pos) {
+    x.position = pos.dx;
+    y.position = pos.dy;
+    x.velocity = 0;
+    y.velocity = 0;
+  }
+}
+
 // Graph node representation
 class GraphNode {
   final String id;
-  final String name;
+  final String nameKo;
+  final String nameEn;
   final int importance;
   final String testament;
   Offset position;
@@ -32,9 +89,17 @@ class GraphNode {
   bool isDragging;
   bool isPinned;  // 드래그 후 고정
 
+  // 시각 효과용 애니메이션 상태
+  double pulsePhase = 0;      // 펄스 효과 위상
+  double scaleAnimation = 1.0; // 확대/축소 애니메이션
+  double targetScale = 1.0;   // 목표 스케일
+  double glowIntensity = 0;   // 글로우 강도
+  double targetGlow = 0;      // 목표 글로우
+
   GraphNode({
     required this.id,
-    required this.name,
+    required this.nameKo,
+    required this.nameEn,
     required this.importance,
     required this.testament,
     required this.position,
@@ -43,9 +108,30 @@ class GraphNode {
     this.isPinned = false,
   });
 
+  String getName(String lang) => lang == 'ko' ? nameKo : nameEn;
+
   double get radius => 5 + (importance * 0.8);
 
   bool get isFixed => isDragging || isPinned;
+
+  // 애니메이션 업데이트
+  void updateAnimations(double dt, bool isSelected, bool isHovered) {
+    // 펄스 효과 (선택된 노드)
+    if (isSelected) {
+      pulsePhase += dt * 3;
+      if (pulsePhase > 2 * pi) pulsePhase -= 2 * pi;
+    } else {
+      pulsePhase = 0;
+    }
+
+    // 스케일 애니메이션 (부드러운 전환)
+    targetScale = isSelected ? 1.4 : (isHovered ? 1.15 : 1.0);
+    scaleAnimation += (targetScale - scaleAnimation) * min(1.0, dt * 8);
+
+    // 글로우 애니메이션
+    targetGlow = isSelected ? 1.0 : (isHovered ? 0.5 : 0.0);
+    glowIntensity += (targetGlow - glowIntensity) * min(1.0, dt * 6);
+  }
 }
 
 class GraphCanvas extends ConsumerStatefulWidget {
@@ -60,13 +146,17 @@ class GraphCanvas extends ConsumerStatefulWidget {
 class _GraphCanvasState extends ConsumerState<GraphCanvas>
     with TickerProviderStateMixin {
   late AnimationController _animationController;
-  late AnimationController _fitAnimationController;
   final Map<String, GraphNode> _nodes = {};
   List<Relationship> _relationships = [];
 
+  // Spring 기반 카메라 애니메이션
+  late Spring2D _panSpring;
+  late SpringSimulation _zoomSpring;
   Offset _pan = Offset.zero;
   double _zoom = 1.0;
+
   String? _draggedNodeId;
+  String? _hoveredNodeId;  // 호버된 노드
   Offset? _lastFocalPoint;
   Offset? _scaleStartPoint;
   bool _hasMoved = false;
@@ -76,6 +166,7 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
   // 더블탭 감지용
   DateTime? _lastTapTime;
   String? _lastTappedNodeId;
+  Offset? _lastTapPosition;
 
   // 드래그 중 여부 (용수철 효과 활성화)
   bool _isDraggingNode = false;
@@ -83,11 +174,15 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
   // "두번 클릭하라" 말풍선 표시 여부
   bool _showDoubleTapHint = false;
 
-  // 애니메이션용
-  Offset _targetPan = Offset.zero;
-  double _targetZoom = 1.0;
-  Offset _startPan = Offset.zero;
-  double _startZoom = 1.0;
+  // 노드 선택 시 펄스 효과
+  String? _pulsingNodeId;
+  double _pulseStartTime = 0;
+
+  // 마지막 프레임 시간 (dt 계산용)
+  DateTime _lastFrameTime = DateTime.now();
+
+  // 모핑 애니메이션 활성 여부
+  bool _isMorphing = false;
 
   // Physics constants
   static const double repulsionStrength = 1500;  // 반발력
@@ -102,40 +197,36 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
   @override
   void initState() {
     super.initState();
+
+    // Spring 애니메이션 초기화
+    _panSpring = Spring2D(tension: 120, friction: 14);
+    _zoomSpring = SpringSimulation(tension: 150, friction: 15);
+
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 1),
     )..repeat();
-
-    _fitAnimationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 400),
-    );
-    _fitAnimationController.addListener(_onFitAnimation);
 
     _animationController.addListener(_onFrame);
     _initializeNodes();
     _loadRelationships();
   }
 
-  void _onFitAnimation() {
-    final t = Curves.easeOutCubic.transform(_fitAnimationController.value);
-    setState(() {
-      _zoom = _startZoom + (_targetZoom - _startZoom) * t;
-      _pan = Offset(
-        _startPan.dx + (_targetPan.dx - _startPan.dx) * t,
-        _startPan.dy + (_targetPan.dy - _startPan.dy) * t,
-      );
-    });
-  }
-
+  // Spring 기반 부드러운 모핑 애니메이션
   void _animateToFit(double newZoom, Offset newPan) {
-    _startZoom = _zoom;
-    _startPan = _pan;
+    _zoomSpring.position = _zoom;
+    _zoomSpring.velocity = 0;
+    _panSpring.setPosition(_pan);
+
+    // 목표값 저장 (Spring 업데이트에서 사용)
     _targetZoom = newZoom;
     _targetPan = newPan;
-    _fitAnimationController.forward(from: 0);
+    _isMorphing = true;
   }
+
+  // 목표값 저장용
+  Offset _targetPan = Offset.zero;
+  double _targetZoom = 1.0;
 
   void _initializeNodes() {
     final random = Random();
@@ -150,7 +241,8 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
       final r = 75 + random.nextDouble() * spreadRadius;  // 1.5배
       _nodes[char.id] = GraphNode(
         id: char.id,
-        name: char.nameKo,
+        nameKo: char.nameKo,
+        nameEn: char.nameEn,
         importance: char.importance,
         testament: char.testament,
         position: Offset(centerX + r * cos(angle), centerY + r * sin(angle)),
@@ -240,6 +332,31 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
 
   void _onFrame() {
     if (!mounted) return;
+
+    final now = DateTime.now();
+    final dt = (now.difference(_lastFrameTime).inMicroseconds / 1000000.0).clamp(0.001, 0.05);
+    _lastFrameTime = now;
+
+    // Spring 기반 카메라 모핑 애니메이션
+    if (_isMorphing) {
+      final zoomActive = _zoomSpring.update(_targetZoom, dt);
+      final panActive = _panSpring.update(_targetPan, dt);
+
+      _zoom = _zoomSpring.position.clamp(0.3, 2.0);
+      _pan = _panSpring.position;
+
+      if (!zoomActive && !panActive) {
+        _isMorphing = false;
+      }
+    }
+
+    // 노드 시각 효과 애니메이션 업데이트
+    final selectedId = ref.read(selectedCharacterIdProvider);
+    for (final node in _nodes.values) {
+      final isSelected = node.id == selectedId;
+      final isHovered = node.id == _hoveredNodeId;
+      node.updateAnimations(dt, isSelected, isHovered);
+    }
 
     // Apply physics
     _applyForces();
@@ -421,7 +538,8 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
         final r = 100 + random.nextDouble() * 200;
         _nodes[char.id] = GraphNode(
           id: char.id,
-          name: char.nameKo,
+          nameKo: char.nameKo,
+          nameEn: char.nameEn,
           importance: char.importance,
           testament: char.testament,
           position: Offset(center.dx + r * cos(angle), center.dy + r * sin(angle)),
@@ -439,6 +557,16 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
     final selectionMode = ref.watch(selectionModeProvider);
     final lang = ref.watch(languageProvider);
     final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    // Listen for external selection changes (e.g., from Daily Verse screen)
+    ref.listen<String?>(selectedCharacterIdProvider, (previous, next) {
+      if (next != null && previous != next && _nodes.containsKey(next)) {
+        // Zoom to the selected character
+        Future.delayed(const Duration(milliseconds: 100), () {
+          if (mounted) _fitToConnectedNodes(next);
+        });
+      }
+    });
 
     // 연결된 노드 ID 계산
     final visibleNodeIds = selectedId != null
@@ -563,19 +691,29 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
             _lastTappedNodeId == node.id &&
             now.difference(_lastTapTime!).inMilliseconds < 400;
 
+        // 호버 효과 설정
+        _hoveredNodeId = node.id;
+
         if (isDoubleTap && currentMode == SelectionMode.focused) {
           // 더블탭 -> detailOpen (팝업 표시)
           ref.read(selectionModeProvider.notifier).state = SelectionMode.detailOpen;
           _showDoubleTapHint = false;
+
+          // 더블탭 시 노드 중심으로 부드럽게 줌인
+          _zoomToNode(node.id, zoomLevel: 1.5);
         } else if (currentSelectedId != node.id) {
           // 다른 노드 터치 -> focused 모드로 전환
           ref.read(selectedCharacterIdProvider.notifier).state = node.id;
           ref.read(selectionModeProvider.notifier).state = SelectionMode.focused;
           _showDoubleTapHint = true;
+
+          // 펄스 효과 시작
+          _pulsingNodeId = node.id;
         }
 
         _lastTapTime = now;
         _lastTappedNodeId = node.id;
+        _lastTapPosition = details.localFocalPoint;
 
         // 드래그 시작 시 연결된 노드들의 고정 해제 (용수철 효과를 위해)
         _unpinConnectedNodes(node.id);
@@ -601,6 +739,23 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
     }
   }
 
+  // 특정 노드로 부드럽게 줌인
+  void _zoomToNode(String nodeId, {double zoomLevel = 1.2}) {
+    final node = _nodes[nodeId];
+    if (node == null || _canvasSize == null) return;
+
+    final screenCenterX = _canvasSize!.width / 2;
+    final screenCenterY = _canvasSize!.height / 2;
+
+    final newZoom = zoomLevel.clamp(0.5, 2.0);
+    final newPan = Offset(
+      screenCenterX - node.position.dx * newZoom,
+      screenCenterY - node.position.dy * newZoom,
+    );
+
+    _animateToFit(newZoom, newPan);
+  }
+
   void _onScaleUpdate(ScaleUpdateDetails details) {
     // Check if there was significant movement
     if (_scaleStartPoint != null) {
@@ -611,25 +766,34 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
     }
 
     if (_draggedNodeId != null) {
-      // Dragging a node
+      // Dragging a node - 더 부드러운 추적
       final node = _nodes[_draggedNodeId];
       if (node != null) {
         _hasMoved = true;
-        node.position = (details.localFocalPoint - _pan) / _zoom;
+        final targetPosition = (details.localFocalPoint - _pan) / _zoom;
+        // 부드러운 추적 (lerp)
+        node.position = Offset.lerp(node.position, targetPosition, 0.6)!;
       }
     } else {
-      // Pan and zoom (속도 조절)
+      // Pan and zoom - 더 반응성 있는 제스처
       if (_lastFocalPoint != null) {
-        final delta = (details.localFocalPoint - _lastFocalPoint!) * 0.7;  // 70%만 적용
+        // 모핑 중이면 직접 조작으로 전환
+        if (_isMorphing) {
+          _isMorphing = false;
+        }
+
+        final delta = (details.localFocalPoint - _lastFocalPoint!) * 0.85;  // 85% 적용
         setState(() {
           _pan += delta;
+          // Spring 위치도 동기화
+          _panSpring.setPosition(_pan);
         });
       }
 
       if (details.scale != 1.0) {
         _hasMoved = true;
-        // 확대/축소 속도를 더 늦춤
-        final scaleDelta = (details.scale - 1.0) * 0.08;  // 8%만 적용
+        // 더 반응성 있는 줌 (12% 적용)
+        final scaleDelta = (details.scale - 1.0) * 0.12;
         final newZoom = (_zoom * (1.0 + scaleDelta)).clamp(0.3, 2.0);
 
         // 손가락 위치 기준으로 줌 (focal point zoom)
@@ -640,6 +804,9 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
           _zoom = newZoom;
           // 줌 변화에 따라 pan 조정하여 focal point 유지
           _pan = focalPoint - (focalPoint - _pan) * (newZoom / oldZoom);
+          // Spring 위치 동기화
+          _panSpring.setPosition(_pan);
+          _zoomSpring.position = _zoom;
         });
       }
     }
@@ -649,6 +816,9 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
   void _onScaleEnd(ScaleEndDetails details) {
     final currentMode = ref.read(selectionModeProvider);
     final currentSelectedId = ref.read(selectedCharacterIdProvider);
+
+    // 호버 효과 해제
+    _hoveredNodeId = null;
 
     // If there was no movement, treat it as a tap (for web compatibility)
     if (!_hasMoved && _scaleStartPoint != null && _draggedNodeId == null) {
@@ -693,7 +863,7 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
 
       _isDraggingNode = false;
 
-      // 연결된 노드들만 fit 화면으로
+      // 연결된 노드들만 fit 화면으로 (부드러운 모핑)
       if (currentMode == SelectionMode.focused || currentMode == SelectionMode.none) {
         _fitToConnectedNodes(_draggedNodeId!);
       }
@@ -702,6 +872,8 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
       _pinConnectedNodes(_draggedNodeId!);
       _draggedNodeId = null;
     }
+
+    _lastTapPosition = null;
   }
 
   // 연결된 노드들만 fit 화면으로 (애니메이션)
@@ -777,7 +949,6 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
   @override
   void dispose() {
     _animationController.dispose();
-    _fitAnimationController.dispose();
     super.dispose();
   }
 
@@ -801,6 +972,9 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
         // 더블탭 -> detailOpen (팝업 표시)
         ref.read(selectedCharacterIdProvider.notifier).state = node.id;
         ref.read(selectionModeProvider.notifier).state = SelectionMode.detailOpen;
+
+        // 노드 중심으로 부드럽게 줌인
+        _zoomToNode(node.id, zoomLevel: 1.3);
         _showDoubleTapHint = false;
         setState(() {});
         return;
@@ -868,14 +1042,32 @@ class _GraphPainter extends CustomPainter {
     final target = nodes[rel.target];
     if (source == null || target == null) return;
 
-    final isHighlighted =
-        selectedNodeId == rel.source || selectedNodeId == rel.target;
+    // 노드의 글로우 강도에 따라 엣지도 부드럽게 전환
+    final sourceGlow = source.glowIntensity;
+    final targetGlow = target.glowIntensity;
+    final edgeGlow = max(sourceGlow, targetGlow);
 
     final color = RelationshipColors.getColor(rel.type);
+
+    // 하이라이트된 엣지에 글로우 효과
+    if (edgeGlow > 0.1) {
+      final glowPaint = Paint()
+        ..color = color.withValues(alpha: 0.3 * edgeGlow)
+        ..strokeWidth = 4.0 * edgeGlow
+        ..style = PaintingStyle.stroke
+        ..maskFilter = MaskFilter.blur(BlurStyle.normal, 3.0 * edgeGlow);
+      canvas.drawLine(source.position, target.position, glowPaint);
+    }
+
+    // 메인 엣지
+    final alpha = 0.3 + (0.5 * edgeGlow);
+    final strokeWidth = 1.0 + (1.5 * edgeGlow);
+
     final paint = Paint()
-      ..color = color.withValues(alpha: isHighlighted ? 0.8 : 0.3)
-      ..strokeWidth = isHighlighted ? 2.0 : 1.0
-      ..style = PaintingStyle.stroke;
+      ..color = color.withValues(alpha: alpha)
+      ..strokeWidth = strokeWidth
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
 
     canvas.drawLine(source.position, target.position, paint);
   }
@@ -883,62 +1075,90 @@ class _GraphPainter extends CustomPainter {
   void _drawNode(Canvas canvas, GraphNode node) {
     final isSelected = selectedNodeId == node.id;
     final isFocusedMode = selectionMode == SelectionMode.focused || selectionMode == SelectionMode.detailOpen;
-    final radius = node.radius * (isSelected ? 1.3 : 1.0);
+
+    // 부드러운 스케일 애니메이션 적용
+    final animatedScale = node.scaleAnimation;
+    final radius = node.radius * animatedScale;
+
+    // 펄스 효과 (선택된 노드)
+    final pulseOffset = isSelected ? sin(node.pulsePhase) * 3 : 0.0;
+    final effectiveRadius = radius + pulseOffset;
 
     // Get node color
     final nodeColor =
         AppColors.getCharacterColor(node.id, node.importance, node.testament);
 
-    // 강화된 네온 효과 (선택된 노드 + focused 모드)
-    if (isSelected && isFocusedMode) {
-      // 외곽 네온 (여러 레이어)
+    // 글로우 강도 기반 네온 효과 (부드러운 전환)
+    if (node.glowIntensity > 0.01) {
+      final glowAlpha = node.glowIntensity;
+
+      // 외곽 네온 (여러 레이어) - 강도에 따라 부드럽게
       for (int i = 3; i >= 1; i--) {
         final glowPaint = Paint()
-          ..color = Colors.cyanAccent.withValues(alpha: 0.15 * i)
-          ..maskFilter = MaskFilter.blur(BlurStyle.normal, 8.0 * i);
-        canvas.drawCircle(node.position, radius + 8 * i, glowPaint);
+          ..color = (isFocusedMode && isSelected ? Colors.cyanAccent : nodeColor)
+              .withValues(alpha: 0.15 * i * glowAlpha)
+          ..maskFilter = MaskFilter.blur(BlurStyle.normal, 8.0 * i * glowAlpha);
+        canvas.drawCircle(node.position, effectiveRadius + 8 * i * glowAlpha, glowPaint);
       }
-      // 중심 네온
-      final innerGlowPaint = Paint()
-        ..color = Colors.white.withValues(alpha: 0.5)
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5);
-      canvas.drawCircle(node.position, radius + 3, innerGlowPaint);
-    } else if (node.importance >= 8 || isSelected) {
-      // 기본 글로우
+
+      // 중심 네온 (선택된 노드만)
+      if (isSelected && isFocusedMode) {
+        final innerGlowPaint = Paint()
+          ..color = Colors.white.withValues(alpha: 0.5 * glowAlpha)
+          ..maskFilter = MaskFilter.blur(BlurStyle.normal, 5 * glowAlpha);
+        canvas.drawCircle(node.position, effectiveRadius + 3, innerGlowPaint);
+      }
+    } else if (node.importance >= 8) {
+      // 기본 글로우 (중요도 높은 노드)
       final glowPaint = Paint()
         ..color = nodeColor.withValues(alpha: 0.3)
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10);
-      canvas.drawCircle(node.position, radius + 5, glowPaint);
+      canvas.drawCircle(node.position, effectiveRadius + 5, glowPaint);
     }
 
-    // Node fill with gradient
+    // Node fill with gradient - 부드러운 색상 전환
+    final centerColor = Color.lerp(
+      nodeColor,
+      Colors.white,
+      isSelected && isFocusedMode ? 0.7 * node.glowIntensity : 0,
+    )!;
+
     final fillPaint = Paint()
       ..shader = RadialGradient(
         colors: [
-          isSelected && isFocusedMode ? Colors.white : nodeColor,
+          centerColor,
           nodeColor.withValues(alpha: 0.7),
         ],
-      ).createShader(Rect.fromCircle(center: node.position, radius: radius));
-    canvas.drawCircle(node.position, radius, fillPaint);
+      ).createShader(Rect.fromCircle(center: node.position, radius: effectiveRadius));
+    canvas.drawCircle(node.position, effectiveRadius, fillPaint);
 
-    // Node border
+    // Node border - 부드러운 전환
+    final borderColor = Color.lerp(
+      nodeColor.withValues(alpha: 0.5),
+      isFocusedMode ? Colors.cyanAccent : Colors.white,
+      node.glowIntensity,
+    )!;
+    final borderWidth = 1.5 + (2.0 * node.glowIntensity);
+
     final borderPaint = Paint()
-      ..color = isSelected
-          ? (isFocusedMode ? Colors.cyanAccent : Colors.white)
-          : nodeColor.withValues(alpha: 0.5)
-      ..strokeWidth = isSelected ? 3.5 : 1.5
+      ..color = borderColor
+      ..strokeWidth = borderWidth
       ..style = PaintingStyle.stroke;
-    canvas.drawCircle(node.position, radius, borderPaint);
+    canvas.drawCircle(node.position, effectiveRadius, borderPaint);
 
-    // Node label
+    // Node label - 부드러운 크기 및 투명도 전환
     if (zoom > 0.4) {
+      final labelOpacity = node.glowIntensity > 0.5 ? 1.0 : (0.7 + 0.3 * node.glowIntensity);
+      final labelScale = 1.0 + (0.15 * node.glowIntensity);
+
       final textPainter = TextPainter(
         text: TextSpan(
-          text: node.name,
+          text: node.getName(lang),
           style: TextStyle(
-            color: isDark ? AppColors.textPrimary : const Color(0xFF1C1C1E),
-            fontSize: 10 / zoom,
-            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+            color: (isDark ? AppColors.textPrimary : const Color(0xFF1C1C1E))
+                .withValues(alpha: labelOpacity),
+            fontSize: (10 / zoom) * labelScale,
+            fontWeight: node.glowIntensity > 0.3 ? FontWeight.bold : FontWeight.normal,
           ),
         ),
         textDirection: TextDirection.ltr,
@@ -948,7 +1168,7 @@ class _GraphPainter extends CustomPainter {
         canvas,
         Offset(
           node.position.dx - textPainter.width / 2,
-          node.position.dy + radius + 4,
+          node.position.dy + effectiveRadius + 4,
         ),
       );
     }

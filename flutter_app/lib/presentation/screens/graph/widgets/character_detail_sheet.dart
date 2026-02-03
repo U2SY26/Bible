@@ -432,40 +432,71 @@ $description$verse
 
     return Semantics(
       label: '$displayRef: ${lang == 'ko' ? verse.textKo : verse.textEn}',
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 8),
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: isDark ? AppColors.surfaceLight : Colors.grey.shade50,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: AppColors.primary.withValues(alpha: 0.3),
+      child: GestureDetector(
+        onTap: () => _openBibleViewer(verse.ref, lang),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          margin: const EdgeInsets.only(bottom: 8),
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: isDark ? AppColors.surfaceLight : Colors.grey.shade50,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: AppColors.primary.withValues(alpha: 0.3),
+            ),
           ),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              displayRef,
-              style: const TextStyle(
-                color: AppColors.primary,
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      displayRef,
+                      style: const TextStyle(
+                        color: AppColors.primary,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      lang == 'ko' ? verse.textKo : verse.textEn,
+                      style: TextStyle(
+                        color: isDark ? AppColors.textSecondary : Colors.grey[700],
+                        fontSize: 13,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              lang == 'ko' ? verse.textKo : verse.textEn,
-              style: TextStyle(
-                color: isDark ? AppColors.textSecondary : Colors.grey[700],
-                fontSize: 13,
-                fontStyle: FontStyle.italic,
+              const SizedBox(width: 8),
+              Icon(
+                Icons.chevron_right,
+                color: AppColors.primary.withValues(alpha: 0.6),
+                size: 20,
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  void _openBibleViewer(String verseRef, String lang) {
+    final parsed = BibleBookNames.parseRef(verseRef);
+    if (parsed.bookId != null && parsed.bookName != null) {
+      // BibleViewer 열기
+      ref.read(bibleViewerProvider.notifier).openBook(
+        parsed.bookId!,
+        parsed.bookName!,
+        parsed.totalChapters,
+        chapter: parsed.chapter,
+        highlightVerse: parsed.verse,
+      );
+      ref.read(showBibleViewerProvider.notifier).state = true;
+    }
   }
 
   Widget _buildRelatedCharacters(
@@ -489,8 +520,9 @@ $description$verse
                 relationshipType: rel.type,
                 lang: lang,
                 onTap: () {
-                  ref.read(selectedCharacterIdProvider.notifier).state =
-                      relatedId;
+                  // 부드러운 전환: focused 모드로 전환하며 노드 선택
+                  ref.read(selectedCharacterIdProvider.notifier).state = relatedId;
+                  ref.read(selectionModeProvider.notifier).state = SelectionMode.focused;
                 },
               );
             },
@@ -502,61 +534,100 @@ $description$verse
   }
 
   Widget _buildEvents(List<BibleEvent> events, String lang) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildSectionTitle(lang == 'ko' ? '관련 사건' : 'Related Events',
             Icons.event_note),
         const SizedBox(height: 8),
-        ...events.take(3).map((event) => Container(
-              margin: const EdgeInsets.only(bottom: 8),
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: AppColors.surfaceLight,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: AppColors.accent.withValues(alpha: 0.2),
-                      borderRadius: BorderRadius.circular(8),
+        ...events.take(3).map((event) => GestureDetector(
+              onTap: () => _onEventTap(event, lang),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                margin: const EdgeInsets.only(bottom: 8),
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: isDark ? AppColors.surfaceLight : Colors.grey.shade50,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: AppColors.accent.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Icon(Icons.event, color: AppColors.accent, size: 20),
                     ),
-                    child: const Icon(Icons.event, color: AppColors.accent, size: 20),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          lang == 'ko' ? event.nameKo : event.nameEn,
-                          style: const TextStyle(
-                            color: AppColors.textPrimary,
-                            fontSize: 13,
-                            fontWeight: FontWeight.w500,
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            lang == 'ko' ? event.nameKo : event.nameEn,
+                            style: TextStyle(
+                              color: isDark ? AppColors.textPrimary : Colors.black87,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
-                        ),
-                        Text(
-                          event.year < 0
-                              ? 'BC ${-event.year}'
-                              : 'AD ${event.year}',
-                          style: const TextStyle(
-                            color: AppColors.textMuted,
-                            fontSize: 11,
+                          Text(
+                            event.year < 0
+                                ? 'BC ${-event.year}'
+                                : 'AD ${event.year}',
+                            style: const TextStyle(
+                              color: AppColors.textMuted,
+                              fontSize: 11,
+                            ),
                           ),
-                        ),
-                      ],
+                          if (event.verses.isNotEmpty)
+                            Text(
+                              event.verses.first,
+                              style: TextStyle(
+                                color: AppColors.primary.withValues(alpha: 0.8),
+                                fontSize: 10,
+                              ),
+                            ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                    if (event.verses.isNotEmpty || event.characters.isNotEmpty)
+                      Icon(
+                        Icons.chevron_right,
+                        color: AppColors.accent.withValues(alpha: 0.6),
+                        size: 20,
+                      ),
+                  ],
+                ),
               ),
             )),
         const SizedBox(height: 16),
       ],
     );
+  }
+
+  void _onEventTap(BibleEvent event, String lang) {
+    // 성경 구절이 있으면 BibleViewer로 이동
+    if (event.verses.isNotEmpty) {
+      _openBibleViewer(event.verses.first, lang);
+    }
+    // 관련 인물이 있으면 첫 번째 인물로 이동 (현재 인물 제외)
+    else if (event.characters.isNotEmpty) {
+      final currentCharId = widget.character.id;
+      final otherCharacter = event.characters.firstWhere(
+        (id) => id != currentCharId,
+        orElse: () => event.characters.first,
+      );
+      if (otherCharacter != currentCharId) {
+        ref.read(selectedCharacterIdProvider.notifier).state = otherCharacter;
+        ref.read(selectionModeProvider.notifier).state = SelectionMode.focused;
+      }
+    }
   }
 
   Widget _buildHymns(List<Hymn> hymns, String lang) {
