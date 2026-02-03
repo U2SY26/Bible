@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../services/ad_service.dart';
 import '../../providers/filter_provider.dart';
 import '../../providers/selection_provider.dart';
 import '../../providers/bookmark_provider.dart';
@@ -8,12 +10,50 @@ import 'widgets/graph_canvas.dart';
 import 'widgets/filter_bar.dart';
 import 'widgets/character_detail_sheet.dart';
 import '../favorites/favorites_screen.dart';
+import '../daily_verse/daily_verse_screen.dart';
 
-class GraphScreen extends ConsumerWidget {
+class GraphScreen extends ConsumerStatefulWidget {
   const GraphScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<GraphScreen> createState() => _GraphScreenState();
+}
+
+class _GraphScreenState extends ConsumerState<GraphScreen> {
+  BannerAd? _bannerAd;
+  bool _isBannerAdReady = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadBannerAd();
+  }
+
+  void _loadBannerAd() {
+    if (!AdService().canShowAds) return;
+
+    _bannerAd = AdService().createBannerAd(
+      onAdLoaded: (ad) {
+        setState(() {
+          _isBannerAdReady = true;
+        });
+      },
+      onAdFailedToLoad: (ad, error) {
+        debugPrint('Banner ad failed to load: ${error.message}');
+        ad.dispose();
+      },
+    );
+    _bannerAd?.load();
+  }
+
+  @override
+  void dispose() {
+    _bannerAd?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final lang = ref.watch(languageProvider);
     final charactersAsync = ref.watch(filteredCharactersProvider);
     final selectedCharacterId = ref.watch(selectedCharacterIdProvider);
@@ -71,6 +111,14 @@ class GraphScreen extends ConsumerWidget {
                 ),
               ),
             ),
+            // Banner Ad
+            if (_isBannerAdReady && _bannerAd != null)
+              Container(
+                alignment: Alignment.center,
+                width: _bannerAd!.size.width.toDouble(),
+                height: _bannerAd!.size.height.toDouble(),
+                child: AdWidget(ad: _bannerAd!),
+              ),
           ],
         ),
       ),
@@ -130,6 +178,19 @@ class GraphScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(width: 8),
+          // Daily Verse button
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const DailyVerseScreen(),
+                ),
+              );
+            },
+            icon: const Icon(Icons.auto_stories_outlined),
+            color: isDark ? AppColors.textSecondary : Colors.grey[600],
+            tooltip: lang == 'ko' ? '오늘의 말씀' : 'Daily Verse',
+          ),
           // Favorites button
           Consumer(
             builder: (context, ref, child) {
