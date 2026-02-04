@@ -14,6 +14,7 @@ import '../../../widgets/artwork_fullscreen_viewer.dart';
 import '../../../providers/filter_provider.dart';
 import '../../../providers/selection_provider.dart';
 import '../../../providers/bookmark_provider.dart';
+import '../../bible_reader/bible_reader_screen.dart';
 
 class CharacterDetailSheet extends ConsumerWidget {
   final String characterId;
@@ -487,15 +488,18 @@ $description$verse
   void _openBibleViewer(String verseRef, String lang) {
     final parsed = BibleBookNames.parseRef(verseRef);
     if (parsed.bookId != null && parsed.bookName != null) {
-      // BibleViewer 열기
-      ref.read(bibleViewerProvider.notifier).openBook(
-        parsed.bookId!,
-        parsed.bookName!,
-        parsed.totalChapters,
-        chapter: parsed.chapter,
-        highlightVerse: parsed.verse,
+      // BibleReaderScreen으로 이동하여 해당 구절 하이라이트
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => BibleReaderScreen(
+            initialBookId: parsed.bookId,
+            initialBookName: parsed.bookName,
+            initialChapter: parsed.chapter,
+            highlightVerse: parsed.verse,
+            totalChapters: parsed.totalChapters,
+          ),
+        ),
       );
-      ref.read(showBibleViewerProvider.notifier).state = true;
     }
   }
 

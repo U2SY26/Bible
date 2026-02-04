@@ -6,7 +6,20 @@ import '../../providers/data_providers.dart';
 import '../../providers/filter_provider.dart';
 
 class BibleReaderScreen extends ConsumerStatefulWidget {
-  const BibleReaderScreen({super.key});
+  final String? initialBookId;
+  final String? initialBookName;
+  final int? initialChapter;
+  final int? highlightVerse;
+  final int? totalChapters;
+
+  const BibleReaderScreen({
+    super.key,
+    this.initialBookId,
+    this.initialBookName,
+    this.initialChapter,
+    this.highlightVerse,
+    this.totalChapters,
+  });
 
   @override
   ConsumerState<BibleReaderScreen> createState() => _BibleReaderScreenState();
@@ -17,6 +30,20 @@ class _BibleReaderScreenState extends ConsumerState<BibleReaderScreen> {
   int _selectedChapter = 1;
   int _totalChapters = 1;
   String _selectedBookName = '';
+  int? _highlightVerse;
+
+  @override
+  void initState() {
+    super.initState();
+    // 외부에서 전달받은 초기값 설정
+    if (widget.initialBookId != null) {
+      _selectedBookId = widget.initialBookId;
+      _selectedBookName = widget.initialBookName ?? '';
+      _selectedChapter = widget.initialChapter ?? 1;
+      _totalChapters = widget.totalChapters ?? 1;
+      _highlightVerse = widget.highlightVerse;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,12 +76,17 @@ class _BibleReaderScreenState extends ConsumerState<BibleReaderScreen> {
                         chapter: _selectedChapter,
                         totalChapters: _totalChapters,
                         lang: lang,
+                        highlightVerse: _highlightVerse,
                         onChapterChanged: (chapter) {
-                          setState(() => _selectedChapter = chapter);
+                          setState(() {
+                            _selectedChapter = chapter;
+                            _highlightVerse = null; // 장 변경 시 하이라이트 해제
+                          });
                         },
                         onBack: () {
                           setState(() {
                             _selectedBookId = null;
+                            _highlightVerse = null;
                           });
                         },
                       ),
@@ -315,6 +347,7 @@ class _ChapterViewer extends ConsumerWidget {
   final int chapter;
   final int totalChapters;
   final String lang;
+  final int? highlightVerse;
   final Function(int) onChapterChanged;
   final VoidCallback onBack;
 
@@ -324,6 +357,7 @@ class _ChapterViewer extends ConsumerWidget {
     required this.chapter,
     required this.totalChapters,
     required this.lang,
+    this.highlightVerse,
     required this.onChapterChanged,
     required this.onBack,
   });
@@ -395,13 +429,44 @@ class _ChapterViewer extends ConsumerWidget {
                   ),
                 );
               }
+
+              // 하이라이트된 구절로 스크롤
+              final scrollController = ScrollController();
+              if (highlightVerse != null) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  final targetIndex = highlightVerse! - 1;
+                  if (targetIndex >= 0 && targetIndex < chapterData.verses.length) {
+                    final offset = targetIndex * 60.0; // 대략적인 구절 높이
+                    scrollController.animateTo(
+                      offset,
+                      duration: const Duration(milliseconds: 500),
+                      curve: Curves.easeOutCubic,
+                    );
+                  }
+                });
+              }
+
               return ListView.builder(
+                controller: scrollController,
                 padding: const EdgeInsets.all(16),
                 itemCount: chapterData.verses.length,
                 itemBuilder: (context, index) {
                   final verse = chapterData.verses[index];
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
+                  final isHighlighted = highlightVerse == verse.verse;
+
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    padding: isHighlighted ? const EdgeInsets.all(12) : EdgeInsets.zero,
+                    decoration: isHighlighted
+                        ? BoxDecoration(
+                            color: AppColors.accent.withValues(alpha: 0.15),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: AppColors.accent.withValues(alpha: 0.5),
+                              width: 2,
+                            ),
+                          )
+                        : null,
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -409,9 +474,9 @@ class _ChapterViewer extends ConsumerWidget {
                           width: 32,
                           child: Text(
                             '${verse.verse}',
-                            style: const TextStyle(
-                              color: AppColors.primary,
-                              fontSize: 12,
+                            style: TextStyle(
+                              color: isHighlighted ? AppColors.accent : AppColors.primary,
+                              fontSize: isHighlighted ? 14 : 12,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -421,7 +486,8 @@ class _ChapterViewer extends ConsumerWidget {
                             verse.text,
                             style: TextStyle(
                               color: isDark ? AppColors.textPrimary : Colors.black87,
-                              fontSize: 16,
+                              fontSize: isHighlighted ? 17 : 16,
+                              fontWeight: isHighlighted ? FontWeight.w500 : FontWeight.normal,
                               height: 1.6,
                             ),
                           ),

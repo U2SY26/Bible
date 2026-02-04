@@ -388,6 +388,19 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
     final nodeList = _nodes.values.toList();
     final draggedNode = _draggedNodeId != null ? _nodes[_draggedNodeId] : null;
 
+    // 자유 이동 모드에서는 물리 시뮬레이션 완전 비활성화 (드래그 중인 노드만 움직임)
+    if (_isFreeMovementMode && !_isDraggingNode) {
+      // 자유 모드에서 드래그하지 않을 때는 모든 노드 정지
+      for (final node in _nodes.values) {
+        node.velocity = Offset.zero;
+      }
+      return;
+    }
+
+    final freeModeDamping = _isFreeMovementMode ? 0.95 : damping;
+    final freeModeRepulsion = _isFreeMovementMode ? 0.02 : 1.0;  // 자유 모드에서 반발력 98% 감소
+    final freeModeMaxVelocity = _isFreeMovementMode ? 30.0 : maxVelocity;  // 최대 속도 대폭 제한
+
     // Calculate center of mass
     Offset center = Offset.zero;
     for (final node in nodeList) {
@@ -462,7 +475,7 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
     // Repulsion between all nodes
     for (int i = 0; i < nodeList.length; i++) {
       for (int j = i + 1; j < nodeList.length; j++) {
-        _applyRepulsion(nodeList[i], nodeList[j]);
+        _applyRepulsion(nodeList[i], nodeList[j], freeModeRepulsion);
       }
     }
 
@@ -482,16 +495,22 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
         final toCenter = center - node.position;
         node.velocity += toCenter * centerGravity;
 
-        node.velocity *= damping;
+        node.velocity *= freeModeDamping;
+
+        // 최대 속도 제한
+        if (node.velocity.distance > freeModeMaxVelocity) {
+          node.velocity = node.velocity / node.velocity.distance * freeModeMaxVelocity;
+        }
+
         node.position += node.velocity * 0.016; // ~60fps
       }
     }
   }
 
-  void _applyRepulsion(GraphNode a, GraphNode b) {
+  void _applyRepulsion(GraphNode a, GraphNode b, double repulsionFactor) {
     final diff = a.position - b.position;
     final distance = max(diff.distance, minDistance);
-    final force = repulsionStrength / (distance * distance);
+    final force = repulsionStrength / (distance * distance) * repulsionFactor;
     final direction = diff / distance;
 
     if (!a.isFixed) a.velocity += direction * force * 0.01;

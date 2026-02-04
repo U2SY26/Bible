@@ -129,14 +129,15 @@ class _GraphScreenState extends ConsumerState<GraphScreen> {
                 ),
               ),
             ),
-            // Banner Ad
-            if (_isBannerAdReady && _bannerAd != null)
-              Container(
-                alignment: Alignment.center,
-                width: _bannerAd!.size.width.toDouble(),
-                height: _bannerAd!.size.height.toDouble(),
-                child: AdWidget(ad: _bannerAd!),
-              ),
+            // Banner Ad (항상 공간 확보)
+            Container(
+              alignment: Alignment.center,
+              height: 50, // 배너 광고 높이
+              color: Colors.transparent,
+              child: _isBannerAdReady && _bannerAd != null
+                  ? AdWidget(ad: _bannerAd!)
+                  : null,
+            ),
           ],
         ),
       ),
