@@ -14,6 +14,7 @@ import '../../data/models/hymn.dart';
 import '../../data/models/location.dart';
 import '../../data/models/artwork.dart';
 import '../../data/repositories/artwork_repository.dart';
+import '../../services/english_bible_service.dart';
 
 // Data Source Provider
 final jsonDataSourceProvider = Provider<JsonDataSource>((ref) {
@@ -140,11 +141,30 @@ final locationsByCharacterProvider =
   return await repo.getLocationsByCharacter(characterId);
 });
 
-// Bible chapter provider
+// Bible chapter provider (Korean - local)
 final bibleChapterProvider = FutureProvider.family<BibleChapter?,
     ({String bookId, int chapter})>((ref, params) async {
   final repo = ref.read(bibleRepositoryProvider);
   return await repo.getChapter(params.bookId, params.chapter);
+});
+
+// English Bible service provider
+final englishBibleServiceProvider = Provider<EnglishBibleService>((ref) {
+  return EnglishBibleService();
+});
+
+// Bilingual Bible chapter provider (Korean local or English API)
+final bilingualBibleChapterProvider = FutureProvider.family<BibleChapter?,
+    ({String bookId, int chapter, String lang})>((ref, params) async {
+  if (params.lang == 'ko') {
+    // Korean - use local data
+    final repo = ref.read(bibleRepositoryProvider);
+    return await repo.getChapter(params.bookId, params.chapter);
+  } else {
+    // English - fetch from API
+    final service = ref.read(englishBibleServiceProvider);
+    return await service.getChapter(params.bookId, params.chapter);
+  }
 });
 
 // Artwork by Character Provider

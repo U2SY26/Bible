@@ -174,6 +174,9 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
   // "두번 클릭하라" 말풍선 표시 여부
   bool _showDoubleTapHint = false;
 
+  // 드래그 힌트 표시 여부 (첫 실행 시)
+  bool _showDragHint = true;
+
   // 노드 선택 시 펄스 효과
   String? _pulsingNodeId;
   double _pulseStartTime = 0;
@@ -183,6 +186,11 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
 
   // 모핑 애니메이션 활성 여부
   bool _isMorphing = false;
+
+  // 롱프레스 감지용 (2초 이상 누르면 자유 이동 모드)
+  DateTime? _longPressStartTime;
+  bool _isFreeMovementMode = false;
+  static const Duration _longPressDuration = Duration(seconds: 2);
 
   // Physics constants
   static const double repulsionStrength = 1500;  // 반발력
@@ -336,6 +344,18 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
     final now = DateTime.now();
     final dt = (now.difference(_lastFrameTime).inMicroseconds / 1000000.0).clamp(0.001, 0.05);
     _lastFrameTime = now;
+
+    // 롱프레스 감지 (2초 이상 노드를 누르고 있으면 자유 이동 모드)
+    if (_longPressStartTime != null && _draggedNodeId != null && !_isFreeMovementMode) {
+      final pressDuration = now.difference(_longPressStartTime!);
+      if (pressDuration >= _longPressDuration) {
+        _isFreeMovementMode = true;
+        // 모든 노드 고정 해제
+        for (final node in _nodes.values) {
+          node.isPinned = false;
+        }
+      }
+    }
 
     // Spring 기반 카메라 모핑 애니메이션
     if (_isMorphing) {
@@ -605,8 +625,77 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
                 ),
               ),
             ),
+            // 드래그 힌트 (처음 사용자용)
+            if (_showDragHint && selectionMode == SelectionMode.none)
+              Positioned(
+                left: 0,
+                right: 0,
+                top: 16,
+                child: Center(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withValues(alpha: 0.9),
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.2),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.touch_app, color: Colors.white, size: 18),
+                        const SizedBox(width: 8),
+                        Text(
+                          lang == 'ko' ? '노드를 터치하고 드래그하세요' : 'Touch and drag nodes',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            // 자유 이동 모드 표시
+            if (_isFreeMovementMode)
+              Positioned(
+                left: 0,
+                right: 0,
+                top: 16,
+                child: Center(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: AppColors.accent.withValues(alpha: 0.9),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.open_with, color: Colors.white, size: 18),
+                        const SizedBox(width: 8),
+                        Text(
+                          lang == 'ko' ? '자유 이동 모드' : 'Free Movement Mode',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             // "두번 클릭하라" 말풍선
-            if (_showDoubleTapHint && selectionMode == SelectionMode.focused && selectedId != null)
+            if (_showDoubleTapHint && selectionMode == SelectionMode.focused && selectedId != null && !_isFreeMovementMode)
               Positioned(
                 left: 0,
                 right: 0,
@@ -639,11 +728,19 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
                   ref.read(selectionModeProvider.notifier).state = SelectionMode.none;
                   ref.read(selectedCharacterIdProvider.notifier).state = null;
                   _showDoubleTapHint = false;
+
+                  // 자유 이동 모드 해제 및 모든 노드 고정
+                  _isFreeMovementMode = false;
+                  for (final node in _nodes.values) {
+                    node.isPinned = true;
+                    node.velocity = Offset.zero;
+                  }
+
                   _fitToScreen();
                 },
                 backgroundColor: isDark ? AppColors.surfaceLight : Colors.white,
                 child: Icon(
-                  Icons.fit_screen,
+                  _isFreeMovementMode ? Icons.lock_open : Icons.fit_screen,
                   color: isDark ? AppColors.textSecondary : Colors.grey[700],
                 ),
               ),
@@ -715,11 +812,24 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
         _lastTappedNodeId = node.id;
         _lastTapPosition = details.localFocalPoint;
 
+        // 롱프레스 타이머 시작
+        _longPressStartTime = now;
+
         // 드래그 시작 시 연결된 노드들의 고정 해제 (용수철 효과를 위해)
         _unpinConnectedNodes(node.id);
+
+        // 드래그 힌트 숨기기
+        if (_showDragHint) {
+          setState(() {
+            _showDragHint = false;
+          });
+        }
         return;
       }
     }
+
+    // 노드 외부 터치 시 롱프레스 타이머 초기화
+    _longPressStartTime = null;
   }
 
   // 연결된 노드들의 고정을 해제
@@ -857,22 +967,31 @@ class _GraphCanvasState extends ConsumerState<GraphCanvas>
       final node = _nodes[_draggedNodeId];
       if (node != null) {
         node.isDragging = false;
-        node.isPinned = true;  // 드래그 후 고정
+        // 자유 이동 모드가 아닐 때만 드래그한 노드 고정
+        if (!_isFreeMovementMode) {
+          node.isPinned = true;
+        }
         node.velocity = Offset.zero;  // 속도 초기화
       }
 
       _isDraggingNode = false;
 
-      // 연결된 노드들만 fit 화면으로 (부드러운 모핑)
-      if (currentMode == SelectionMode.focused || currentMode == SelectionMode.none) {
-        _fitToConnectedNodes(_draggedNodeId!);
+      // 자유 이동 모드가 아닐 때만 fit 및 고정
+      if (!_isFreeMovementMode) {
+        // 연결된 노드들만 fit 화면으로 (부드러운 모핑)
+        if (currentMode == SelectionMode.focused || currentMode == SelectionMode.none) {
+          _fitToConnectedNodes(_draggedNodeId!);
+        }
+
+        // 연결된 노드들도 다시 고정
+        _pinConnectedNodes(_draggedNodeId!);
       }
 
-      // 연결된 노드들도 다시 고정
-      _pinConnectedNodes(_draggedNodeId!);
       _draggedNodeId = null;
     }
 
+    // 롱프레스 타이머 초기화
+    _longPressStartTime = null;
     _lastTapPosition = null;
   }
 

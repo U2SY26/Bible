@@ -6,6 +6,7 @@ import '../../../services/ad_service.dart';
 import '../../providers/filter_provider.dart';
 import '../../providers/selection_provider.dart';
 import '../../providers/bookmark_provider.dart';
+import '../../widgets/bible_viewer.dart';
 import 'widgets/graph_canvas.dart';
 import 'widgets/filter_bar.dart';
 import 'widgets/character_detail_sheet.dart';
@@ -30,20 +31,27 @@ class _GraphScreenState extends ConsumerState<GraphScreen> {
   }
 
   void _loadBannerAd() {
-    if (!AdService().canShowAds) return;
+    debugPrint('GraphScreen: _loadBannerAd called, canShowAds: ${AdService().canShowAds}');
+
+    if (!AdService().canShowAds) {
+      debugPrint('GraphScreen: AdService.canShowAds is false, skipping banner ad');
+      return;
+    }
 
     _bannerAd = AdService().createBannerAd(
       onAdLoaded: (ad) {
+        debugPrint('GraphScreen: Banner ad loaded successfully');
         setState(() {
           _isBannerAdReady = true;
         });
       },
       onAdFailedToLoad: (ad, error) {
-        debugPrint('Banner ad failed to load: ${error.message}');
+        debugPrint('GraphScreen: Banner ad failed to load: ${error.message}');
         ad.dispose();
       },
     );
     _bannerAd?.load();
+    debugPrint('GraphScreen: Banner ad load() called');
   }
 
   @override
@@ -58,6 +66,7 @@ class _GraphScreenState extends ConsumerState<GraphScreen> {
     final charactersAsync = ref.watch(filteredCharactersProvider);
     final selectedCharacterId = ref.watch(selectedCharacterIdProvider);
     final selectionMode = ref.watch(selectionModeProvider);
+    final showBibleViewer = ref.watch(showBibleViewerProvider);
 
     return Scaffold(
       body: SafeArea(
@@ -74,7 +83,7 @@ class _GraphScreenState extends ConsumerState<GraphScreen> {
                   children: [
                     GraphCanvas(characters: characters),
                     // detailOpen 모드에서만 팝업 표시
-                    if (selectedCharacterId != null && selectionMode == SelectionMode.detailOpen)
+                    if (selectedCharacterId != null && selectionMode == SelectionMode.detailOpen && !showBibleViewer)
                       Positioned(
                         left: 0,
                         right: 0,
@@ -82,6 +91,15 @@ class _GraphScreenState extends ConsumerState<GraphScreen> {
                         child: CharacterDetailSheet(
                           characterId: selectedCharacterId,
                         ),
+                      ),
+                    // Bible Viewer
+                    if (showBibleViewer)
+                      Positioned(
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        top: MediaQuery.of(context).size.height * 0.3,
+                        child: const BibleViewer(),
                       ),
                   ],
                 ),

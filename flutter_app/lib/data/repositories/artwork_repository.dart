@@ -6,66 +6,75 @@ class ArtworkRepository {
   Map<String, List<Artwork>>? _characterArtwork;
 
   // Characters that should not display artwork
-  // (either inappropriate or too generic to have relevant images)
   static const Set<String> _excludedCharacters = {
-    'god', // Depicting God is theologically inappropriate
-    'holy_spirit', // Same reason
+    'god',
+    'holy_spirit',
   };
 
   // Keywords in titles that indicate irrelevant images
   static const List<String> _irrelevantTitleKeywords = [
-    // Modern people with biblical names
-    'Sundback', // Gideon Sundback (inventor)
-    'inventor',
-    'politician',
-    'footballer',
-    'singer',
-    'actor',
-    'actress',
-    'musician',
-    'athlete',
-    'businessman',
-    'photograph of',
-    'photo of',
-    'portrait of a',
+    // Modern people/professions
+    'inventor', 'politician', 'footballer', 'singer', 'actor', 'actress',
+    'musician', 'athlete', 'businessman', 'president', 'governor', 'mayor',
+    'senator', 'congressman', 'lawyer', 'doctor', 'professor', 'engineer',
+    'writer', 'author', 'poet', 'journalist', 'photographer',
+    // Photo descriptions
+    'photograph of', 'photo of', 'portrait of a', 'picture of',
+    'daguerreotype', 'tintype', 'albumen', 'carte de visite',
+    // Modern surnames that appear with biblical names
+    'Beach', 'Bigelow', 'Smith', 'Jones', 'Williams', 'Brown', 'Davis',
+    'Miller', 'Wilson', 'Moore', 'Taylor', 'Anderson', 'Thomas', 'Jackson',
+    'White', 'Harris', 'Martin', 'Thompson', 'Garcia', 'Martinez', 'Robinson',
+    'Clark', 'Rodriguez', 'Lewis', 'Lee', 'Walker', 'Hall', 'Allen', 'Young',
+    'Hernandez', 'King', 'Wright', 'Lopez', 'Hill', 'Scott', 'Green', 'Adams',
+    'Baker', 'Gonzalez', 'Nelson', 'Carter', 'Mitchell', 'Perez', 'Roberts',
+    'Turner', 'Phillips', 'Campbell', 'Parker', 'Evans', 'Edwards', 'Collins',
+    'Stewart', 'Sanchez', 'Morris', 'Rogers', 'Reed', 'Cook', 'Morgan',
     // Egyptian/pagan imagery
-    'Nefertari',
-    'Egyptian',
-    'pharaoh',
-    'pyramid',
-    'hieroglyph',
-    // Unrelated paintings
-    'God Speed',
-    'speed',
-    // Architecture photos (not biblical art)
-    'Cathedrale',
-    'Cathedral',
-    'church building',
-    'facade',
-    'interior of',
-    'exterior of',
+    'Nefertari', 'Egyptian', 'pharaoh', 'pyramid', 'hieroglyph', 'sphinx',
+    'mummy', 'tomb of', 'sarcophagus',
+    // Architecture (not biblical art)
+    'Cathedrale', 'Cathedral', 'church building', 'facade', 'interior of',
+    'exterior of', 'Notre-Dame', 'basilica', 'chapel', 'monastery', 'abbey',
     // Maps and diagrams
-    'map of',
-    'diagram',
-    'chart',
+    'map of', 'diagram', 'chart', 'plan of', 'layout',
     // Modern items
-    'stamp',
-    'coin',
-    'medal',
-    'flag',
-    'logo',
-    'emblem',
-    // Stock photos
-    'stock',
-    'shutterstock',
-    'getty',
+    'stamp', 'coin', 'medal', 'flag', 'logo', 'emblem', 'badge', 'seal',
+    'banknote', 'currency', 'postage',
+    // Stock/modern media
+    'stock', 'shutterstock', 'getty', 'istock', 'alamy',
+    // File/technical descriptions
+    '.jpg', '.png', '.gif', 'scan of', 'copy of', 'reproduction',
+    // Location photos (not art)
+    'view of', 'aerial view', 'panorama', 'landscape of',
+    // Unrelated
+    'God Speed', 'speed', 'race', 'competition', 'game', 'match',
+    // US locations/people
+    'American', 'United States', 'U.S.', 'USA',
   ];
 
-  // Artist names that indicate irrelevant images
+  // Patterns that indicate modern person photos
+  static final List<RegExp> _modernNamePatterns = [
+    // "FirstName I. LastName" pattern (middle initial)
+    RegExp(r'^[A-Z][a-z]+ [A-Z]\. [A-Z][a-z]+'),
+    // "FirstNameLastName" CamelCase pattern
+    RegExp(r'^[A-Z][a-z]+[A-Z][a-z]+$'),
+    // Just a modern last name as title
+    RegExp(r'^[A-Z][a-z]{2,}$'),
+  ];
+
+  // Artist names/descriptions that indicate irrelevant images
   static const List<String> _irrelevantArtistKeywords = [
-    'Unknown',
-    'anonymous',
-    'stock',
+    'Unknown', 'anonymous', 'stock', 'photographer', 'No photographer',
+    'unidentified', 'uncredited',
+  ];
+
+  // Preferred classical artists (biblical art specialists)
+  static const List<String> _preferredArtists = [
+    'Gustave Dore', 'Doré', 'Rembrandt', 'Michelangelo', 'Raphael',
+    'Caravaggio', 'Rubens', 'Tissot', 'Julius Schnorr', 'William Blake',
+    'Peter Paul Rubens', 'Nicolas Poussin', 'Albrecht Dürer', 'El Greco',
+    'Giotto', 'Fra Angelico', 'Botticelli', 'Tintoretto', 'Veronese',
   ];
 
   Future<void> _loadData() async {
@@ -80,14 +89,30 @@ class ArtworkRepository {
 
       if (characterArtworkMap != null) {
         for (final entry in characterArtworkMap.entries) {
-          // Skip excluded characters
           if (_excludedCharacters.contains(entry.key)) continue;
 
-          final artworkList = (entry.value as List<dynamic>)
+          final allArtworks = (entry.value as List<dynamic>)
               .map((e) => Artwork.fromJson(e as Map<String, dynamic>))
               .where(_isRelevantArtwork)
-              .take(3) // Limit to 3 best artworks per character
               .toList();
+
+          // Sort by preference (preferred artists first, then by year)
+          allArtworks.sort((a, b) {
+            final aPreferred = _isPreferredArtist(a.artist);
+            final bPreferred = _isPreferredArtist(b.artist);
+            if (aPreferred && !bPreferred) return -1;
+            if (!aPreferred && bPreferred) return 1;
+
+            // Older classical art is usually better
+            final aYear = int.tryParse(a.year) ?? 1800;
+            final bYear = int.tryParse(b.year) ?? 1800;
+            // Prefer 1400-1900 range (classical period)
+            final aScore = _getYearScore(aYear);
+            final bScore = _getYearScore(bYear);
+            return bScore.compareTo(aScore);
+          });
+
+          final artworkList = allArtworks.take(3).toList();
 
           if (artworkList.isNotEmpty) {
             _characterArtwork![entry.key] = artworkList;
@@ -99,36 +124,83 @@ class ArtworkRepository {
     }
   }
 
-  /// Filter out irrelevant artworks based on title and artist keywords
+  bool _isPreferredArtist(String artist) {
+    final artistLower = artist.toLowerCase();
+    return _preferredArtists.any((p) => artistLower.contains(p.toLowerCase()));
+  }
+
+  int _getYearScore(int year) {
+    // Best: 1400-1700 (Renaissance/Baroque biblical art)
+    if (year >= 1400 && year <= 1700) return 100;
+    // Good: 1700-1900 (Classical period)
+    if (year >= 1700 && year <= 1900) return 80;
+    // OK: 1200-1400 (Medieval)
+    if (year >= 1200 && year < 1400) return 60;
+    // Less preferred: early 1900s
+    if (year > 1900 && year <= 1950) return 40;
+    // Not preferred: after 1950
+    return 20;
+  }
+
   bool _isRelevantArtwork(Artwork artwork) {
     // Check URL validity
     if (artwork.url.isEmpty || !artwork.url.startsWith('http')) {
       return false;
     }
 
+    final title = artwork.title;
+    final titleLower = title.toLowerCase();
+
+    // Check for modern name patterns (indicates modern person photo)
+    for (final pattern in _modernNamePatterns) {
+      if (pattern.hasMatch(title)) {
+        return false;
+      }
+    }
+
     // Check title keywords
-    final titleLower = artwork.title.toLowerCase();
     for (final keyword in _irrelevantTitleKeywords) {
       if (titleLower.contains(keyword.toLowerCase())) {
         return false;
       }
     }
 
-    // Prefer artworks with known artists (better quality)
+    // Check artist keywords
     final artistLower = artwork.artist.toLowerCase();
     for (final keyword in _irrelevantArtistKeywords) {
-      if (artistLower == keyword.toLowerCase()) {
+      if (artistLower.contains(keyword.toLowerCase())) {
         return false;
       }
     }
 
-    // Prefer older artworks (classical biblical art)
-    // Skip very recent photos (year > 1950)
+    // Filter by year - skip photos (usually after 1900 with certain patterns)
     if (artwork.year.isNotEmpty) {
       final year = int.tryParse(artwork.year);
-      if (year != null && year > 1950) {
-        return false;
+      if (year != null) {
+        // Skip anything after 1950
+        if (year > 1950) return false;
+
+        // For 1900-1950, check if it looks like a photo scan
+        if (year > 1900) {
+          // Allow if it's clearly classical art (Tissot, Dore reproductions, etc.)
+          if (!_isPreferredArtist(artwork.artist)) {
+            // Check if title suggests it's a painting/art
+            final artKeywords = ['painting', 'fresco', 'engraving', 'illustration',
+              'drawing', 'sketch', 'woodcut', 'lithograph', 'etching'];
+            final hasArtKeyword = artKeywords.any((k) => titleLower.contains(k));
+            if (!hasArtKeyword) {
+              return false;
+            }
+          }
+        }
       }
+    }
+
+    // Check if URL looks valid (Wikipedia Commons preferred)
+    if (!artwork.url.contains('wikimedia') &&
+        !artwork.url.contains('wikipedia') &&
+        !artwork.url.contains('museum')) {
+      // Non-wiki sources are less reliable, but allow if other checks pass
     }
 
     return true;
@@ -137,7 +209,6 @@ class ArtworkRepository {
   Future<List<Artwork>> getArtworkByCharacter(String characterId) async {
     await _loadData();
 
-    // Check if character is excluded
     if (_excludedCharacters.contains(characterId)) {
       return [];
     }

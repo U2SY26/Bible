@@ -87,8 +87,10 @@ class AdService {
     // Check if we can show personalized ads
     try {
       final status = await ConsentInformation.instance.getConsentStatus();
-      // Allow ads unless user explicitly denied
-      _canShowAds = status != ConsentStatus.required;
+      // Allow ads for all statuses except notRequired being false
+      // obtained, notRequired, required - all can show ads
+      _canShowAds = true;  // Always allow ads after initialization
+      debugPrint('AdService: Consent status: $status, canShowAds: $_canShowAds');
     } catch (e) {
       // If consent check fails, still allow ads (non-personalized)
       debugPrint('Consent status check failed: $e');
@@ -100,6 +102,8 @@ class AdService {
         RequestConfiguration(testDeviceIds: ['YOUR_TEST_DEVICE_ID']),
       );
     }
+
+    debugPrint('AdService: MobileAds initialized, canShowAds: $_canShowAds');
   }
 
   /// Reset consent for testing (debug only)

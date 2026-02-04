@@ -1,7 +1,7 @@
 name: graph_bible
 description: "그래프 성경 - 성경 인물 관계도 시각화 앱"
 publish_to: 'none'
-version: 1.3.3+9
+version: 1.3.4+10
 
 environment:
   sdk: ^3.9.2

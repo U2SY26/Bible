@@ -330,8 +330,9 @@ class _ChapterViewer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Use bilingual provider - fetches Korean locally or English from API
     final chapterAsync = ref.watch(
-      bibleChapterProvider((bookId: bookId, chapter: chapter)),
+      bilingualBibleChapterProvider((bookId: bookId, chapter: chapter, lang: lang)),
     );
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
