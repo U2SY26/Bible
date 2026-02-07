@@ -11,7 +11,7 @@ class BannerAdWidget extends StatefulWidget {
 }
 
 class _BannerAdWidgetState extends State<BannerAdWidget> {
-  BannerAd? _bannerAd;
+  Ad? _ad;
   bool _isAdLoaded = false;
   int _retryAttempt = 0;
   static const int _maxRetries = 3;
@@ -19,9 +19,7 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
   @override
   void initState() {
     super.initState();
-    // Skip ads on web
     if (!kIsWeb) {
-      // Delay loading slightly to ensure AdMob is initialized
       Future.delayed(const Duration(milliseconds: 500), () {
         if (mounted) _loadAd();
       });
@@ -29,10 +27,27 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
   }
 
   void _loadAd() {
-    _bannerAd?.dispose();
-    _bannerAd = AdService().createBannerAd(
+    _ad?.dispose();
+    _ad = null;
+
+    final adService = AdService();
+    if (!adService.canShowAds) {
+      debugPrint('BannerAdWidget: canShowAds is false, skipping');
+      return;
+    }
+
+    if (adService.isAndroid) {
+      _loadNativeAd(adService);
+    } else {
+      _loadBannerAd(adService);
+    }
+  }
+
+  void _loadNativeAd(AdService adService) {
+    debugPrint('BannerAdWidget: Loading NativeAd for Android');
+    final nativeAd = adService.createNativeAd(
       onAdLoaded: (ad) {
-        debugPrint('Banner ad loaded successfully');
+        debugPrint('BannerAdWidget: NativeAd loaded');
         if (mounted) {
           setState(() {
             _isAdLoaded = true;
@@ -40,44 +55,85 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
         }
       },
       onAdFailedToLoad: (ad, error) {
-        debugPrint('Banner ad failed to load: ${error.message} (attempt $_retryAttempt)');
+        debugPrint('BannerAdWidget: NativeAd failed: ${error.message} (attempt $_retryAttempt)');
         ad.dispose();
         if (mounted) {
           setState(() {
-            _bannerAd = null;
+            _ad = null;
             _isAdLoaded = false;
           });
-          // Retry with exponential backoff
-          if (_retryAttempt < _maxRetries) {
-            _retryAttempt++;
-            Future.delayed(Duration(seconds: _retryAttempt * 2), () {
-              if (mounted) _loadAd();
-            });
-          }
+          _retryWithBackoff();
         }
       },
     );
+    _ad = nativeAd;
+    nativeAd.load();
+  }
 
-    _bannerAd?.load();
+  void _loadBannerAd(AdService adService) {
+    debugPrint('BannerAdWidget: Loading BannerAd for iOS');
+    final bannerAd = adService.createBannerAd(
+      onAdLoaded: (ad) {
+        debugPrint('BannerAdWidget: BannerAd loaded');
+        if (mounted) {
+          setState(() {
+            _isAdLoaded = true;
+          });
+        }
+      },
+      onAdFailedToLoad: (ad, error) {
+        debugPrint('BannerAdWidget: BannerAd failed: ${error.message} (attempt $_retryAttempt)');
+        ad.dispose();
+        if (mounted) {
+          setState(() {
+            _ad = null;
+            _isAdLoaded = false;
+          });
+          _retryWithBackoff();
+        }
+      },
+    );
+    _ad = bannerAd;
+    bannerAd.load();
+  }
+
+  void _retryWithBackoff() {
+    if (_retryAttempt < _maxRetries) {
+      _retryAttempt++;
+      Future.delayed(Duration(seconds: _retryAttempt * 2), () {
+        if (mounted) _loadAd();
+      });
+    }
   }
 
   @override
   void dispose() {
-    _bannerAd?.dispose();
+    _ad?.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (!_isAdLoaded || _bannerAd == null) {
+    if (!_isAdLoaded || _ad == null) {
       return const SizedBox(height: 50);
     }
 
-    return Container(
-      width: _bannerAd!.size.width.toDouble(),
-      height: _bannerAd!.size.height.toDouble(),
-      alignment: Alignment.center,
-      child: AdWidget(ad: _bannerAd!),
-    );
+    if (_ad is NativeAd) {
+      return SizedBox(
+        height: 56,
+        child: AdWidget(ad: _ad as NativeAd),
+      );
+    }
+
+    if (_ad is BannerAd) {
+      final bannerAd = _ad as BannerAd;
+      return SizedBox(
+        width: bannerAd.size.width.toDouble(),
+        height: bannerAd.size.height.toDouble(),
+        child: AdWidget(ad: bannerAd),
+      );
+    }
+
+    return const SizedBox(height: 50);
   }
 }

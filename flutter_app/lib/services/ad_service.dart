@@ -7,53 +7,55 @@ class AdService {
   AdService._internal();
 
   bool _isInitialized = false;
-  bool _canShowAds = true; // Default to true, will be updated after consent check
+  bool _canShowAds = true;
 
-  // Production Ad Unit IDs
-  static const String _bannerAdUnitIdAndroid = 'ca-app-pub-3715008468517611/8425278053';
+  // Android: Native Advanced ad unit (네이티브 광고 고급형)
+  static const String _nativeAdUnitIdAndroid = 'ca-app-pub-3715008468517611/8425278053';
+  // iOS: Banner ad unit (배너)
   static const String _bannerAdUnitIdIOS = 'ca-app-pub-3715008468517611/5435001256';
 
   // Test Ad Unit IDs (for development)
-  static const String _testBannerAdUnitIdAndroid = 'ca-app-pub-3940256099942544/6300978111';
+  static const String _testNativeAdUnitIdAndroid = 'ca-app-pub-3940256099942544/2247696110';
   static const String _testBannerAdUnitIdIOS = 'ca-app-pub-3940256099942544/2934735716';
 
   bool get canShowAds => !kIsWeb && _canShowAds;
+  bool get isAndroid => defaultTargetPlatform == TargetPlatform.android;
+
+  String get nativeAdUnitId {
+    if (kDebugMode) {
+      return _testNativeAdUnitIdAndroid;
+    }
+    return _nativeAdUnitIdAndroid;
+  }
 
   String get bannerAdUnitId {
     if (kDebugMode) {
-      return defaultTargetPlatform == TargetPlatform.android
-          ? _testBannerAdUnitIdAndroid
-          : _testBannerAdUnitIdIOS;
+      return _testBannerAdUnitIdIOS;
     }
-    return defaultTargetPlatform == TargetPlatform.android
-        ? _bannerAdUnitIdAndroid
-        : _bannerAdUnitIdIOS;
+    return _bannerAdUnitIdIOS;
   }
 
   /// Initialize ads with GDPR consent handling
   Future<void> initialize() async {
     if (_isInitialized) return;
 
-    // Skip initialization on web - google_mobile_ads doesn't support web
+    // Skip initialization on web
     if (kIsWeb) {
       _isInitialized = true;
       return;
     }
 
-    // Request consent information update (GDPR)
     final params = ConsentRequestParameters();
 
     ConsentInformation.instance.requestConsentInfoUpdate(
       params,
       () async {
-        // Consent info updated successfully
         if (await ConsentInformation.instance.isConsentFormAvailable()) {
           await _loadAndShowConsentForm();
         }
         await _initializeMobileAds();
       },
       (FormError error) {
-        // Error getting consent info, initialize ads anyway for non-EU users
         debugPrint('Consent info error: ${error.message}');
         _initializeMobileAds();
       },
@@ -71,7 +73,7 @@ class AdService {
             if (formError != null) {
               debugPrint('Consent form error: ${formError.message}');
             }
-            _loadAndShowConsentForm(); // Reload if needed
+            _loadAndShowConsentForm();
           });
         }
       },
@@ -84,29 +86,18 @@ class AdService {
   Future<void> _initializeMobileAds() async {
     await MobileAds.instance.initialize();
 
-    // Check if we can show personalized ads
     try {
       final status = await ConsentInformation.instance.getConsentStatus();
-      // Allow ads for all statuses except notRequired being false
-      // obtained, notRequired, required - all can show ads
-      _canShowAds = true;  // Always allow ads after initialization
+      _canShowAds = true;
       debugPrint('AdService: Consent status: $status, canShowAds: $_canShowAds');
     } catch (e) {
-      // If consent check fails, still allow ads (non-personalized)
       debugPrint('Consent status check failed: $e');
       _canShowAds = true;
     }
 
-    if (kDebugMode) {
-      MobileAds.instance.updateRequestConfiguration(
-        RequestConfiguration(testDeviceIds: ['YOUR_TEST_DEVICE_ID']),
-      );
-    }
-
-    debugPrint('AdService: MobileAds initialized, canShowAds: $_canShowAds');
+    debugPrint('AdService: MobileAds initialized, canShowAds: $_canShowAds, platform: ${isAndroid ? "Android" : "iOS"}');
   }
 
-  /// Reset consent for testing (debug only)
   Future<void> resetConsent() async {
     if (kDebugMode) {
       await ConsentInformation.instance.reset();
@@ -115,23 +106,56 @@ class AdService {
 
   AdRequest _getAdRequest() {
     return const AdRequest(
-      nonPersonalizedAds: false, // Will be personalized if consent given
+      nonPersonalizedAds: false,
     );
   }
 
+  /// Create a NativeAd for Android
+  NativeAd createNativeAd({
+    required Function(Ad) onAdLoaded,
+    required Function(Ad, LoadAdError) onAdFailedToLoad,
+  }) {
+    debugPrint('AdService: Creating NativeAd with unit: $nativeAdUnitId');
+    return NativeAd(
+      adUnitId: nativeAdUnitId,
+      factoryId: 'smallNativeAd',
+      request: _getAdRequest(),
+      listener: NativeAdListener(
+        onAdLoaded: (ad) {
+          debugPrint('AdService: NativeAd loaded successfully');
+          onAdLoaded(ad);
+        },
+        onAdFailedToLoad: (ad, error) {
+          debugPrint('AdService: NativeAd failed to load: ${error.message} (code: ${error.code})');
+          onAdFailedToLoad(ad, error);
+        },
+        onAdOpened: (ad) => debugPrint('NativeAd opened'),
+        onAdClosed: (ad) => debugPrint('NativeAd closed'),
+      ),
+    );
+  }
+
+  /// Create a BannerAd for iOS
   BannerAd createBannerAd({
     required Function(Ad) onAdLoaded,
     required Function(Ad, LoadAdError) onAdFailedToLoad,
   }) {
+    debugPrint('AdService: Creating BannerAd with unit: $bannerAdUnitId');
     return BannerAd(
       adUnitId: bannerAdUnitId,
       size: AdSize.banner,
       request: _getAdRequest(),
       listener: BannerAdListener(
-        onAdLoaded: onAdLoaded,
-        onAdFailedToLoad: onAdFailedToLoad,
-        onAdOpened: (ad) => debugPrint('Ad opened'),
-        onAdClosed: (ad) => debugPrint('Ad closed'),
+        onAdLoaded: (ad) {
+          debugPrint('AdService: BannerAd loaded successfully');
+          onAdLoaded(ad);
+        },
+        onAdFailedToLoad: (ad, error) {
+          debugPrint('AdService: BannerAd failed to load: ${error.message} (code: ${error.code})');
+          onAdFailedToLoad(ad, error);
+        },
+        onAdOpened: (ad) => debugPrint('BannerAd opened'),
+        onAdClosed: (ad) => debugPrint('BannerAd closed'),
       ),
     );
   }

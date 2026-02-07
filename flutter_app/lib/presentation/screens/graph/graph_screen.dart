@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import '../../../core/constants/app_colors.dart';
-import '../../../services/ad_service.dart';
 import '../../providers/filter_provider.dart';
 import '../../providers/selection_provider.dart';
 import '../../providers/bookmark_provider.dart';
@@ -13,55 +11,11 @@ import 'widgets/character_detail_sheet.dart';
 import '../favorites/favorites_screen.dart';
 import '../daily_verse/daily_verse_screen.dart';
 
-class GraphScreen extends ConsumerStatefulWidget {
+class GraphScreen extends ConsumerWidget {
   const GraphScreen({super.key});
 
   @override
-  ConsumerState<GraphScreen> createState() => _GraphScreenState();
-}
-
-class _GraphScreenState extends ConsumerState<GraphScreen> {
-  BannerAd? _bannerAd;
-  bool _isBannerAdReady = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadBannerAd();
-  }
-
-  void _loadBannerAd() {
-    debugPrint('GraphScreen: _loadBannerAd called, canShowAds: ${AdService().canShowAds}');
-
-    if (!AdService().canShowAds) {
-      debugPrint('GraphScreen: AdService.canShowAds is false, skipping banner ad');
-      return;
-    }
-
-    _bannerAd = AdService().createBannerAd(
-      onAdLoaded: (ad) {
-        debugPrint('GraphScreen: Banner ad loaded successfully');
-        setState(() {
-          _isBannerAdReady = true;
-        });
-      },
-      onAdFailedToLoad: (ad, error) {
-        debugPrint('GraphScreen: Banner ad failed to load: ${error.message}');
-        ad.dispose();
-      },
-    );
-    _bannerAd?.load();
-    debugPrint('GraphScreen: Banner ad load() called');
-  }
-
-  @override
-  void dispose() {
-    _bannerAd?.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final lang = ref.watch(languageProvider);
     final charactersAsync = ref.watch(filteredCharactersProvider);
     final selectedCharacterId = ref.watch(selectedCharacterIdProvider);
@@ -128,15 +82,6 @@ class _GraphScreenState extends ConsumerState<GraphScreen> {
                   ),
                 ),
               ),
-            ),
-            // Banner Ad (항상 공간 확보)
-            Container(
-              alignment: Alignment.center,
-              height: 50, // 배너 광고 높이
-              color: Colors.transparent,
-              child: _isBannerAdReady && _bannerAd != null
-                  ? AdWidget(ad: _bannerAd!)
-                  : null,
             ),
           ],
         ),

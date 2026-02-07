@@ -18,9 +18,12 @@ class ArtworkRepository {
     'musician', 'athlete', 'businessman', 'president', 'governor', 'mayor',
     'senator', 'congressman', 'lawyer', 'doctor', 'professor', 'engineer',
     'writer', 'author', 'poet', 'journalist', 'photographer',
+    'metropolitan', 'bishop', 'cardinal',
     // Photo descriptions
     'photograph of', 'photo of', 'portrait of a', 'picture of',
     'daguerreotype', 'tintype', 'albumen', 'carte de visite',
+    // Self-portraits (not of biblical characters)
+    'self-portrait', 'self portrait', 'selfportrait',
     // Modern surnames that appear with biblical names
     'Beach', 'Bigelow', 'Smith', 'Jones', 'Williams', 'Brown', 'Davis',
     'Miller', 'Wilson', 'Moore', 'Taylor', 'Anderson', 'Thomas', 'Jackson',
@@ -30,14 +33,20 @@ class ArtworkRepository {
     'Baker', 'Gonzalez', 'Nelson', 'Carter', 'Mitchell', 'Perez', 'Roberts',
     'Turner', 'Phillips', 'Campbell', 'Parker', 'Evans', 'Edwards', 'Collins',
     'Stewart', 'Sanchez', 'Morris', 'Rogers', 'Reed', 'Cook', 'Morgan',
+    // Historical figures that share names with biblical characters
+    'Doubleday', 'Franklin', 'Welch', 'Peck', 'Halperin', 'McKinnon',
+    'Heilemann', 'Paffhausen', 'Jay', 'Sargent', 'Washington',
+    // Non-biblical subjects
+    'Pocahontas', 'passenger pigeon', 'pigeon',
     // Egyptian/pagan imagery
     'Nefertari', 'Egyptian', 'pharaoh', 'pyramid', 'hieroglyph', 'sphinx',
     'mummy', 'tomb of', 'sarcophagus',
     // Architecture (not biblical art)
     'Cathedrale', 'Cathedral', 'church building', 'facade', 'interior of',
     'exterior of', 'Notre-Dame', 'basilica', 'chapel', 'monastery', 'abbey',
+    'Church in', 'Church of',
     // Maps and diagrams
-    'map of', 'diagram', 'chart', 'plan of', 'layout',
+    'map of', 'diagram', 'chart', 'plan of', 'layout', 'anatomy',
     // Modern items
     'stamp', 'coin', 'medal', 'flag', 'logo', 'emblem', 'badge', 'seal',
     'banknote', 'currency', 'postage',
@@ -47,26 +56,44 @@ class ArtworkRepository {
     '.jpg', '.png', '.gif', 'scan of', 'copy of', 'reproduction',
     // Location photos (not art)
     'view of', 'aerial view', 'panorama', 'landscape of',
-    // Unrelated
+    // Unrelated subjects
     'God Speed', 'speed', 'race', 'competition', 'game', 'match',
+    'farce', 'Gassed', 'war scene', 'battle of',
     // US locations/people
-    'American', 'United States', 'U.S.', 'USA',
+    'American', 'United States', 'U.S.', 'USA', 'New York',
+    // Museum collection metadata
+    'COLLECTIE TROPENMUSEUM', 'TROPENMUSEUM',
+    // Window/stained glass photos (modern photos of church windows)
+    'Window s.', 'stained glass window',
+    // Fleuron (printer's decorations)
+    'Fleuron',
   ];
 
   // Patterns that indicate modern person photos
   static final List<RegExp> _modernNamePatterns = [
     // "FirstName I. LastName" pattern (middle initial)
     RegExp(r'^[A-Z][a-z]+ [A-Z]\. [A-Z][a-z]+'),
-    // "FirstNameLastName" CamelCase pattern
-    RegExp(r'^[A-Z][a-z]+[A-Z][a-z]+$'),
+    // "FirstNameLastName" CamelCase pattern (e.g., "AbijahBigelow")
+    RegExp(r'^[A-Z][a-z]+[A-Z][a-z]+\d*$'),
     // Just a modern last name as title
     RegExp(r'^[A-Z][a-z]{2,}$'),
+    // "Name Name number" pattern (e.g., "Adonijah Welch 2")
+    RegExp(r'^[A-Z][a-z]+ [A-Z][a-z]+ \d'),
+    // "Portrait of [Name]" with capitalized name (not "portrait of a")
+    RegExp(r'Portrait of [A-Z][a-z]+ [A-Z][a-z]+'),
+    // "Name-Name" hyphenated modern names
+    RegExp(r'Weaver-|Chambers '),
+    // Empty or corrupted titles
+    RegExp(r'^\(\)$'),
   ];
 
   // Artist names/descriptions that indicate irrelevant images
   static const List<String> _irrelevantArtistKeywords = [
     'Unknown', 'anonymous', 'stock', 'photographer', 'No photographer',
     'unidentified', 'uncredited',
+    'Bureau of Engraving', 'Banknote Company',
+    'Anatomy of the Human', 'Wellcome',
+    'Jules & Jenny',
   ];
 
   // Preferred classical artists (biblical art specialists)
@@ -148,8 +175,18 @@ class ArtworkRepository {
       return false;
     }
 
-    final title = artwork.title;
+    final title = artwork.title.trim();
     final titleLower = title.toLowerCase();
+
+    // Skip empty or very short titles (likely corrupted data)
+    if (title.length < 3 || title == '()') {
+      return false;
+    }
+
+    // Skip if artist field is suspiciously long (likely garbage metadata)
+    if (artwork.artist.length > 200) {
+      return false;
+    }
 
     // Check for modern name patterns (indicates modern person photo)
     for (final pattern in _modernNamePatterns) {
