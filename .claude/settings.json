@@ -1,0 +1,29 @@
+{
+  "mcpServers": {
+    "kanban": {
+      "type": "url",
+      "url": "http://localhost:5555/mcp",
+      "headers": {
+        "Authorization": "Bearer MIIC-O7CQ-ZMWZ-BLH6"
+      }
+    },
+    "chrome-devtools": {
+      "command": "node",
+      "args": [
+        "E:chrome-devtools-mcp\buildsrc\binchrome-devtools-mcp.js"
+      ]
+    }
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "칸반보드 필수: 작업 착수 전 반드시 kanban_team_list로 기존 팀을 확인하고, 없으면 kanban_team_create로 팀을 생성하세요. 모든 작업은 kanban_ticket_create로 티켓을 등록한 후 시작합니다. MCP 연결 실패 시 REST API(curl http://localhost:5555/api/...)를 사용하세요."
+          }
+        ]
+      }
+    ]
+  }
+}
