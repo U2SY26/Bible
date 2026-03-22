@@ -1,11 +1,3 @@
 {
-    "mcpServers": {
-        "kanban": {
-            "type": "url",
-            "url": "http://localhost:5555/mcp",
-            "headers": {
-                "Authorization": "Bearer MIIC-O7CQ-ZMWZ-BLH6"
-            }
-        }
-    }
+    "mcpServers": {}
 }

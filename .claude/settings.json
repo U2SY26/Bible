@@ -1,12 +1,5 @@
 {
   "mcpServers": {
-    "kanban": {
-      "type": "url",
-      "url": "http://localhost:5555/mcp",
-      "headers": {
-        "Authorization": "Bearer MIIC-O7CQ-ZMWZ-BLH6"
-      }
-    },
     "chrome-devtools": {
       "command": "node",
       "args": [
@@ -21,6 +14,17 @@
           {
             "type": "prompt",
             "prompt": "칸반보드 필수: 작업 착수 전 반드시 kanban_team_list로 기존 팀을 확인하고, 없으면 kanban_team_create로 팀을 생성하세요. 모든 작업은 kanban_ticket_create로 티켓을 등록한 후 시작합니다. MCP 연결 실패 시 REST API(curl http://localhost:5555/api/...)를 사용하세요."
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "⚠️ [칸반 필수] 코드 수정 전 확인사항:\n1. kanban_team_list 로 현재 팀 확인\n2. 티켓 없으면 kanban_ticket_create → kanban_ticket_claim\n3. project_group은 반드시 'Bible' 사용\n칸반 없이 코드 수정하지 마세요."
           }
         ]
       }
